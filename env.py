@@ -1,5 +1,7 @@
 from random import random
 
+# TODO: add stone movement interface
+# TODO: add interaction interface to the environment: agents, tactile feedback, states of interaction with a stone.
 # TODO: write tests
 # TODO: add YAML configuration
 

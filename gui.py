@@ -1,12 +1,10 @@
+# TODO: add interaction support
+
 import sys, pygame
 from random import random
+from pygame.locals import *
 
 import env
-
-pygame.init()
-
-#ball = pygame.image.load("intro_ball.gif")
-#ballrect = ball.get_rect()
 
 class ToGui:
 
@@ -51,12 +49,30 @@ lines = b.getLines()
 
 stones = e.getStones()
 
+pygame.init()
+
+#ball = pygame.image.load("intro_ball.gif")
+#ballrect = ball.get_rect()
+
 size = toGui.scale2d(e.getSize())
 screen = pygame.display.set_mode(size)
 
+mouse_x, mouse_y = 0, 0
+mouse_down = False
 while 1:
   for event in pygame.event.get():
-    if event.type == pygame.QUIT: sys.exit()
+    if event.type == pygame.QUIT:
+      sys.exit()
+    elif event.type == pygame.MOUSEBUTTONDOWN:
+      # print('Pressed button ', event.button, ' at ', event.pos) 
+      mouse_down = True
+    elif event.type == pygame.MOUSEBUTTONUP:
+      # print('Released button ', event.button, ' at ', event.pos) 
+      mouse_down = False
+    elif event.type == pygame.MOUSEMOTION:
+      # print('Moved mouse at ', event.pos, ' by ', event.rel) 
+      mouse_x = event.pos[0]
+      mouse_y = event.pos[1]
 
   screen.fill(background_color)
   pygame.draw.rect(screen, board_color, board_rect, 0)
@@ -66,6 +82,8 @@ while 1:
 
   for stone in stones:
     pygame.draw.circle(screen, stone.getColor(), toGui.transform2d(stone.getCenter()), toGui.scale(stone.getRadius()), 0)
+
+  pygame.draw.circle(screen, Color(128, 128, 128, 64), (mouse_x, mouse_y), 30, (3 if mouse_down else 0))
 
 #  screen.blit(ball, ballrect)
   pygame.display.flip()
