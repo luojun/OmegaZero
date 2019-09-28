@@ -1,8 +1,8 @@
 from random import random
 from math import sqrt
 
-# TODO: add tactile feedback observation for agent
 # TODO: add image observation for agent
+# TODO: use super class's constructor for Agent class
 # TODO: refactor into separate files under an env folder
 # TODO: asychronous agent threads
 # TODO: write tests
@@ -47,24 +47,49 @@ class Environment:
   def getHoldings(self):
     return self._holdings
 
-  def tick(self, gui_agent_action=None):
+  def tick(self, gui_agent_action=None, env_image=None):
     holdings = self.getHoldings()
     agents = self.getAgents()
-    for agentIndex in range(len(agents)): # single thread: agents are all synchronized ...
-      agent = agents[agentIndex]
-      stoneHeld = holdings[agentIndex]
 
-      action = gui_agent_action if agentIndex is 0 else agent.observeActCallback(None)
-      if not action.press():
-        stoneHeld = None
-      elif stoneHeld is None:
-        stoneHeld = self._pickUp(agent.getCenter(), agent.getRadius())
+    # single thread: agents are all synchronized ...
 
-      agent.moveBy(action.move(), self.getBounds())
+    # receive the rendered env image here because we defer that to the GUI/Pygame
+    for agent in agents: # single thread: agents are all synchronized ...
+      agent.getCurrentObservation().setEnvImage(env_image)
+
+    # TODO: config for the number of gui_agents
+    agents[0].setCurrentAction(gui_agent_action)
+
+    # apply motion. We move all agents and the stones held first before applying the press action.
+    for agent in agents:
+      agent.moveBy(agent.getCurrentAction().move(), self.getBounds())
+      stoneHeld = holdings[agent.getId()]
       if stoneHeld is not None:
         stoneHeld.moveTo(agent.getCenter())
 
-      holdings[agentIndex] = stoneHeld
+    # apply press and update tactile feedback.
+    for agent in agents:
+      pressed = agent.getCurrentAction().press()
+      stoneHeld = holdings[agent.getId()]
+      if not pressed:
+        stoneHeld = None
+      elif stoneHeld is None:
+        stoneHeld = self._pickUp(agent.getCenter(), agent.getRadius())
+      holdings[agent.getId()] = stoneHeld
+
+      if not pressed:
+        agent.getCurrentObservation().setFeel(Observation.FEELS_NOTHING)
+      elif stoneHeld:
+        agent.getCurrentObservation().setFeel(Observation.FEELS_STONE)
+      elif self.getBoard().onBoard(agent.getCenter()):
+        agent.getCurrentObservation().setFeel(Observation.FEELS_BOARD)
+      else:
+        agent.getCurrentObservation().setFeel(Observation.FEELS_BACKGROUND)
+
+    # TODO: config for the number of gui_agents
+    for agent in agents[1:]:
+      agent.decideNextAction(agent.getCurrentObservation())
+
 
   def __init__(self, size_x=0.6, size_y=0.6, board_lines=4, number_of_stones=10, number_of_agents=2): # 4, 10, 2 for tic-tac-toe
     self._background_color = (8, 80, 8, 255) # RGBA
@@ -159,6 +184,11 @@ class Board:
   def getInset(self):
     return self._inset
 
+  def onBoard(self, point):
+    point_x, point_y = point
+    board_min_x, board_min_y, board_max_x, board_max_y = self.getRect()
+    return board_min_x < point_x and point_x < board_max_x and board_min_y < point_y and point_y < board_max_y
+
   def __init__(self, environment_size, environment_center, board_lines):
     self._color = (224, 128, 32, 255) # RGBA
     self._line_color = (32, 32, 32, 255) # RGBA
@@ -234,12 +264,32 @@ class Stone(Movable):
 
 class Agent(Movable): # Note how stones are equivalent to super of agents, evolutionarily speaking ;-)
 
-  def observeActCallback(self, observation):
-    self._newObservation = observation
-    return self._decide(self._newObservation)
+  def getCurrentObservation(self):
+    return self._observation
 
-  def _decide(self, observation):
-    return Action(None, None, True)
+  def setCurrentFeel(self,feel):
+    self._observation.setFeel(feel)
+
+  def setCurrentEnvImage(self, env_image):
+    self._observation.setEnvImage(env_image)
+
+  def getCurrentAction(self):
+    return self._action
+
+  def setCurrentAction(self, action):
+    self._action = action
+
+  def updateObservation(self, observation):
+    self._observation = observation
+
+  def decideNextAction(self, observation):
+    self._action = Action(None, None, True)
+
+  def __init__(self, index, color, radius, center):
+    super().__init__(index, color, radius, center)
+    self._observation = Observation()
+    self._action = Action(None, None, True)
+
 
 class Action:
 
@@ -256,6 +306,31 @@ class Action:
     else:
       self._press = press
       self._move = move
-    
+
+
+class Observation:
+
+  FEELS_NOTHING = 0
+  FEELS_BACKGROUND = 1
+  FEELS_BOARD = 2
+  FEELS_STONE = 3
+
+  def getFeel(self):
+    return self._feel
+
+  def setFeel(self, feel):
+    self._feel = feel
+
+  def getEnvImage():
+    return self._env_image
+
+  def setEnvImage(self, env_image):
+    self._env_image = env_image
+
+  def __init__(self, feel=None, env_image=None):
+    self._feel = feel
+    self._env_image = env_image
+
+
 #test()
 
