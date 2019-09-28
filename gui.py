@@ -34,7 +34,8 @@ class ToGui:
     tx2, ty2 = self.transform2d((x2, y2))
     return (tx1, ty1, tx2, ty2)
 
-e = env.Environment(1.0, 1.0, 19, 360)
+e = env.Environment(1.0, 1.0, 19, 360, 2)
+#e = env.Environment()
 toGui = ToGui(e.getSize(), 1200)
 
 background_color = e.getBackgroundColor()
@@ -59,18 +60,25 @@ screen = pygame.display.set_mode(size)
 
 mouse_x, mouse_y = 0, 0
 mouse_down = False
+picked_stone = None
+
 while 1:
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       sys.exit()
     elif event.type == pygame.MOUSEBUTTONDOWN:
       # print('Pressed button ', event.button, ' at ', event.pos) 
+#      if mouse_down == False:
+#        picked_stone = e.pickStone(toEnv(event.pos))
       mouse_down = True
     elif event.type == pygame.MOUSEBUTTONUP:
       # print('Released button ', event.button, ' at ', event.pos) 
+      picked_stone = None
       mouse_down = False
     elif event.type == pygame.MOUSEMOTION:
       # print('Moved mouse at ', event.pos, ' by ', event.rel) 
+#      if picked_stone != None:
+#        e.moveStone(pickedStone, toEvn(event.rel))
       mouse_x = event.pos[0]
       mouse_y = event.pos[1]
 
@@ -80,11 +88,16 @@ while 1:
   for (start_pos, end_pos) in lines:
     pygame.draw.line(screen, line_color, toGui.transform2d(start_pos), toGui.transform2d(end_pos), 3) 
 
-  for stone in stones:
+  for stone in e.getStones():
     pygame.draw.circle(screen, stone.getColor(), toGui.transform2d(stone.getCenter()), toGui.scale(stone.getRadius()), 0)
+
+  for agent in e.getAgents():
+    pygame.draw.circle(screen, agent.getColor(), toGui.transform2d(agent.getCenter()), toGui.scale(agent.getRadius()), 0)
 
   pygame.draw.circle(screen, Color(128, 128, 128, 64), (mouse_x, mouse_y), 30, (3 if mouse_down else 0))
 
 #  screen.blit(ball, ballrect)
   pygame.display.flip()
+
+  e.tick()
 
