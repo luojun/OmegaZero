@@ -66,7 +66,7 @@ class Environment:
       holdings[agentIndex] = stoneHeld
 
   def __init__(self, size_x=0.6, size_y=0.6, board_lines=4, number_of_stones=10, number_of_agents=2): # 4, 10, 2 for tic-tac-toe
-    self._background_color = (64, 128, 0, 255) # RGBA
+    self._background_color = (8, 80, 8, 255) # RGBA
     self._size = (size_x, size_y)
     self._center = center_x, center_y = 0.0, 0.0
     min_x, min_y = center_x - size_x / 2, center_y - size_y / 2
@@ -159,7 +159,7 @@ class Board:
     return self._inset
 
   def __init__(self, environment_size, environment_center, board_lines):
-    self._color = (128, 64, 32, 255) # RGBA
+    self._color = (224, 128, 32, 255) # RGBA
     self._line_color = (32, 32, 32, 255) # RGBA
     environment_size_x, environment_size_y = environment_size
     environment_center_x, environment_center_y = environment_center
