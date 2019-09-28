@@ -6,43 +6,59 @@ from pygame.locals import *
 
 import env
 
-class ToGui:
+class Transform:
 
-  def __init__(self, env_size, dpm=600): # 600 dpm -- dots per meter
+  def __init__(self, env_size, dpm=600.0): # 600 dpm -- dots per meter
     size_x, size_y = env_size
     self._trans_x = size_x / 2.0
     self._trans_y = size_y / 2.0
     self._scale = dpm
 
-  def scale(self, f):
+  def scale2gui(self, f):
     return round(self._scale * f)
 
-  def scale2d(self, t2):
+  def scale2gui2d(self, t2):
     x, y = t2
-    return (self.scale(x), self.scale(y))
+    return (self.scale2gui(x), self.scale2gui(y))
 
-  def translate2d(self, t2):
+  def translate2gui2d(self, t2):
     x, y = t2
     return (x + self._trans_x, y + self._trans_y)
 
-  def transform2d(self, t2):
-    return self.scale2d(self.translate2d(t2))
+  def env2gui2d(self, t2):
+    return self.scale2gui2d(self.translate2gui2d(t2))
 
-  def transform4d(self, t4):
+  def env2gui4d(self, t4):
     x1, y1, x2, y2 = t4
-    tx1, ty1 = self.transform2d((x1, y1))
-    tx2, ty2 = self.transform2d((x2, y2))
+    tx1, ty1 = self.env2gui2d((x1, y1))
+    tx2, ty2 = self.env2gui2d((x2, y2))
     return (tx1, ty1, tx2, ty2)
 
-e = env.Environment(1.0, 1.0, 19, 360, 2)
-#e = env.Environment()
-toGui = ToGui(e.getSize(), 1200)
+  def scale2env(self, f):
+    return f / self._scale
+
+  def scale2env2d(self, t2):
+    x, y = t2
+    return (self.scale2env(x), self.scale2env(y))
+
+  def translate2env2d(self, t2):
+    x, y = t2
+    return (x - self._trans_x, y - self._trans_y)
+
+  def gui2env2d(self, t2):
+    return self.translate2env2d(self.scale2env2d(t2))
+
+
+# e = env.Environment(1.0, 1.0, 19, 360, 5)
+# e = env.Environment(1.0, 1.0, 4, 10, 1) # Solo tic-tac-toe
+e = env.Environment()
+trans = Transform(e.getSize(), 1800)
 
 background_color = e.getBackgroundColor()
 
 b = e.getBoard()
 board_color = b.getColor()
-board_min_x, board_min_y, board_max_x, board_max_y = toGui.transform4d(b.getRect())
+board_min_x, board_min_y, board_max_x, board_max_y = trans.env2gui4d(b.getRect())
 board_rect = (board_min_x, board_min_y, board_max_x - board_min_x, board_max_y - board_min_y)
 
 line_color = b.getLineColor()
@@ -55,49 +71,51 @@ pygame.init()
 #ball = pygame.image.load("intro_ball.gif")
 #ballrect = ball.get_rect()
 
-size = toGui.scale2d(e.getSize())
+size = trans.scale2gui2d(e.getSize())
 screen = pygame.display.set_mode(size)
 
-mouse_x, mouse_y = 0, 0
 mouse_down = False
 picked_stone = None
 
-while 1:
-  for event in pygame.event.get():
-    if event.type == pygame.QUIT:
-      sys.exit()
-    elif event.type == pygame.MOUSEBUTTONDOWN:
-      # print('Pressed button ', event.button, ' at ', event.pos) 
-#      if mouse_down == False:
-#        picked_stone = e.pickStone(toEnv(event.pos))
-      mouse_down = True
-    elif event.type == pygame.MOUSEBUTTONUP:
-      # print('Released button ', event.button, ' at ', event.pos) 
-      picked_stone = None
-      mouse_down = False
-    elif event.type == pygame.MOUSEMOTION:
-      # print('Moved mouse at ', event.pos, ' by ', event.rel) 
-#      if picked_stone != None:
-#        e.moveStone(pickedStone, toEvn(event.rel))
-      mouse_x = event.pos[0]
-      mouse_y = event.pos[1]
+gui_agent = e.getAgents()[0]  # The 0th agent is a GUI agent
+gui_agent_x, gui_agent_y = gui_agent.getCenter()
+mouse_x, mouse_y = trans.env2gui2d((gui_agent_x, gui_agent_y))
 
+while 1:
   screen.fill(background_color)
   pygame.draw.rect(screen, board_color, board_rect, 0)
 
   for (start_pos, end_pos) in lines:
-    pygame.draw.line(screen, line_color, toGui.transform2d(start_pos), toGui.transform2d(end_pos), 3) 
+    pygame.draw.line(screen, line_color, trans.env2gui2d(start_pos), trans.env2gui2d(end_pos), 3)
 
   for stone in e.getStones():
-    pygame.draw.circle(screen, stone.getColor(), toGui.transform2d(stone.getCenter()), toGui.scale(stone.getRadius()), 0)
+    pygame.draw.circle(screen, stone.getColor(), trans.env2gui2d(stone.getCenter()), trans.scale2gui(stone.getRadius()), 0)
 
-  for agent in e.getAgents():
-    pygame.draw.circle(screen, agent.getColor(), toGui.transform2d(agent.getCenter()), toGui.scale(agent.getRadius()), 0)
-
-  pygame.draw.circle(screen, Color(128, 128, 128, 64), (mouse_x, mouse_y), 30, (3 if mouse_down else 0))
+  pygame.draw.circle(screen, gui_agent.getColor(), trans.env2gui2d(gui_agent.getCenter()), trans.scale2gui(gui_agent.getRadius()), (3 if mouse_down else 0))
+  for agent in e.getAgents()[1:]: # The 0th agent is a GUI agent
+    pygame.draw.circle(screen, agent.getColor(), trans.env2gui2d(agent.getCenter()), trans.scale2gui(agent.getRadius()), 0)
 
 #  screen.blit(ball, ballrect)
   pygame.display.flip()
 
-  e.tick()
+  for event in pygame.event.get():
+    if event.type == pygame.QUIT:
+      sys.exit()
+    elif event.type == pygame.MOUSEBUTTONDOWN:
+      mouse_down = True
+      mouse_x = event.pos[0]
+      mouse_y = event.pos[1]
+    elif event.type == pygame.MOUSEBUTTONUP:
+      mouse_down = False
+      mouse_x = event.pos[0]
+      mouse_y = event.pos[1]
+    elif event.type == pygame.MOUSEMOTION:
+      mouse_x = event.pos[0]
+      mouse_y = event.pos[1]
 
+  gui_agent_new_x, gui_agent_new_y = trans.gui2env2d((mouse_x, mouse_y))
+  gui_agent_move = gui_agent_new_x - gui_agent_x, gui_agent_new_y - gui_agent_y
+
+  gui_agent_x, gui_agent_y = gui_agent_new_x, gui_agent_new_y
+  gui_agent_action = env.Action(mouse_down, gui_agent_move)
+  e.tick(gui_agent_action)

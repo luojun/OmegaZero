@@ -1,7 +1,8 @@
 from random import random
 from math import sqrt
 
-# TODO: add interaction interface to the environment: agents, tactile feedback, states of interaction with a stone.
+# TODO: add tactile feedback observation for agent
+# TODO: add image observation for agent
 # TODO: refactor into separate files under an env folder
 # TODO: asychronous agent threads
 # TODO: write tests
@@ -46,14 +47,14 @@ class Environment:
   def getHoldings(self):
     return self._holdings
 
-  def tick(self):
-    for agent in self.getAgents(): # single thread: agents are all synchronized ...
-      holdings = self.getHoldings()
-      agentIndex = agent.getId()
-
+  def tick(self, gui_agent_action=None):
+    holdings = self.getHoldings()
+    agents = self.getAgents()
+    for agentIndex in range(len(agents)): # single thread: agents are all synchronized ...
+      agent = agents[agentIndex]
       stoneHeld = holdings[agentIndex]
 
-      action = agent.observeActCallback(None)
+      action = gui_agent_action if agentIndex is 0 else agent.observeActCallback(None)
       if not action.press():
         stoneHeld = None
       elif stoneHeld is None:
@@ -104,7 +105,7 @@ class Environment:
 
   def _init_agents(self, number_of_agents, agent_size):
     agent_radius = agent_size / 2
-    agent_color = (0, 0, 224, 255)
+    agent_color = (96, 64, 192, 255)
 
     center_x, center_y = self._center
     size_x, size_y = self._size
@@ -238,7 +239,7 @@ class Agent(Movable): # Note how stones are equivalent to super of agents, evolu
     return self._decide(self._newObservation)
 
   def _decide(self, observation):
-    return Action(True)
+    return Action(None, None, True)
 
 class Action:
 
@@ -248,14 +249,13 @@ class Action:
   def move(self):
     return self._move
 
-  def __init__(self, act_randomly=False):
+  def __init__(self, press, move, act_randomly=False):
     if act_randomly:
       self._press = random() < 0.2 # 20% of time
       self._move = 0.01 * (random() - 0.5), 0.01 * (random() - 0.5) # at most 1cm in one direction at a time
     else:
-      raise NoImplementedError("Do not yet support generation of non-random action.")
+      self._press = press
+      self._move = move
     
-
-
 #test()
 
