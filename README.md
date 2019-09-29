@@ -1,5 +1,7 @@
 # Omega Zero
 
+![alt text](screenshot-0.png?raw=true "Tic-Tac-Toe with 3 agents")
+
 Exploration in a virtual 2D environment, focused on learning from demonstration on the way towards Delta One.
 
 ## Challenge: learn to play games from demonstrations

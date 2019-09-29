@@ -8,6 +8,11 @@ from pygame.locals import *
 
 import env
 
+def capture_screen(surface, filepath, size, pos = (0,0)):
+  image = pygame.Surface(size)  # Create image surface
+  image.blit(surface, (0,0), (pos,size))  # Blit portion of the display to the image
+  pygame.image.save(image, filepath)
+
 class Transform:
 
   def __init__(self, env_size, dpm=600.0): # 600 dpm -- dots per meter
@@ -97,13 +102,15 @@ while 1:
   for agent in e.getAgents()[1:]: # The 0th agent is a GUI agent
     pygame.draw.circle(surface, agent.getColor(), trans.env2gui2d(agent.getCenter()), trans.scale2gui(agent.getRadius()), 0)
 
-#  surface.blit(ball, ballrect)
   a3d = pygame.surfarray.array3d(surface)
   pygame.display.flip()
 
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       sys.exit()
+    elif event.type == pygame.KEYDOWN:
+      if event.key == pygame.K_c:
+        capture_screen(surface, "screenshot.png", size)
     elif event.type == pygame.MOUSEBUTTONDOWN:
       mouse_down = True
       mouse_x = event.pos[0]
