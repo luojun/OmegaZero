@@ -1,6 +1,8 @@
 # TODO: add interaction support
 
-import sys, pygame
+import sys
+import pygame
+import numpy
 from random import random
 from pygame.locals import *
 
@@ -50,9 +52,9 @@ class Transform:
 
 
 # e = env.Environment(1.0, 1.0, 19, 360, 5)
-# e = env.Environment(1.0, 1.0, 4, 10, 1) # Solo tic-tac-toe
-e = env.Environment()
-trans = Transform(e.getSize(), 1800)
+e = env.Environment(1.0, 1.0, 4, 10, 3) # three-agent tic-tac-toe
+# e = env.Environment()
+trans = Transform(e.getSize(), 1200)
 
 background_color = e.getBackgroundColor()
 
@@ -72,7 +74,7 @@ pygame.init()
 #ballrect = ball.get_rect()
 
 size = trans.scale2gui2d(e.getSize())
-screen = pygame.display.set_mode(size)
+surface = pygame.display.set_mode(size)
 
 mouse_down = False
 picked_stone = None
@@ -82,20 +84,21 @@ gui_agent_x, gui_agent_y = gui_agent.getCenter()
 mouse_x, mouse_y = trans.env2gui2d((gui_agent_x, gui_agent_y))
 
 while 1:
-  screen.fill(background_color)
-  pygame.draw.rect(screen, board_color, board_rect, 0)
+  surface.fill(background_color)
+  pygame.draw.rect(surface, board_color, board_rect, 0)
 
   for (start_pos, end_pos) in lines:
-    pygame.draw.line(screen, line_color, trans.env2gui2d(start_pos), trans.env2gui2d(end_pos), 3)
+    pygame.draw.line(surface, line_color, trans.env2gui2d(start_pos), trans.env2gui2d(end_pos), 3)
 
   for stone in e.getStones():
-    pygame.draw.circle(screen, stone.getColor(), trans.env2gui2d(stone.getCenter()), trans.scale2gui(stone.getRadius()), 0)
+    pygame.draw.circle(surface, stone.getColor(), trans.env2gui2d(stone.getCenter()), trans.scale2gui(stone.getRadius()), 0)
 
-  pygame.draw.circle(screen, gui_agent.getColor(), trans.env2gui2d(gui_agent.getCenter()), trans.scale2gui(gui_agent.getRadius()), (3 if mouse_down else 0))
+  pygame.draw.circle(surface, gui_agent.getColor(), trans.env2gui2d(gui_agent.getCenter()), trans.scale2gui(gui_agent.getRadius()), (3 if mouse_down else 0))
   for agent in e.getAgents()[1:]: # The 0th agent is a GUI agent
-    pygame.draw.circle(screen, agent.getColor(), trans.env2gui2d(agent.getCenter()), trans.scale2gui(agent.getRadius()), 0)
+    pygame.draw.circle(surface, agent.getColor(), trans.env2gui2d(agent.getCenter()), trans.scale2gui(agent.getRadius()), 0)
 
-#  screen.blit(ball, ballrect)
+#  surface.blit(ball, ballrect)
+  a3d = pygame.surfarray.array3d(surface)
   pygame.display.flip()
 
   for event in pygame.event.get():
@@ -118,4 +121,4 @@ while 1:
 
   gui_agent_x, gui_agent_y = gui_agent_new_x, gui_agent_new_y
   gui_agent_action = env.Action(mouse_down, gui_agent_move)
-  e.tick(gui_agent_action)
+  e.tick(gui_agent_action, a3d)

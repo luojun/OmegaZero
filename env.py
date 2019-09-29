@@ -1,7 +1,6 @@
 from random import random
 from math import sqrt
 
-# TODO: add image observation for agent
 # TODO: use super class's constructor for Agent class
 # TODO: refactor into separate files under an env folder
 # TODO: asychronous agent threads
@@ -137,14 +136,12 @@ class Environment:
     min_x, min_y, _, _ = self._bounds
 
     agents = []
-    print("initing ...")
     for index in range(number_of_agents):
       agent_center = (
         min_x + agent_radius + random() * (size_x - agent_size),
         min_y + agent_radius + random() * (size_y - agent_size)
       )
       agent = Agent(index, agent_color, agent_radius, agent_center)
-      print(id(agent))
       agents.append(agent)
     return agents
 
