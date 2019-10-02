@@ -1,8 +1,8 @@
 from random import random
 from math import sqrt
 
-# TODO: use super class's constructor for Agent class
-# TODO: refactor into separate files under an env folder
+# TODO: refactor agent code into dedicated agent file
+# TODO: add kinesthetic feedback, which could just be movement action except for at the boundary
 # TODO: asychronous agent threads
 # TODO: write tests
 # TODO: add YAML configuration

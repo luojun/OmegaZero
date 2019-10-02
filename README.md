@@ -36,6 +36,10 @@ With this setup, AI agents interact with the environment in a way similar to how
 
 Note two things: (1) the setup allows multiple AI agents and multiple humans to simultaneously interact with the environment and (2) a rule-based agent with all necessary game-specific knowledge coded up could be easily integrated with the environment to serve as a teacher for learning from demonstration.
 
+## Serious exploration of learning affordances
+
+[Affordances](affordances.md)
+
 # Delta One
 
 Learn from human demonstration to play Go, Chess, and Chinese Chess bodily with real game sets and without calibration, special adaptation, or special hardward.
