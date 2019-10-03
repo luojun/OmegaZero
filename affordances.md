@@ -1,8 +1,8 @@
 ## Varieties of Affordance Fields
 
-If we go slow enough, Oz is more than adequate for exploring the concepctual structure underlying the ``commonsense knowledge'' of a domain of Go-like board games, for understanding the construction of the various skills the coordination of which give us the cognitive architecture needed for the eventual ability of ``learning from demonstration''.
+If we go slow enough, Oz is more than adequate for exploring the concepctual structure underlying the "commonsense knowledge" of a domain of Go-like board games, for understanding the construction of the various skills the coordination of which give us the cognitive architecture needed for the eventual ability of "learning from demonstration".
 
-As should be clear below, it also is a ``site'' for much cross-cutting concerns and cross-cutting registrations, because the shared base-level ``I/O'' and base-level ``physics'' are quite stable and what makes things interesting is the varities of interests we take in the ``site''.
+As should be clear below, it also is a "site" for much cross-cutting concerns and cross-cutting registrations, because the shared base-level "I/O" and base-level "physics" are quite stable and what makes things interesting is the varities of interests we take in the "site".
 
 ### 1. Visual latency -- time
 
@@ -37,8 +37,8 @@ As should be clear below, it also is a ``site'' for much cross-cutting concerns 
 
 ### 5. How do I feel?
 
-- Another ``sensory'' modality: tactile feedback.
-- Tactile latency is a factor: learn to trigger a tactile change through a ``press'' or ``touch'' action.
+- Another "sensory" modality: tactile feedback.
+- Tactile latency is a factor: learn to trigger a tactile change through a "press" or "touch" action.
 - No tactile orientation.
 
 ### 6. Where will I feel what?
