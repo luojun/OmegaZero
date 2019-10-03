@@ -6,6 +6,7 @@ import numpy
 from random import random
 from pygame.locals import *
 
+from movable import Action
 import env
 
 def capture_screen(surface, filepath, size, pos = (0,0)):
@@ -127,5 +128,5 @@ while 1:
   gui_agent_move = gui_agent_new_x - gui_agent_x, gui_agent_new_y - gui_agent_y
 
   gui_agent_x, gui_agent_y = gui_agent_new_x, gui_agent_new_y
-  gui_agent_action = env.Action(mouse_down, gui_agent_move)
+  gui_agent_action = Action(mouse_down, gui_agent_move)
   e.tick(gui_agent_action, a3d)
