@@ -11,6 +11,9 @@ As should be clear below, it also is a "site" for much cross-cutting concerns an
 - Very much like rhythmic finger sucking in babies.
 - This could be a field where different places in the visual scene has different latency.
 - This could be related to visual orientation and visual localization below.
+- ... How visual change at all is expected given motion -- overall timing ... learn the fact that there is no latency (or systematic reliable latency) between my action and visual feedback on my action
+- ... Similarly with tactile feedback
+- ... Boundary is special
 
 ### 2. Visual orientation -- space 1: action-vision alignment
 
@@ -20,11 +23,15 @@ As should be clear below, it also is a "site" for much cross-cutting concerns an
 - But this one could also be a field if the transformations differ at different parts of the visual scene.
 - This is related to visual localization below.
 - This is important for dealing with board rotation, or rotation of the board relative to the SCARA robot's base.
+- ... How motion direction correlates with visual change direction.
+- ... Boundary is special
 
 ### 3. Visual localization -- space 2, where am I?
 
 - A visual field of where I am, a field with a single or possibly multiple activation peaks for where I could possibly be in the visual field.
 - This one settles the locus of action in the visual scene.
+- ... How motion correlates with localized visual changes
+- ... Boundary is special
 
 ### 4. Where to travel and when to arrive -- space 3, metric correspondence
 
@@ -34,6 +41,8 @@ As should be clear below, it also is a "site" for much cross-cutting concerns an
 - This will be important for dealing with differential scaling.
 - If the agent is to wear a new pair of glasses, the adaptation here is relevant.
 - Yet another field, centered around where the agent is, and spreads out according to how much time it takes to arrive where.
+- ... GVFs in space ...
+- ... Boundary is special
 
 ### 5. How do I feel?
 
@@ -49,10 +58,18 @@ As should be clear below, it also is a "site" for much cross-cutting concerns an
 ### 7. The looks of how things feel -- cross modality
 
 - Alignment of tactile field and visual field
+- Multi-feature field
 
 ### 8. Where are the stones?
 
 - Cross-modality feature placing of stoneness.
+- So far no goal-oriented actions, all through correlations ...
+
+### 9. Moving stones
+
+- Sequential decision making now ...
+- Learn to differentiate individual stones ...
+
 
 ### ... and so on ...
 

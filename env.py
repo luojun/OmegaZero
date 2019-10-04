@@ -5,12 +5,6 @@ from movable import Agent
 from movable import Stone
 from movable import Observation 
 
-# TODO: refactor agent code into dedicated agent file
-# TODO: add kinesthetic feedback, which could just be movement action except for at the boundary
-# TODO: asychronous agent threads
-# TODO: write tests
-# TODO: add YAML configuration
-
 def test():
   # env = Environment(1.0, 1.0, 19, 360, 2) # Go
   # env = Environment(1.0, 1.0, 15, 360, 2) # Gomoku
