@@ -59,10 +59,11 @@ class Environment:
 
     # apply motion. We move all agents and the stones held first before applying the press action.
     for agent in agents:
-      agent.moveBy(agent.getCurrentAction().move(), self.getBounds())
+      kinesthetic = agent.moveBy(agent.getCurrentAction().move(), self.getBounds())
       stoneHeld = holdings[agent.getId()]
       if stoneHeld is not None:
         stoneHeld.moveTo(agent.getCenter())
+      agent.getCurrentObservation().setKinesthetic(kinesthetic)
 
     # apply press and update tactile feedback.
     for agent in agents:

@@ -15,9 +15,9 @@ class Movable:
     return self._center
 
   def moveBy(self, translation, bounds): # could use insets instead of bounds
-    x, y = self._center
+    current_x, current_y = self._center
     tx, ty = translation
-    x, y = x + tx, y + ty
+    x, y = current_x + tx, current_y + ty
     min_x, min_y, max_x, max_y = bounds
     radius = self.getRadius()
     if x < min_x + radius:
@@ -28,7 +28,10 @@ class Movable:
       x = max_x - radius
     if y > max_y - radius:
       y = max_y - radius
+
+    kx, ky = x - current_x, y - current_y
     self._center = x, y
+    return kx, ky # return the actual change
 
   def moveTo(self, target):
     self._center = target
@@ -102,13 +105,20 @@ class Observation:
   def setFeel(self, feel):
     self._feel = feel
 
+  def getKinesthetic(self):
+    return self._kinesthetic
+
+  def setKinesthetic(self, kinesthetic):
+    self._kinesthetic = kinesthetic
+
   def getEnvImage():
     return self._env_image
 
   def setEnvImage(self, env_image):
     self._env_image = env_image
 
-  def __init__(self, feel=None, env_image=None):
+  def __init__(self, feel=None, env_image=None, kinesthetic=None):
     self._feel = feel
     self._env_image = env_image
+    self._kinesthetic = kinesthetic
 
