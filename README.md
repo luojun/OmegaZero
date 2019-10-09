@@ -6,8 +6,8 @@ We call our exploration "Omega Zero" because the goal here is not acing the game
 
 <p align="center">
 <img src="screenshot-0.png" align="center" height="600" width="600" alt="Tic-Tac-Toe with 3 agents">
-</br>
-*Oz in a Tic-Tac-Toe setup*
+<br/>
+<b>Oz in a Tic-Tac-Toe setup with 3 agents</b>
 </p>
 
 
