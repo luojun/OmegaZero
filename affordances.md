@@ -1,30 +1,24 @@
-## Varieties of Affordance Fields
+# Learning Affordances as Commonsense Knowledge
 
-If we go slow enough, Oz is more than adequate for exploring the conceptual structure underlying the "commonsense knowledge" of a domain of Go-like board games, for understanding the construction of the various skills the coordination of which give us the cognitive architecture needed for the eventual ability of "learning from demonstration".
+If we go slow enough, Oz is more than adequate for exploring the conceptual structure underlying the "commonsense knowledge" of the domain of Go-like board games, for understanding the necessary skills the coordination of which give us the cognitive architecture needed for the ability of "learning from demonstration". The following musings suggest that issues of latency, directional alignment, localization, metric correspondence, cross-modal correspondence etc are all implicated. What is the learning architecture -- components, representation, and algorithms -- needed for a successful coordination of all these aspects through learning? That's the question we want to investigate. That, we believe, is also a core part of the question about how "commonsense knowledge" may be structured and learned.
 
-As should be clear below, the Oz environment is also a "site" for many cross-cutting concerns and cross-cutting registrations. While the shared base-level "I/O" and base-level "physics" are quite simple and stable, what make things interesting is how all the relevant aspects converge on the same "site": time, directional alignment, localization, metric correspondence, cross-modal correspondence etc. What is the learning architecture -- components, representation, and algorithms -- needed for a successful coordination of all these aspects? That's the question we want to investigate.
+The initial articulation below is largely from the perspective of affordances, from the perspective of building towards learning affordances. J.J.Gibson's theory of affordance, Jean Piaget's account of sensorimotor development, and the idea of General Value Functions (GVFs) from reinforcement learning research are centrally at play here. 
 
-### 1. Visual latency -- time
+## 1. Visual and tactile latency -- time 0: embeddedness
 
-- Assume there is no delay between motion command and kinesthetic feedback.
-- Correlate kinesthetic feedback and visual feedback to estimate latency of visual feedback.
-- Very much like rhythmic finger sucking in babies.
-- This could be a field where different places in the visual scene has different latency.
-- This could be related to visual orientation and visual localization below.
-- ... How visual change at all is expected given motion -- overall timing ... learn the fact that there is no latency (or systematic reliable latency) between my action and visual feedback on my action
-- ... Similarly with tactile feedback
-- ... Boundary is special
-- Maybe we need a field of latency? Or maybe not? Maybe the latency should just be an aspect of the overall field of visual feedback? No, that doesn't seem to be right.
-- Latency could be object-specific. It's one aspect of the concerns. It's a concern. We can attach the concern to the object or the sujbect, the ego. Maybe using a cumulant.
+For simplicity of discussion, let's assume there is no delay between motion command and kinesthetic feedback. We may then ask how kinesthetic feedback and visual feedback are correlated to enable estimation of latency of visual feedback. "Latency" may not be the right word here. What matters is the temporal regularity in terms of the relationship between when an action is taken by the agent and when the impact of the action is perceived by the agent visually. The sense of latency or rather regularity here grounds a general sense for the agent that its action does impact the environment or at least it does impact the agent's own body (i.e. cursor). Similar things can be said about the latency or regularity in tactile feedback. In this sense, the temporal regularity we are concerned about is not unlike the situation with rhythmic finger sucking in babies, wherein the coordinated rhythms of sucking and feeling of being sucked embodies the temporal regularity.
 
-- What kind of invariance is this? Visual latency regardless of action. Also regardless of location? Is this invariance a property of the vision channel?
-- What sort of flexibility does this enable? Anywhere latency estimates?
-- How is this useful? Control of timing? No necessarily directly useful in the current Oz setup.
+To capture the regularity here, we may use one GVF to predict *gross visual motion* based on kinesthetic feedback and another GVF to predict *gross tactile change* based on kinesthetic feedback.
 
-- Estimate temporal correlation of *gross motion* and *ego-action*. Rhythm if possible.
-- GVF of gross motion. Impulse repnose ...
+Now, if the action command is also accessible as such, i.e. independent of and prior to the availability of the kinesthetic feedback, we can use GVFs to make similar predictions from action commands. (NB: it's my sense that higher level or cortical action commands, i.e. intentions, could be accessible as such, but not so much lower-level or spinal commands, i.e. reactions.)
 
-### 2. Visual orientation -- space 1: action-vision alignment
+Naturally, we could expect these GVFs to capture the actual *rhythm* as reflected in the feedbacks of the *ego-action*. This is important because the rhythmic regularity under the agent's control is the best indication that the agent is in control.
+
+Here, we can also see how such predictions as embody a kind of perceived *invariance*, which is the invariance of the general effectiveness of action regardless of where and how the action is taken. Such GVFs and the "nexting" based on them are probably at the core of the agent's sense that it's a little creature appropriately embedded in Oz.
+
+From such a perspective, we can also see how this may be useful? It is super useful for system self-check: (1) if predictions from action command to gross visual motion (moving the cursor at all if not also the stone held) or gross tactile change (from not touching anything to touching something) fails, it means the agent's control has come apart from its body or environment; (2) if predictions from kinesthetic feedback to environmentally rooted feedback fails, it means the agent's body has come apart from its environment (e.g. the agent may be skidding or in total darkness); (3) in the less dramatic cases, if the latency between action and gross visual motion increases, the agent is in a position to suspect some sort of computational lag or extra mechanical play was somehow introduced in the overall system. Super useful things for real world robotics!
+
+## 2. Visual action orientation -- space 1: action-vision directional alignment
 
 - Assume motion command is in robot-base coordinateas, as in a SCARA robot.
 - Correlate kinesthetic feedback *direction* and visual feedback *direction* to estimate orientation.
@@ -47,7 +41,9 @@ As should be clear below, the Oz environment is also a "site" for many cross-cut
 - This is a transformation between visual plane and action vector. About transformation that makes the action vector parallel to the visual plane. These may not be parallel to each other.
 - GVFs predicting in the visual plane the direction of change, given some change, given the action/kinesthetic vector and the visual input.
 
-### 3. Visual localization -- space 2, where am I?
+- Invariance ... calibration ...
+
+## 3. Visual ego localization -- space 2: where am I?
 
 - A visual field of where I am, a field with a single or possibly multiple activation peaks for where I could possibly be in the visual field.
 - This one settles the locus of action in the visual scene.
@@ -63,7 +59,7 @@ As should be clear below, the Oz environment is also a "site" for many cross-cut
 - GVFs predicting center location
 - GVFs predicting feeling and predicting color ...
 
-### 4. Where to travel and when to arrive -- space 3, metric correspondence
+## 4. Where to travel and when to arrive -- space 3: metric correspondence
 
 - This one settles the mapping of motion command to visual scene globally.
 - This one requires integration of visual orientation and visual localization.
@@ -80,7 +76,7 @@ As should be clear below, the Oz environment is also a "site" for many cross-cut
 - This one is the scaling transformation.
 - GVFs predicting where the agent will be when.
 
-### 5. How do I feel?
+## 5. How do I feel?
 
 - Another "sensory" modality: tactile feedback.
 - Tactile latency is a factor: learn to trigger a tactile change through a "press" or "touch" action.
@@ -89,7 +85,7 @@ As should be clear below, the Oz environment is also a "site" for many cross-cut
 - Nexting?
 - GVF to predict how I feel given my action, past feeling, motion, and visual input ...
 
-### 6. Where will I feel what?
+## 6. Where will I feel what? -- tactile map
 
 - Field of possible tactile feedback.
 - Could be based solely on map built from dead reckoning.
@@ -97,7 +93,7 @@ As should be clear below, the Oz environment is also a "site" for many cross-cut
 - The same for feeling ... similar to vision ...
 - GVF field ... or feeling as a GVF of color ... from color to feeling: esp. white and black.
 
-### 7. The looks of how things feel -- cross modality
+## 7. The looks of how things feel -- cross-modality visual tactile map
 
 - Alignment of tactile field and visual field
 - Multi-feature field
@@ -105,7 +101,7 @@ As should be clear below, the Oz environment is also a "site" for many cross-cut
 - Join these two fields ... cross-modality GVF field ...
 - Two inputs, one output
 
-### 8. Where are the stones?
+## 8. Where are the stones? -- stoneness as a particular kind of spatially distributed affordance
 
 - Cross-modality feature placing of stoneness.
 - So far no goal-oriented actions, all through correlations ...
@@ -113,12 +109,12 @@ As should be clear below, the Oz environment is also a "site" for many cross-cut
 
 - GVFs of stone color???
 
-### 9. Moving stones
+## 9. Moving stones -- let the play begin
 
 - Sequential decision making now ...
 - Learn to differentiate individual stones ...
 
 - Now we can specify the task of moving stones arounds ... in a goal oriented way ... with enough resilience and flexibility.
 
-### ... and so on ...
+## ... and so on ...
 
