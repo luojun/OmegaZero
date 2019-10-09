@@ -4,10 +4,14 @@ Omega Zero, Oz for short, is an exploration of the learning of commonsense knowl
 
 We call our exploration "Omega Zero" because the goal here is not acing the game as in AlphaGo, thus "Omega", but learning to play it without being given either prior knowledge of the game rules or prior data abstractions representing the game, thus "Zero". Our intuition is that learning to play in an adequately physical environment is qualitatively different from and significantly harder than learning to win.
 
+<p align="center">
 <img src="screenshot-0.png" align="center" height="600" width="600" alt="Tic-Tac-Toe with 3 agents">
+</br>
+*Oz in a Tic-Tac-Toe setup*
+</p>
 
 
-## <a name="challenge"></a> Challenge: learn commonsense for learning to play games from demonstrations
+## <a name="challenge"></a> Challenge: learn commonsense for learning to play
 
 We use a 2D digital version of the Go board and Go stones as an experimental setup where an AI agent can play at least three common games:
 
