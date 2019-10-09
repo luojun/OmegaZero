@@ -25,9 +25,9 @@ It is trivial to code up each of these games so that an AI agent can "play" it b
 
 Instead, the challenge is for an AI agent to learn from demonstration how to play at least one of these three games (e.g. Go) when given only knowledge about how to play the other one or two games.
 
-Ideally, an AI agent will be given no game-specific knowledge at all but will be given only generic or commonsense knowledge about the environment on the basis of which it is expected to learn all three games through learning from demonstration.
+Ideally, an AI agent will be given no game-specific knowledge at all but will be given only generic or commonsense knowledge about the environment on the basis of which it is expected to learn all three games through learning from demonstration. This way with things is labeled "ideally", because it means the environment will necessarily have to be engineered according to the "ideals" corresponding to the generic knowledge we build in so that the knowledge will be valid in the actual environment.
 
-Idealistically, an Oz AI agent will not be given any prior knowledge at all and will have to learn the knowledge needed. This is indeed a bit idealistic, but yep that's we are aiming at and the gut feeling is that we are getting close to be able to pull that off.
+Idealistically, an Oz AI agent will not be given any prior knowledge at all and will have to learn the knowledge needed. This is indeed a bit futuristic, but yep that's we are aiming at and the gut feeling is that we are getting close to be able to pull that off. (NB: we are not assuming that the agent will not be able to learn socially through the Oz environment from other agents or that it will not benefit from some forms of symbolic communication implementable in Oz. To fully rid of the social and communicative dependencies would mean to tell a full evolutionary as well as epigentic story.)
 
 ## <a name="environment"></a> Environment: an interactive flatland under the bird's eye view
 
@@ -39,7 +39,7 @@ Agents interact with the environment through their respective "cursors". There m
 
 When a cursor is clicked over a stone, the stone is picked up. When the cursor moves, the stone moves along. When the cursor is clicked again the stone is dropped. Only one stone will be picked up or held at a time. When a stone is being picked up or held, one kind of tactile feedback is provided. When the board is touched, another kind of tactile feedback is provided. When the background is touched, yet another kind is provided. The point of touch is a single point. When multiple stones are at the point of touch, only one stone is picked up. When multiple cursors attempt to pick up the same stone simultaneously, the result (i.e. which cursor actually picks up the stone) is random. One cursor can also "grab" a stone held by another cursor by clicking on it.
 
-At any point in time, the whole environment, including the board, the stones, and the cursor could be rendered into an image, from the bird's eye view. However, the optical axis of the bird's eye may or may not be perpendicular to the board. The image is given to the AI agent as its visual input along with the tactile and kinesthetic feedback.
+At any point in time, the whole environment, including the board, the stones, and the cursor could be rendered into an image, from the bird's eye view. The image is given to the AI agent as its visual input along with the tactile and kinesthetic feedback. (NB: We note that in the real world, the optical axis of the bird's eye camera may or may not be perpendicular to the board. But given then flatland nature of Oz, we are going to scarifice that aspect of fidelity. We do believe that such a simplification, which retains scaling and planar rotation, is not trivializing the transformations that matter in the real world cases, such that our explorations will still be of adequate real-world implications.)
 
 The image could also be presented through a GUI to one or more human agents, allowing the humans to interact with the Oz environment through the GUI. Cursor states such as it is being pressed down and held will also be rendered per normal GUI practice. Tactile feedback could also be visualized for human interaction, but may be unnecessary. Kinesthetic feedback is not provided to human agents because they can get that for their hand movement.
 
@@ -47,7 +47,7 @@ Three things can be noted about this setup:
 
 1. Except for the fact that the physics of the Oz environment is totally unrealistic, the way in which our AI agents interact with the Oz environment is highly similar to how humans play board games through GUI on a normal computer.
 2. The Oz setup allows multiple AI agents and multiple humans to simultaneously interact with the environment, giving us ample opportunity to do teaching or demonstration by either AI or human teachers.
-3. The physical setup of Oz, including the vision or image rendering part, is not unlike the relationship between a SCARA robot and its task environment. Thus, our solutions could almost directly enable the many SCARA robots out there to adapt to new tasks very quickly.
+3. The physical setup of Oz, including the vision or image rendering part, is not unlike the relationship between a [SCARA robot](https://en.wikipedia.org/wiki/SCARA) or [Cartesian robot](https://en.wikipedia.org/wiki/Cartesian_coordinate_robot) and its task environment. Thus, our learning solutions in Oz, once they are adequately figured out, could almost directly enable the many robots out there to adapt to new tasks very quickly.
 
 ## Illustration: exploration of affordance learning
 

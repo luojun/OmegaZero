@@ -18,25 +18,29 @@ Here, we can also see how such predictions as embody a kind of perceived *invari
 
 From such a perspective, we can also see how this may be useful? It is super useful for system self-check: (1) if predictions from action command to gross visual motion (moving the cursor at all if not also the stone held) or gross tactile change (from not touching anything to touching something) fails, it means the agent's control has come apart from its body or environment; (2) if predictions from kinesthetic feedback to environmentally rooted feedback fails, it means the agent's body has come apart from its environment (e.g. the agent may be skidding or in total darkness); (3) in the less dramatic cases, if the latency between action and gross visual motion increases, the agent is in a position to suspect some sort of computational lag or extra mechanical play was somehow introduced in the overall system. Super useful things for real world robotics!
 
+Finally, it should be noted that one place where the predictions will necessarily be irregular is when the agent tries to move against the bounds of Oz. While this counts as an instance of (2) above and thus the agent's sense that it's at the bounds will benefit from the GVF predictions here, the full proper treatment of perception at the bounds of Oz will require more capacities unpacked below.
+
 ## 2. Visual action orientation -- space 1: action-vision directional alignment
 
-- Assume motion command is in robot-base coordinateas, as in a SCARA robot.
+With the temporal regularity capturing Now that the 
+
+Assume motion command is in robot-base coordinateas, as in a SCARA or Cartesian robot. The board may rotate. The environment Oz flatland may rotate relative to the bird's eye camera. The camera may move relative to the robot-base.
 - Correlate kinesthetic feedback *direction* and visual feedback *direction* to estimate orientation.
-- Visual orientation here is part of the transformation between motion command coordinates and visual feedback coordinates.
-- But this one could also be a field if the transformations differ at different parts of the visual scene.
-- This is related to visual localization below.
+- Visual orientation or action-vision alignment here is part of the transformation between motion command coordinates and visual feedback coordinates.
 - This is important for dealing with board rotation, or rotation of the board relative to the SCARA robot's base.
 - ... How motion direction correlates with visual change direction.
-- ... Boundary is special
+- ... Boundary is special.
+
 - "Direction": again, a concern or an aspect about things in the Oz world. Could be represented with a normalized vector, a unit vector.
 - But the point is that the agent moves in a certain direction correlated with the visual transformation of the agent's visible "body".
 - Think about coherence in terms of waving hand and seeing hand waved.
 - Why a new pair of glasses make things look weird.
 - Relative amount / ratio ...
 
-- What kind of invariance is this? Orientation regardless of location?
+- What kind of invariance is this? Orientation regardless of location? Specific invariance compensating for 
+
 - How is this useful? So as to have goal orientedness. For example, suppose a direction is specified in terms of where I am and where target is, an action can be derived accordingly. 
-- Flexibility? When getting a new pair of glasses? When getting a new pair of motors?
+- Flexibility? When getting a new pair of glasses? When getting a new pair of motors? Calibration free. Rotational.
 
 - This is a transformation between visual plane and action vector. About transformation that makes the action vector parallel to the visual plane. These may not be parallel to each other.
 - GVFs predicting in the visual plane the direction of change, given some change, given the action/kinesthetic vector and the visual input.
@@ -44,6 +48,8 @@ From such a perspective, we can also see how this may be useful? It is super use
 - Invariance ... calibration ...
 
 ## 3. Visual ego localization -- space 2: where am I?
+
+This should be secondary to the directional alignment ...
 
 - A visual field of where I am, a field with a single or possibly multiple activation peaks for where I could possibly be in the visual field.
 - This one settles the locus of action in the visual scene.
@@ -61,6 +67,8 @@ From such a perspective, we can also see how this may be useful? It is super use
 
 ## 4. Where to travel and when to arrive -- space 3: metric correspondence
 
+Should this be secondary to ego localization?
+
 - This one settles the mapping of motion command to visual scene globally.
 - This one requires integration of visual orientation and visual localization.
 - It further requires metric correspondence for the two independently controllable action/motion dimensions with visible changes of ego location.
@@ -76,7 +84,7 @@ From such a perspective, we can also see how this may be useful? It is super use
 - This one is the scaling transformation.
 - GVFs predicting where the agent will be when.
 
-## 5. How do I feel?
+## 5. What do I feel?
 
 - Another "sensory" modality: tactile feedback.
 - Tactile latency is a factor: learn to trigger a tactile change through a "press" or "touch" action.
@@ -84,6 +92,8 @@ From such a perspective, we can also see how this may be useful? It is super use
 
 - Nexting?
 - GVF to predict how I feel given my action, past feeling, motion, and visual input ...
+
+... We are working with hand-crafted cumulants, but so be it for now. For now, we are doing it ideally rather than idealistically.
 
 ## 6. Where will I feel what? -- tactile map
 
@@ -93,13 +103,13 @@ From such a perspective, we can also see how this may be useful? It is super use
 - The same for feeling ... similar to vision ...
 - GVF field ... or feeling as a GVF of color ... from color to feeling: esp. white and black.
 
-## 7. The looks of how things feel -- cross-modality visual tactile map
+## 7. The looks of how things feel -- cross-modal visual-tactile map and the rise of space
 
 - Alignment of tactile field and visual field
 - Multi-feature field
 
 - Join these two fields ... cross-modality GVF field ...
-- Two inputs, one output
+- Two inputs, one output. The rise of space.
 
 ## 8. Where are the stones? -- stoneness as a particular kind of spatially distributed affordance
 
@@ -118,3 +128,4 @@ From such a perspective, we can also see how this may be useful? It is super use
 
 ## ... and so on ...
 
+We have charted a route for building up all the way to a level of complexity where stones could be played with. The sense is that such complexity is close to be within the reach of contemporary AI techniques and computational capacity. What is needed to to walk the route and fashion the necessary new techniques along the way. However, what is *not* going to work, i.e. what is not going to allow us to succeed at learning to play, would be to trivialize any crucial part of the complexity so that our AI ideas, agents, or robots will just "work". Indeed, they may work and win Go games and drive cars, but they won't be able to play in Oz.
