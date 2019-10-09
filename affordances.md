@@ -22,30 +22,19 @@ Finally, it should be noted that one place where the predictions will necessaril
 
 ## 2. Visual action orientation -- space 1: action-vision directional alignment
 
-With the temporal regularity capturing Now that the 
+With the temporal regularity capturing the fundamental embeddedness of the agent in Oz, we can move on to consider the specifically spatial aspects of the agent-environment relationship. A first challenge we face here is establishing the *directional* coordination between visual feedback and action.
 
-Assume motion command is in robot-base coordinateas, as in a SCARA or Cartesian robot. The board may rotate. The environment Oz flatland may rotate relative to the bird's eye camera. The camera may move relative to the robot-base.
-- Correlate kinesthetic feedback *direction* and visual feedback *direction* to estimate orientation.
-- Visual orientation or action-vision alignment here is part of the transformation between motion command coordinates and visual feedback coordinates.
-- This is important for dealing with board rotation, or rotation of the board relative to the SCARA robot's base.
-- ... How motion direction correlates with visual change direction.
-- ... Boundary is special.
+Assume motion command is in robot-base coordinateas, as in a SCARA or Cartesian robot, but the camera axis may rotate relative to the robot-base. To cope with such a change, the agent will need to learn to correlate kinesthetic feedback *direction* and visual feedback *direction*.
 
-- "Direction": again, a concern or an aspect about things in the Oz world. Could be represented with a normalized vector, a unit vector.
-- But the point is that the agent moves in a certain direction correlated with the visual transformation of the agent's visible "body".
-- Think about coherence in terms of waving hand and seeing hand waved.
-- Why a new pair of glasses make things look weird.
-- Relative amount / ratio ...
+To establish the coordination, we could use a GVF that predicts the visual "direction" from the kinesthetic "direction". Such "directions" could be represented with normalized unit vectors. We put "direction" in scare quotes because, as will be illustrated below, at this level of coordination the agent does not yet have an adequate sense of space for these unit vectors to be its mental representation of spatial directions. For now what matters is that the preditive relation is systematic and can be captured by a GVF.
 
-- What kind of invariance is this? Orientation regardless of location? Specific invariance compensating for 
+From a first person perspective, the situation we are dealing with is like our waving our own hand in a particular direction leads us to expect our seeing that hand to visually move in a specific direction. That we have such expectation is why a new pair of glasses make things look weird. That we are able to quickly adapt to a new pair of glasses mean we have the right kind of plasticity for coping with the underlying shifts that disrupt the normal coordination. This kind of plasticity also allow humans to cope with the more [dramatic case of inverting lens](https://en.wikipedia.org/wiki/George_M._Stratton#Wundt's_lab_and_the_inverted-glasses_experiments).
 
-- How is this useful? So as to have goal orientedness. For example, suppose a direction is specified in terms of where I am and where target is, an action can be derived accordingly. 
-- Flexibility? When getting a new pair of glasses? When getting a new pair of motors? Calibration free. Rotational.
+The kind of invariance that is needed through the coordinated prediction is invariance over shifts between eye/camera (or rather the optical path, to be precise) and body base. The plasticity or flexibility that we can build into the GVF predictor will allow us to handle rotational changes without explicit calibration.
 
-- This is a transformation between visual plane and action vector. About transformation that makes the action vector parallel to the visual plane. These may not be parallel to each other.
-- GVFs predicting in the visual plane the direction of change, given some change, given the action/kinesthetic vector and the visual input.
+As with other aspects of coordination, the bounds of the Oz world are always special. But that prediction does not work normally, at least along some dimension is actually the signature event that tells the agent that it's at the boundary. Going forward, we'll neglect to comment on the specialness of the bounds.
 
-- Invariance ... calibration ...
+Another point worth noting is that we are assuming that we use some hand-crafted cumulants (the unit vectors) to build the GVF predictor. This is an example of the kind of "generic or commonsense knowledge" that we are for now building into the agent, because, for now, we are doing our exploration [ideally](README.md#ideally) rather than [idealistically](README.md#idealistically).
 
 ## 3. Visual ego localization -- space 2: where am I?
 
@@ -93,8 +82,6 @@ Should this be secondary to ego localization?
 - Nexting?
 - GVF to predict how I feel given my action, past feeling, motion, and visual input ...
 
-... We are working with hand-crafted cumulants, but so be it for now. For now, we are doing it ideally rather than idealistically.
-
 ## 6. Where will I feel what? -- tactile map
 
 - Field of possible tactile feedback.
@@ -110,6 +97,8 @@ Should this be secondary to ego localization?
 
 - Join these two fields ... cross-modality GVF field ...
 - Two inputs, one output. The rise of space.
+
+- This is important for dealing with board rotation, or rotation of the board relative to the SCARA robot's base.
 
 ## 8. Where are the stones? -- stoneness as a particular kind of spatially distributed affordance
 
