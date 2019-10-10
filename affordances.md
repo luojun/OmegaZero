@@ -50,51 +50,44 @@ It may be suggested that the ego localization should be considered with respect 
 
 ## 4. Where to travel and when to arrive -- space 3: metric correspondence
 
-Should this be secondary to ego localization + visual direction. Allows visual sense of where to travel ...
+Should this be secondary to ego localization + visual direction. Allows visual sense of where to and how far to travel ...
 
-- This one settles the mapping of motion command to visual scene globally.
-- This one requires integration of visual orientation and visual localization.
-- It further requires metric correspondence for the two independently controllable action/motion dimensions with visible changes of ego location.
-- If the agent is to wear a new pair of glasses, the adaptation here is relevant.
-- Yet another field, centered around where the agent is, and spreads out according to how much time it takes to arrive where.
+This one settles the mapping of motion command to visual scene globally. This one requires integration of visual orientation and visual localization. It further requires metric correspondence for the two independently controllable action/motion dimensions with visible changes of ego location. Yet another field, centered around where the agent is, and spreads out according to how much time it takes to arrive where.
 
-- Device a set of representations and learning algorithms.
+The invariance is with respect to differential scaling. This one is the scaling transformation, understood as how far the ego camera is from the Oz flatland. The distance metric correspondence between locomotion and visual change will allow estimation of how far to travel regardless of the scaling. Considering time, likely based on the rhythmic regularity or at least number of incremental ego motion, will allow the agent to have a sense of how much time it is going to take to arrive at a specific point in the visual field.
 
-- Calibration free, data labeling free.
-- This will be important for dealing with differential scaling.
-- This one is the scaling transformation.
+With these, the boundary, coupled with the special cursor behavior there, also becomes boundary, and arrive at it in a particular direction requires specific amount of travel or time. The boundary may then serve as landmarks.
 
-- GVFs predicting where the agent will be when.
-- ... Boundary is special. Thus, travel to boundary and arrive at it ...
+Now, presumably also visual edges such as where the board ends and the background starts. Such as occluding lines on the board. This is something that Gibson has given elaborate analysis, it is something that the agent could learn to be sensitive to. But for now, we are not explicitly treating these aspects of vision yet. We will comment on this when we deal with "stoneness" about spatial distribution of visual or visible features.
 
-- Presumably also visual edges such as where the board ends and the background starts. Such as occluding lines on the board. But for now, we are not explicitly treat these aspects of vision yet. We will comment on this when we deal with "stoneness".
+## 5. What do I feel now? -- tactile feedback
 
-## 5. What do I feel? -- a gentle touch
+So far, other than the tactile latency discussed earlier, we have only considered visual feedback. Obviously, we also need to consider the other very important "sensory" modality: tactile feedback. Tactile latency is a factor: learn to trigger a tactile change through a "press" or "touch" action. Here we also need to be concerned about the content of the tactile feedback.
 
-- Another "sensory" modality: tactile feedback.
-- Tactile latency is a factor: learn to trigger a tactile change through a "press" or "touch" action.
-- No tactile orientation.
+Note that since tactile feedback under Oz, unlike in the real human case, takes a single point form and thus it makes no sense to talk about tactile orientation. Thus, in the simplest case, a gentle touch will just give us a point feedback. In this purest form, this point is not located with respect to anything, rather than the immediate ego. As the ego gets located in the visual field, and more over the visual quality gets correlated with the tacticle quality, which we will discuss later, the tactile feedback could become spatially located.
 
-- Nexting?
-- GVF to predict how I feel given my action, past feeling, motion, and visual input ...
+For now, it is the temporal version that matters more. In the simplest and most basic form, the prediction here would just be if I press, I will feel something and if I continue to press, I will continue to feel something. This is the form we discussed at the beginning when we talk about temporal regularity between touch action and tactile feedback. In the more elaborate version, we can and should consider the prediction as a function of not only my immediate press action, but also my past feeling, my current motion and even the visual input. These considerations get us to the next two topics.
 
 ## 6. Where will I feel what? -- tactile map
 
 - Field of possible tactile feedback.
-- Could be based solely on map built from dead reckoning.
+- Could be based solely on map built from dead reckoning. Built on top of memory. 
 
 - The same for feeling ... similar to vision ...
-- GVF field ... or feeling as a GVF of color ... from color to feeling: esp. white and black.
+- GVF field. We could use convolutional filters spanning both spatial and temporal dimension or use CNN+RNN combination for GVF field implementation.
+
+feeling as a GVF of visual input ... from color and visual texture to feeling: esp. white and black. This gets us to the next topic.
 
 ## 7. The looks of how things feel -- cross-modal visual-tactile map and the rise of space
 
 - Alignment of tactile field and visual field
 - Multi-feature field
+- We could use visual field to anchor and correct tactile field and error in dead reckoning.
 
 - Join these two fields ... cross-modality GVF field ...
-- Two inputs, one output. The rise of space.
+- Two inputs, one output, how things feel next or if I were there now. The rise of space.
 
-- This is important for dealing with board rotation, or rotation of the board relative to the SCARA robot's base.
+- This is important for dealing with board movement and board rotation, or rotation of the board relative to the SCARA robot's base, because the board both looks and feels different from the background.
 
 ## 8. Where are the stones? -- stoneness as a particular kind of spatially distributed affordance
 
@@ -106,10 +99,14 @@ Should this be secondary to ego localization + visual direction. Allows visual s
 
 ## 9. Moving stones -- let the play begin
 
-- Sequential decision making now ...
+- Learn about occlusion of the board and the lines by the stones.
+- The beginning of play with stones qua stones, qua what a stone can do and what the agent can do with the stone in the environment
+
+- Learn about stone affordances.
 - Learn to differentiate individual stones ...
 
 - Now we can specify the task of moving stones arounds ... in a goal oriented way ... with enough resilience and flexibility.
+- Sequential decision making now ...
 
 ## ... and so on ...
 
