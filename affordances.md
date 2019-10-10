@@ -28,52 +28,48 @@ Assume motion command is in robot-base coordinateas, as in a SCARA or Cartesian 
 
 To establish the coordination, we could use a GVF that predicts the visual "direction" from the kinesthetic "direction". Such "directions" could be represented with normalized unit vectors. We put "direction" in scare quotes because, as will be illustrated below, at this level of coordination the agent does not yet have an adequate sense of space for these unit vectors to be its mental representation of spatial directions. For now what matters is that the preditive relation is systematic and can be captured by a GVF.
 
+While the kinesthetic unit vector is easy to obtain from the kinesthetic feedback, which could simply take the form of a two-dimensional vector. The visual unit vector will require a bit of summarizing over the gross visual motion -- practically motion due to the cursor under "my" control -- without losing the overall motion's direction. The "summarizing" here could be easily engineered by using for example an optical flow estimator. The predicted timing of gross visual motion from the first aspect treated above could be used to filter in the precise temporal segment of the optic flow that matters. But the GVF could also be simply implemented by a neural network that predict how "my cursor" will move in the visual field given the kinesthetic feedback and how it has been moving in the visual field. If we adopt a "field" representation rather than a "vector" representation, the GVF could be implicitly realized as the directionally-specific spread of the cursor-based activation the field. We'll return to the relevance of "field" representation of GVFs again later.
+
 From a first person perspective, the situation we are dealing with is like our waving our own hand in a particular direction leads us to expect our seeing that hand to visually move in a specific direction. That we have such expectation is why a new pair of glasses make things look weird. That we are able to quickly adapt to a new pair of glasses mean we have the right kind of plasticity for coping with the underlying shifts that disrupt the normal coordination. This kind of plasticity also allow humans to cope with the more [dramatic case of inverting lens](https://en.wikipedia.org/wiki/George_M._Stratton#Wundt's_lab_and_the_inverted-glasses_experiments).
 
 The kind of invariance that is needed through the coordinated prediction is invariance over shifts between eye/camera (or rather the optical path, to be precise) and body base. The plasticity or flexibility that we can build into the GVF predictor will allow us to handle rotational changes without explicit calibration.
 
 As with other aspects of coordination, the bounds of the Oz world are always special. But that prediction does not work normally, at least along some dimension is actually the signature event that tells the agent that it's at the boundary. Going forward, we'll neglect to comment on the specialness of the bounds.
 
-Another point worth noting is that we are assuming that we use some hand-crafted cumulants (the unit vectors) to build the GVF predictor. This is an example of the kind of "generic or commonsense knowledge" that we are for now building into the agent, because, for now, we are doing our exploration [ideally](README.md#ideally) rather than [idealistically](README.md#idealistically).
+Another point worth noting is that we are assuming that we use some hand-crafted cumulants (the unit vectors) to build the GVF predictor. This is an example of the kind of "generic or commonsense knowledge" that we are for now building into the agent, because, for now, we are doing our exploration [ideally](README.md#ideally) rather than [idealistically](README.md#idealistically). The fundamental limitation with the GVFs is that they assume that the relevant dimensions (cumulants) are given. But full-blown play does not assume that. For now, we will be playing ideally rather than idealistically.
 
-## 3. Visual ego localization -- space 2: where am I?
+## 3. Visual ego localization -- space 2: where am I, visually speaking?
 
-This should be secondary to the directional alignment ...
+Here, we are concerned about predicting where "my" activity will next be in the visual field given "my" current activity. However, the sense of "where" here requires a bit unpacking. While it may be obvious that the "where" could be represented by a pair of coordinate values, that will require choosing an origin in addition to the dimensions of the direction, essentially forcing an explicit coordinate system as a precondition for representation. While we are used to utilizing explicit coordinate systems in conventional robotics, the reliance on them implies precise measurement and calibration, which is typically handled through engineering efforts beyond the agent's own control. That in turn makes the solution brittle and hard to generalize. For this reason, while conceptually, we may still think of the "where am I" ego-localization in terms of GVF style prediction, we probably should choose a field sort of representation, a field with a single or possibly multiple activation peaks for where I could possibly be with respect to the visual field. This choice dodges the question of the specific choice of coordinates systems. Insofar as the field coincides with the visual field, it is implicitly relying on the camera-centered coordinates.
 
-- A visual field of where I am, a field with a single or possibly multiple activation peaks for where I could possibly be in the visual field.
-- This one settles the locus of action in the visual scene.
-- ... How motion correlates with localized visual changes
-- ... Boundary is special
+Now, the point of "where am I" in the visual field is so that the agent could know and expect the locus of its action in the visual scene, in other words, where in the field, "my" motion correlates with localized visual changes. The sort of invariance achieved here is that regardless of where I am actually, I am always able to localize myself through where my action is in the ego-centric or "camera-centered" coordinates. This gives the agent a certain degree of spatial differentiation between here and eleswhere. The basis of this here vs. elsewhere differentiation is the predictions about where ego-centrically "my cursor" will be or could be next. With this sort of localization, "my" actions will now have an ego anchor. They will be now from somewhere. (NB: the situation with Oz is somewhat different from the case of a human person because the cameras -- our eyes -- are where the ego-body is, thus the visual world for us is centered around our heads, which is where the "ego" arguably is. But where locus of the Oz agent is arguably where its cursor is, with the all-seeing camera being in a bird's eye position outside of the Oz flatland.)
 
-- What kind of invariance? Regardless of where I am actually. Always able to localize.
-- Needs spatial differentiation ... Here ... and there ... Local motion.
-- GVFs predicting where the activity will be next given current activity.
-- The fundamental limitation with the GVFs is that they assume that the relevant dimensions are given.
-- Play does not assume that.
+Note that this sort of visual ego localization could be supported by the directional alignment discussed above. The directional alignment will help us to tell which moving cursor is me, based on the predicted and the actual direction of the movements of the cursors. Thus, localization could by attaching direction to a disturbed area as well as with the help of timing of the disturbance. In the other direction, the visual ego localization could also support directional alignment through localizing the visual direction change to where I am. Insofar as this sort of mutual support is future-oriented, insofar as it is about predictions, we do not have a vicious dependency here. Instead, it is more like ongoing fusion of multiple constraints or sources of information.
 
-- GVFs predicting center location
-- GVFs predicting feeling and predicting color ...
+It may be suggested that the ego localization should be considered with respect to the bounds of the Oz flatland. But relationship to the boundary is indeed both different from and unnecessary for the visual ego localization, just like in a boundless field in the wild, we still have no problem localizing ourselves at where we are at the time. The here vs. elsewhere differentiation is spatial differentiation without absolute coordinates or boundary references. The bounds will be relevant when we consider distance next.
 
 ## 4. Where to travel and when to arrive -- space 3: metric correspondence
 
-Should this be secondary to ego localization?
+Should this be secondary to ego localization + visual direction. Allows visual sense of where to travel ...
 
 - This one settles the mapping of motion command to visual scene globally.
 - This one requires integration of visual orientation and visual localization.
 - It further requires metric correspondence for the two independently controllable action/motion dimensions with visible changes of ego location.
-- This will be important for dealing with differential scaling.
 - If the agent is to wear a new pair of glasses, the adaptation here is relevant.
 - Yet another field, centered around where the agent is, and spreads out according to how much time it takes to arrive where.
-- ... GVFs in space ...
-- ... Boundary is special
 
 - Device a set of representations and learning algorithms.
+
 - Calibration free, data labeling free.
-
+- This will be important for dealing with differential scaling.
 - This one is the scaling transformation.
-- GVFs predicting where the agent will be when.
 
-## 5. What do I feel?
+- GVFs predicting where the agent will be when.
+- ... Boundary is special. Thus, travel to boundary and arrive at it ...
+
+- Presumably also visual edges such as where the board ends and the background starts. Such as occluding lines on the board. But for now, we are not explicitly treat these aspects of vision yet. We will comment on this when we deal with "stoneness".
+
+## 5. What do I feel? -- a gentle touch
 
 - Another "sensory" modality: tactile feedback.
 - Tactile latency is a factor: learn to trigger a tactile change through a "press" or "touch" action.
