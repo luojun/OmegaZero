@@ -74,16 +74,16 @@ If we correlate how I feel and how I move, we could start building out a tactile
 
 Representation-wise, we could again use a GVF field, possibly realized with convolutional filters spanning both spatial and temporal dimension or a CNN+RNN composition. The neural network will combinethe tactile feature map with current tactile feedback, current location in the tactile map, and current motion to predict tactile feedback at the next moment. This capacity could serve as the basis for the agent's sense that if I am to move further in that way, I will stop feeling the board and start feeling the background. Or if I am to go back to where I just came from, I will start feeling the stone again.
 
+Equipped with accurate kinesthetic feedback and strong memory capacity, a "blind" Oz agent could still go a long way in the Oz flatland and possibly learn to play all the games a normal sighted Oz agent could learn to play, so long as the environment does not change overly fast for how quickly the tactile map could be updated.
+
 ## 7. The looks of how things feel -- cross-modal visual-tactile map
 
-feeling as a GVF of visual input ... from color and visual texture to feeling: esp. white and black. This gets us to the next topic.
+In contrast to a "blind" Oz agent, a normal Oz agent is blessed with the opportunity of learning to correlate visual input with tactile intput and thus form visual-tactile map. Equipped with tsuch a cross-modal map, the agent will be able to tell, from just the looks of things, how things will feel. Moreover, because 
 
-- Alignment of tactile field and visual field
-- Multi-feature field
-- We could use visual field to anchor and correct tactile field and error in dead reckoning.
+- Alignment of tactile field and visual field or multi-feature field; We could use visual field to anchor and correct tactile field and error in dead reckoning.
 
-- Join these two fields ... cross-modality GVF field ...
-- Two inputs, one output, how things feel next or if I were there now. The rise of space.
+- Join these two fields ... cross-modality GVF field ... joining these two fields require movement.
+- Two inputs, one output, how things feel next or if I were there now.
 
 ## 8. Where are the stones? -- stoneness as a particular kind of spatially distributed affordance
 
