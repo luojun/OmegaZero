@@ -76,14 +76,11 @@ Representation-wise, we could again use a GVF field, possibly realized with conv
 
 Equipped with accurate kinesthetic feedback and strong memory capacity, a "blind" Oz agent could still go a long way in the Oz flatland and possibly learn to play all the games a normal sighted Oz agent could learn to play, so long as the environment does not change overly fast for how quickly the tactile map could be updated.
 
-## 7. The looks of how things feel -- cross-modal visual-tactile map
+## 7. The looks of how things feel -- cross-modal visual-tactile field
 
-In contrast to a "blind" Oz agent, a normal Oz agent is blessed with the opportunity of learning to correlate visual input with tactile intput and thus form visual-tactile map. Equipped with tsuch a cross-modal map, the agent will be able to tell, from just the looks of things, how things will feel. Moreover, because 
+In contrast to a "blind" Oz agent, a normal Oz agent is blessed with the opportunity of learning to correlate visual input with tactile intput and thus enjoys having a visual-tactile field. From such a cross-modal field, the agent will be able to tell, from just the looks of things, where how things will feel. Moreover, because the agent is already in a place to tell visually how far it is going to take for it to get somewhere from where it is, it could also tell how long it's going to take to get somewhere to feel something.
 
-- Alignment of tactile field and visual field or multi-feature field; We could use visual field to anchor and correct tactile field and error in dead reckoning.
-
-- Join these two fields ... cross-modality GVF field ... joining these two fields require movement.
-- Two inputs, one output, how things feel next or if I were there now.
+The main piece of implementation needed for such a visual-tactile field is the cross-modal spatial alignment between tactile feedback and visual feedback. This could be done by either integrating a visual field and a separate tactile field. Alternatively, we could exploit the visual field along with the directional and metric correspondences that are already supported to place the felt tactile qualities within the visual field. Regardless of such implementation detail, the requirements here are for a cross-modal GVF field wherein the predictions about how things feel could be at least partly based on how things look and vice versa.
 
 ## 8. Where are the stones? -- stoneness as a particular kind of spatially distributed affordance
 
@@ -112,7 +109,7 @@ We have charted a route for building up all the way to a level of complexity whe
 
 - Spatial relations become the invariance group
 
-- Learn to differentiate individual stones ...
+- Learn to differentiate individual stones based on space ...
 
 - Now we can specify the task of moving stones arounds ... in a goal oriented way ... with enough resilience and flexibility.
 - Sequential decision making now ...
