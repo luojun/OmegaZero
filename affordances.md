@@ -66,19 +66,17 @@ So far, other than the tactile latency discussed earlier, we have only treated v
 
 Note first that since tactile feedback in Oz, unlike in the real human case, takes a point form, it makes no sense to talk about tactile orientation. Thus, in the simplest case, a gentle touch will just give us a point feedback. But the point feedback will come with differentiating quality such that pressing on the board feels different from pressing on the background, pressing on a stone feels different from the board, and pressing on a white stone feels the same as pressing on a black stone. (Note that Oz in its current version of implementation does not support one agent getting tactile feedback about another agent. The agents and their cursor embodiments do not afford being touched.) For now, it is the temporal course of tactile feedback that matters. In the simplest and most basic form, the prediction here would just be if I press, I will feel a certain quality and if I continue to press, I will most likely continue to feel that same quality. If I am to let go, I will then feel nothing. If I am to press again, I will feel that same quality again.
 
-In this purest form, the point feedback is not located for the agent itself with respect to anything in the Oz flatland other than the immediate ego or more specifically the point that is the center of the cursor. As the ego gets relocated in the Oz environment as well as the visual field, the content or quality of the tactile feedback will change. In the more elaborate version of tactile feedback prediction, the agent will not only consider its immediate press action and past feeling, but also visual input and its ego motion. These considerations get us to the next two topics.
+In this purest form, the point feedback is not located for the agent itself with respect to anything in the Oz flatland other than the immediate ego or more specifically the point that is the center of the cursor. As the ego gets relocated in the Oz environment as well as the visual field, the content or quality of the tactile feedback will change. In the more elaborate version of tactile feedback prediction, the agent will not only consider its immediate press action and past feeling, but also its ego motion and visual input. These considerations get us to the next two topics.
 
 ## 6. Where will I feel what? -- tactile map
 
-- Field of possible tactile feedback.
-- Could be based solely on map built from dead reckoning. Built on top of memory. 
+If we correlate how I feel and how I move, we could start building out a tactile map of the environment. Given adequate kinesthetic feedback that supports good enough dead reckoning, the map could be based solely on the temporal correlation of how I felt at where I was. What is required the the ability of the agent to remember how it has moved in the short term and also retain in a certain form of longer term memory the actual content of the tactile feature map.
 
-- The same for feeling ... similar to vision ...
-- GVF field. We could use convolutional filters spanning both spatial and temporal dimension or use CNN+RNN combination for GVF field implementation.
+Representation-wise, we could again use a GVF field, possibly realized with convolutional filters spanning both spatial and temporal dimension or a CNN+RNN composition. The neural network will combinethe tactile feature map with current tactile feedback, current location in the tactile map, and current motion to predict tactile feedback at the next moment. This capacity could serve as the basis for the agent's sense that if I am to move further in that way, I will stop feeling the board and start feeling the background. Or if I am to go back to where I just came from, I will start feeling the stone again.
+
+## 7. The looks of how things feel -- cross-modal visual-tactile map
 
 feeling as a GVF of visual input ... from color and visual texture to feeling: esp. white and black. This gets us to the next topic.
-
-## 7. The looks of how things feel -- cross-modal visual-tactile map and the rise of space
 
 - Alignment of tactile field and visual field
 - Multi-feature field
@@ -86,8 +84,6 @@ feeling as a GVF of visual input ... from color and visual texture to feeling: e
 
 - Join these two fields ... cross-modality GVF field ...
 - Two inputs, one output, how things feel next or if I were there now. The rise of space.
-
-- This is important for dealing with board movement and board rotation, or rotation of the board relative to the SCARA robot's base, because the board both looks and feels different from the background.
 
 ## 8. Where are the stones? -- stoneness as a particular kind of spatially distributed affordance
 
@@ -97,17 +93,29 @@ feeling as a GVF of visual input ... from color and visual texture to feeling: e
 
 - GVFs of stone color???
 
+- Affordance with distinctive visual-tactile signature or quality.
+
 ## 9. Moving stones -- let the play begin
 
 - Learn about occlusion of the board and the lines by the stones.
 - The beginning of play with stones qua stones, qua what a stone can do and what the agent can do with the stone in the environment
 
 - Learn about stone affordances.
+
+- This is important for dealing with board movement and board rotation, or rotation of the board relative to the SCARA robot's base, because the board both looks and feels different from the background.
+
+## ... and so on ...
+
+We have charted a route for building up all the way to a level of complexity where stones could be played with. The sense is that such complexity is close to be within the reach of contemporary AI techniques and computational capacity. What is needed to to walk the route and fashion the necessary new techniques along the way. However, what is *not* going to work, i.e. what is not going to allow us to succeed at learning to play, would be to trivialize any crucial part of the complexity so that our AI ideas, agents, or robots will just "work". Indeed, they may work and win Go games and drive cars, but they won't be able to [play in Oz](play.md).
+
+## 10. The rise of space
+
+- Spatial relations become the invariance group
+
 - Learn to differentiate individual stones ...
 
 - Now we can specify the task of moving stones arounds ... in a goal oriented way ... with enough resilience and flexibility.
 - Sequential decision making now ...
 
-## ... and so on ...
+- [concepts](concepts.md)
 
-We have charted a route for building up all the way to a level of complexity where stones could be played with. The sense is that such complexity is close to be within the reach of contemporary AI techniques and computational capacity. What is needed to to walk the route and fashion the necessary new techniques along the way. However, what is *not* going to work, i.e. what is not going to allow us to succeed at learning to play, would be to trivialize any crucial part of the complexity so that our AI ideas, agents, or robots will just "work". Indeed, they may work and win Go games and drive cars, but they won't be able to [play in Oz](play.md).
