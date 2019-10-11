@@ -2,7 +2,7 @@
 
 If we go slow enough, Oz is more than adequate for exploring the conceptual structure underlying the "commonsense knowledge" of the domain of Go-like board games, for understanding the necessary skills the coordination of which give us the cognitive architecture needed for the capacity for "learning from demonstration".
 
-The following musings are just to get the exploration going at the lowest relevant level. It suggests that issues of latency, directional alignment, ego localization, metric correspondence, cross-modal correspondence etc are all implicated, if we are to arrive at sensorimotor abilities of generality. What is the learning architecture -- components, representations, and algorithms -- needed for a successful coordination of all these aspects of general sensorimotor abilities through learning? That is the question we are trying to tackle here. That question, we believe, is also a fundamental part of the broader question about how "commonsense knowledge" may be structured and learned.
+The following musings are just to get the exploration going at the lowest relevant level. If we are to arrive at sensorimotor abilities of generality, then issues of latency, directional alignment, ego localization, metric correspondence, cross-modal correspondence etc dealt with below are all implicated. What is the learning architecture -- components, representations, and algorithms -- needed for a successful coordination of all these aspects of general sensorimotor abilities through learning? That is the question we are trying to tackle here. That question, we believe, is also a fundamental part of the broader question about how "commonsense knowledge" may be structured and learned.
 
 The initial articulation below is largely from the perspective of low-level affordances, from the perspective of building from sensorimotor coordination towards the ability to learn more affordances through play. J.J.Gibson's theory of affordance, Jean Piaget's account of sensorimotor development, the idea of General Value Functions (GVFs) from reinforcement learning research, and general robotics and systems considerations are the main perspectives informing our musings here.
 
@@ -84,35 +84,25 @@ The main piece of implementation needed for such a visual-tactile field is the c
 
 ## 8. Where are the stones? -- stoneness as a particular kind of spatially distributed affordance
 
-- Cross-modality feature placing of stoneness.
-- So far no goal-oriented actions, all through correlations ...
-- Learn all of the above through unsupervised predictive learning ...
+From the perspective of a game as a game, the stones are defined in their functional roles in the game. Their essence in the game lies in their being the pieces we use in particular ways according to the rules of the game. However, before we get to that level of abstraction, let's stick to the physical aspects of the stones in Oz. After all, our goal is to learn to play games using these "physical" stones in our virtual Oz flatland. From that perspective, stones are the physical black or white round pieces that the agent can play with. That they can be physically played with in particular ways is what makes them stones and give them their "stoneness".
 
-- GVFs of stone color???
+A first thing to note about the stones in Oz is that color alone does not differentiate stoneness from the rest of the environment. For example, the color of the lines on the board can be of a similarly black color as the black stones. Thus, the agent cannot rely on color alone to pick out stones from the environment. What the agent can do is discover how disc-shaped black or white patches could be picked up, dropped down, and even carried along. The delineation of a stone from the rest of the environment could happen in three mutually supportive ways. First, the tactile quality changes at the boundary. Second, the shifting visual occlusion by the cursor itself, which is for example blue, moving over the stone, which is black or white. Third, that the whole patch could be moved if a suitable sequence of actions happen to be issued. These three aspects can be adequately coordinated to give rise to a sense of the stoneness.
 
-- Affordance with distinctive visual-tactile signature or quality.
+Underwriting such a sense of stoneness could be yet another kind of GVF that combines color, tactile, location, movement, and action inputs to predict future color, tactile, location and motion that are particular to stones. Such a GVF will be able to make predictions as to how a piece of stone will move or feel, without representing its individuality. The prediction here is still at the level of generic affordances of the stone. As stones becomes something of general interest to the agent, possibly because it can be much more easily moved around than other things in the Oz flatland, the agent may learn a GVF field that tracks and predicts the spatial distribution of stoneness as a form of affordance. Places where there are currently stones versus places where there are not could become important in ways like places where there is food or water versus where there is none.
 
-## 9. Moving stones -- let the play begin
+Intuitively, when given the right learning architecture, the agent should be able to learn all of the above through unsupervised or self-supervised predictive learning. But the actual learning process will likely require a lot of playing with stones in the environment.
 
-- Learn about occlusion of the board and the lines by the stones.
-- The beginning of play with stones qua stones, qua what a stone can do and what the agent can do with the stone in the environment
+## 9. Moving stones -- from play to purpose
 
-- Learn about stone affordances.
+We are now at a point where the agent could begin to play with the stones qua stones, qua what a stone can do and what the agent can do with it in the environment in a mostly physical sense. We said that the to arrive at this level of complexity probably requires a lot of play. Such play could lead to the discovery of much regularity and lead to the establishment of much ability. Such play could also be highly willful or highly desirable insofar as the agent is persistent in its repetition. However, such play could be viewed as largely purposeless until now. The playing with the stones for example does not yet involve organizing actions towards a purpose, such as moving a stone to a particular point where there is currently no stone. The play that is involved so far could be said to have the character of letting the actual result being the post hoc purpose of the action. This remains so until the agent somehow starts to want to *repeat an action-result pair* that first came about through mere play. The result may then become purpose prospectively rather than retrospectively.
 
-- This is important for dealing with board movement and board rotation, or rotation of the board relative to the SCARA robot's base, because the board both looks and feels different from the background.
+It should be noted that while purposefully moving stones around is crucial for where we are going -- getting to learn to play the games, the earliest form of purposeful action in the Oz environment could be much simpler. It could take the form of moving the cursor around purposefully, through first wanting to repeat an earlier resultant state, such as a resultant state that is as simple as feeling the stone by pressing down.
+
+At this point, two things should be clarified. First, the willful or affective aspect of the overall architecture certainly matters. The intertwining of cognitive and affective aspects is in a way a given for our line of exploration. However, we may choose to limit the scope of actual investigation by simply postulating some affective mechanism that is needed to work in coordination with the more cognitive aspects of the mechanism. That is, we may choose to not to tell an epigenetic story about the affective mechanisms at all.
+
+Second, that we choose the ability to purposefully move stones as the last stage of the initial phase (i.e. the epigenesis of affordance through sensorimotor coordination) of our exploration is not accidental. After all, our over all goal is learning to play the game using the stones. Toward that goal, the shift from purposeless play with the stones into purposeful play with the stones is highly significant, because it gives a foothold for further purpose-oriented behaviors that could be established through higher level purposeless play, i.e. play in which the lower level moves are purposeful but the higher level organization could remain purposeless until a certain willed or desired repetition of results takes hold of the agent.
 
 ## ... and so on ...
 
-We have charted a route for building up all the way to a level of complexity where stones could be played with. The sense is that such complexity is close to be within the reach of contemporary AI techniques and computational capacity. What is needed to to walk the route and fashion the necessary new techniques along the way. However, what is *not* going to work, i.e. what is not going to allow us to succeed at learning to play, would be to trivialize any crucial part of the complexity so that our AI ideas, agents, or robots will just "work". Indeed, they may work and win Go games and drive cars, but they won't be able to [play in Oz](play.md).
-
-## 10. The rise of space
-
-- Spatial relations become the invariance group
-
-- Learn to differentiate individual stones based on space ...
-
-- Now we can specify the task of moving stones arounds ... in a goal oriented way ... with enough resilience and flexibility.
-- Sequential decision making now ...
-
-- [concepts](concepts.md)
+We have roughly charted the lay of the land for building up from primitive sensorimotor abilities all the way to a level of complexity where stones could be played with by the agent on the way towards purposeful play. The sense is that such complexity is close to be within the reach of contemporary AI techniques and computational capacity. What is needed is for us researchers to walk the land, to blaze new paths, to fashion new techniques, so that we may be able to both build *and* understand the ability to play and to learn further through play. What is *not* going to work, i.e. what is not going to allow us to succeed at arriving at learning by play, would be to trivialize any crucial part of the complexity charted so that our AI system or robots will just "work" in an engineering sense. Indeed, they may work and win Go games and drive cars, but they won't be able to [play in Oz](play.md).
 

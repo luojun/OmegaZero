@@ -20,4 +20,17 @@
 - Play: hide and seek -- hide a white stone behind a pile of black stones
 - Play: putting all white stones on one side of the board and all black stoens on the other side
 
+=> 
+
+## 10. The rise of space
+
+- Spatial relations become the invariance group
+
+- Learn to differentiate individual stones based on space ...
+
+- Now we can specify the task of moving stones arounds ... in a goal oriented way ... with enough resilience and flexibility.
+- Sequential decision making now ...
+
+- [concepts](concepts.md)
+
 
