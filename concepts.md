@@ -2,6 +2,8 @@
 
 A score of concepts needed. Probably still only just scratching the surface. Definitely need more unpacking. Will also need to relate to play, to symbolic representation and communication, and to teaching and learning from demonstration.
 
+Concepts, learn formal abstractions, learn about individual objects, interaction rules, ... not assuming that this is possible without symbolic communication, without language, and without teaching and learning from experienced agents.
+
 * The concept of the board
 * The concept of the background (off board)
 * The concept of a stone
