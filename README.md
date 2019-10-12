@@ -49,14 +49,11 @@ Three things can be noted about this setup:
 2. The Oz setup allows multiple AI agents and multiple humans to simultaneously interact with the environment, giving us ample opportunity to do teaching or demonstration by either AI or human teachers.
 3. The physical setup of Oz, including the vision or image rendering part, is not unlike the relationship between a [SCARA robot](https://en.wikipedia.org/wiki/SCARA) or [Cartesian robot](https://en.wikipedia.org/wiki/Cartesian_coordinate_robot) and its task environment. Thus, our learning solutions in Oz, once they are adequately figured out, could almost directly enable the many robots out there to adapt to new tasks very quickly.
 
-## Illustration: exploring affordance learning
+## Illustration: from affordances to conceptual structures through play
 
-For one example of the kinds of exploration Oz enables, please see this other separate set of notes on [learning basic affordances](affordances.md) as a foundation for learning further commonsense knowledge. Note that the affordance perspective is only one of the potentially many theoretical perspectives that we can take on the [Oz envirnoment](#environment) and the [Oz challenge](#challenge). If one so choose to, one can deal with the Oz environment using traditional symbolic AI or using the conventional framework of industrial robotics.
+For one example of the sorts of exploration Oz enables, please see a separate set of notes on [(a) learning basic affordances](affordances.md) as a foundation for [(b) play](play.md) and for further learning [(c) commonsense conceptual structures](concepts).
 
-## Further Illustrations: play and concepts
-
-To write ... play ... and learn more affordances and learn goal structures ...
-Concepts, learn formal abstractions, learn about individual objects, interaction rules, ... not assuming that this is possible without symbolic communication, without language, and without teaching and learning from experienced agents.
+Note that this specific perspective (that of learning affordances to support play and learning further affordances and eventually conceptual structures through play) is only one of the many possible theoretical perspectives that we can take on the [Oz envirnoment](#environment) and the [Oz challenge](#challenge). If one so chooses, one can deal with the Oz environment using traditional symbolic AI or using the conventional framework of industrial robotics. So long as the orientation of the Oz challenge is honored, that would be fine and that would be a good way to compare the pros and cons of the various approaches.
 
 # Delta One: learning to play in the real world
 
