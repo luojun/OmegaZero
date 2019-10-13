@@ -1,8 +1,8 @@
 # Omega Zero: learning to play in a virtual environment
 
-Omega Zero, Oz for short, is an exploration of the learning of commonsense knowledge in a virtual 2D environment similar to the physical setup for the game of Go. The question we ask here is how to learn enough commonsense knowledge in this physical setup so as to enable learning from demonstration of new games that can be played in this physical setup.
+Omega Zero, Oz for short, is an exploration of the learning of commonsense knowledge in a virtual 2D environment similar to the physical setup for the game of Go. The question we ask is how an agent may learn enough commonsense knowledge in the Oz environment so that it can learn to play new games in Oz from simple demonstrations of these new games.
 
-We call our exploration "Omega Zero" because the goal here is not to win a game as it was for AlphaGo, thus "Omega", but rather learning to play the game without being given specific representations about how the game is defined, thus "Zero". Our position is that learning to play a game in a physical environment *de novo* is qualitatively different from and significantly harder than learning to win a game after the agent already knows how to play the game.
+We call our exploration "Omega Zero" because the goal here is not to win a game as it was for AlphaGo, thus "Omega", but rather learning to play the game without being given specific representations about the game, thus "Zero". Our position is that learning to play a game in a physical environment *de novo* is qualitatively different from and significantly harder than learning to win a game after the agent already knows how to play the game.
 
 <p align="center">
 <img src="screenshot-0.png" align="center" height="600" width="600" alt="Tic-Tac-Toe with 3 agents">
@@ -13,19 +13,21 @@ We call our exploration "Omega Zero" because the goal here is not to win a game 
 
 ## <a name="challenge"></a> Challenge: learn commonsense for learning to play
 
-We use a 2D digital version of Go stones and Go boards of various sizes (such as 19x19, 15x15 and 4x4) as an experimental setup where an agent can play three well known games:
+We use a 2D digital version of Go stones and Go boards of various sizes (such as 19x19, 15x15 and 4x4) as the setup where an agent can play three well known games:
 
 1. Go
 2. Gomoku
 3. Tic-Tac-Toe
 
-and many other games we could introduce or invent.
+and potentially many more games we could introduce or invent.
 
-It is trivial to code up each of these games according to their proper abstractions so that an AI agent can "play" it by generating the next move from any game state towards an eventual win. AlphaGo depends on such a code-up and wins brilliantly. But that is not what Oz is about.
+It is trivial to code up each of these games according to their proper abstractions so that an AI agent can "play" it by generating the next move from any game state towards an eventual win. AlphaGo depends on such a code-up and wins brilliantly. But that is not what Oz is after.
 
-<a name="idealistically"></a>*Idealistically*, an Oz AI agent will not be given any prior knowledge at all and will have to learn all the knowledge needed. This is indeed quite idealistically, but yep that's we could be aiming at and the gut feeling is that we are getting close (50 to 100 years away?) to being able to pull that off. Note that we are *not* assuming that the Oz agent will not be learning from other agents or that it will not benefit from forms of symbolic communication implementable in Oz. To fully rid of the social and communicative dependencies of learning would mean to tell a full evolutionary as well as epigentic story. We are here mainly interested in the epigenetic story.
+<a name="idealistically"></a>*Idealistically*, an Oz agent will not be given any prior knowledge and will have to learn all the knowledge needed. This is indeed quite idealistically, but it is not completely crazy and the gut feeling is that we are getting close (50 to 100 years away?) to being able to pull it off.
 
-<a name="ideally"></a>If the idealistic approach is too futuristic, then *ideally* an Oz agent may be given only generic or commonsense knowledge about the Oz environment, such as how a placed stone may not be picked up again, how the intersections on the board should be treated specially, how two agents should take turn to make moves, etc. Then on the basis of such generic knowledge the Oz agent is expected to learn all these games through learning from demonstration. This way with things is labeled "ideally", because the generic ideals governing how games are normally played out will be given to the agent and the agent is still required to abide by the ideals in actual physical playing. Unlike what a current computer board game would do, such ideals are not enforced in Oz by restricting the physics. The value of this line of exploration is that it forces us to articulate the commonsense knowledge underwriting all these games without abstracting away the relevant lower level physical interactions. The gut feeling is that we can probably pull this one off in the next 5 to 30 years.
+Note that we are *not* assuming that the Oz agent will not be learning from other agents or that it will not benefit from symbolic communication implementable in Oz. To get rid of all social and communicative dependencies of learning would mean to tell a full evolutionary as well as epigentic story. But we are here mainly interested in the epigenetic story.
+
+<a name="ideally"></a>If the idealistic approach is too futuristic, then *ideally* an Oz agent may be given only generic or commonsense knowledge about the Oz environment, such as how a placed stone may not be picked up again, how the intersections on the board should be treated specially, how two agents should take turn to make moves, etc. Then on the basis of such generic knowledge the Oz agent is expected to learn all these specific games through learning from demonstration. This way with things is labeled "ideally", because while the agent is given some necessary knowledge, it still needs to, in its own interaction in Oz, abide by the ideals that both are represented by the knowledge and govern how game interactions should unfold in the actual physical setting of Oz. While it is standard for current computer board games to restrict the physics to directly honor the ideals, Oz does not enforce such ideals in its physics but instead relies on the agent's ability to do so. By setting up the Oz challenge this way, we are forced to investigate the commonsense knowledge underwriting all these games without abstracting away the relevant lower level physical interactions. Simply coding up a set of symbolic rules will not do. The commonsense knowledge has to bridge physical interactions, where anything goes, to the governing ideals of the specific games. We do not know how to do this yet, but the gut feeling is that we can pull this one off in the next 5 to 30 years.
 
 ## <a name="environment"></a> Environment: an interactive flatland under the bird's eye view
 
@@ -47,7 +49,7 @@ Three things can be noted about this setup:
 2. The Oz setup allows multiple AI agents and multiple humans to simultaneously interact with the environment, giving us ample opportunity to do teaching or demonstration by either AI or human teachers.
 3. The physical setup of Oz, including the vision or image rendering part, is not unlike the relationship between a [SCARA robot](https://en.wikipedia.org/wiki/SCARA) or [Cartesian robot](https://en.wikipedia.org/wiki/Cartesian_coordinate_robot) and its task environment. Thus, our learning solutions in Oz, once they are adequately figured out, could potentially enable the many robots deployed out there to adapt to new tasks very quickly.
 
-## Illustration: from affordances to conceptual structures through play
+## Illustration: from affordances to concepts through play
 
 For one example of the sorts of exploration Oz enables, please see a separate set of notes on [(a) learning basic affordances](affordances.md) as a foundation for [(b) play](play.md) and for further learning [(c) commonsense conceptual structures](concepts). What is described in these set of notes falls largely under [the ideal approach](#ideally) to the Oz challenge. However, this specific perspective (that of learning affordances to support play and learning further affordances and eventually conceptual structures through play) is only one of the many possible theoretical perspectives that we can take on the [Oz envirnoment](#environment) and the [Oz challenge](#challenge). If one so chooses, one can deal with the Oz environment using traditional symbolic AI or using the conventional framework of industrial robotics. So long as Oz's commitment to "freedom from game-specific knowledge" is honored, that would be fine and that would provide a good way to compare the pros and cons of the various approaches.
 
