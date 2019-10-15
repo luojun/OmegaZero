@@ -19,15 +19,14 @@ class Movable:
     tx, ty = translation
     x, y = current_x + tx, current_y + ty
     min_x, min_y, max_x, max_y = bounds
-    radius = self.getRadius()
-    if x < min_x + radius:
-      x = min_x + radius
-    if y < min_y + radius:
-      y = min_y + radius
-    if x > max_x - radius:
-      x = max_x - radius
-    if y > max_y - radius:
-      y = max_y - radius
+    if x < min_x:
+      x = min_x
+    if y < min_y:
+      y = min_y
+    if x > max_x:
+      x = max_x
+    if y > max_y:
+      y = max_y
 
     kx, ky = x - current_x, y - current_y
     self._center = x, y
