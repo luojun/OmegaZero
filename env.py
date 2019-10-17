@@ -148,13 +148,26 @@ class Environment:
     return [None for n in range(number_of_agents)]
 
   def _pickUp(self, center, radius):
+    picked = None
     for stone in self.getStones():
       x, y = center
       stone_x, stone_y = stone.getCenter()
       d = sqrt((stone_x - x) * (stone_x - x) + (stone_y - y) * (stone_y - y))
       if d < radius:
-        return stone
-    return None
+        picked = stone
+        break
+
+    if picked is not None:
+      # bring picked stone to front and push everyone else over by one
+      stones = self.getStones()
+      index = picked.getId()
+      for i in range(index, 0, -1):
+        stones[i] = stones[i-1]
+        stones[i].setId(i)
+      picked.setId(0)
+      stones[0] = picked
+
+    return picked
       
 
 class Board:

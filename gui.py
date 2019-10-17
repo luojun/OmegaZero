@@ -96,7 +96,8 @@ while 1:
   for (start_pos, end_pos) in lines:
     pygame.draw.line(surface, line_color, trans.env2gui2d(start_pos), trans.env2gui2d(end_pos), 3)
 
-  for stone in e.getStones():
+  # reversed is needed to honor z-order of stones
+  for stone in reversed(e.getStones()):
     pygame.draw.circle(surface, stone.getColor(), trans.env2gui2d(stone.getCenter()), trans.scale2gui(stone.getRadius()), 0)
 
   pygame.draw.circle(surface, gui_agent.getColor(), trans.env2gui2d(gui_agent.getCenter()), trans.scale2gui(gui_agent.getRadius()), (3 if mouse_down else 0))

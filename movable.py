@@ -5,6 +5,9 @@ class Movable:
   def getId(self):
     return self._id
 
+  def setId(self, new_id):
+    self._id = new_id
+
   def getColor(self):
     return self._color
 
