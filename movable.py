@@ -46,7 +46,13 @@ class Movable:
 
 
 class Stone(Movable):
-  pass
+  def __init__(self, index, isBlack, color, radius, center):
+    super().__init__(index, color, radius, center)
+    self._isBlack = isBlack
+
+  def isBlack(self):
+    return self._isBlack
+
 
 class Agent(Movable): # Note how stones are equivalent to super of agents, evolutionarily speaking ;-)
 

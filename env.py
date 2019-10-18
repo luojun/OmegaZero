@@ -35,8 +35,23 @@ class Environment:
   def getBoard(self):
     return self._board
 
+  def getStoneRadius(self):
+   return self._stone_radius
+
+  def getStoneColorBlack(self):
+   return self._stone_color_black
+
+  def getStoneColorWhite(self):
+   return self._stone_color_white
+
   def getStones(self):
     return self._stones
+
+  def getAgentRadius(self):
+   return self._agent_radius
+
+  def getAgentColor(self):
+   return self._agent_color
 
   def getAgents(self):
     return self._agents
@@ -107,9 +122,9 @@ class Environment:
     self._holdings = self._init_holdings(number_of_agents) # for now, one agent can hold at most one stone
 
   def _init_stones(self, number_of_stones, stone_size):
-    stone_radius = stone_size / 2
-    stone_color_white = (224, 224, 224, 255)
-    stone_color_black = (32, 32, 32, 255)
+    self._stone_radius = stone_size / 2
+    self._stone_color_white = (224, 224, 224, 255)
+    self._stone_color_black = (32, 32, 32, 255)
 
     center_x, center_y = self._center
     size_x, size_y = self._size
@@ -117,18 +132,19 @@ class Environment:
 
     stones = []
     for index in range(number_of_stones):
-      stone_color = (stone_color_white if (index % 2) == 0 else stone_color_black)
+      isBlack = index % 2 == 0 
+      stone_color = (self._stone_color_black if isBlack else self._stone_color_white)
       stone_center = (
-        min_x + stone_radius + random() * (size_x - stone_size),
-        min_y + stone_radius + random() * (size_y - stone_size)
+        min_x + self._stone_radius + random() * (size_x - stone_size),
+        min_y + self._stone_radius + random() * (size_y - stone_size)
       )
-      stone = Stone(index, stone_color, stone_radius, stone_center)
+      stone = Stone(index, isBlack, stone_color, self._stone_radius, stone_center)
       stones.append(stone)
     return stones
 
   def _init_agents(self, number_of_agents, agent_size):
-    agent_radius = agent_size / 2
-    agent_color = (96, 64, 192, 255)
+    self._agent_radius = agent_size / 2
+    self._agent_color = (96, 64, 192, 255)
 
     center_x, center_y = self._center
     size_x, size_y = self._size
@@ -137,10 +153,10 @@ class Environment:
     agents = []
     for index in range(number_of_agents):
       agent_center = (
-        min_x + agent_radius + random() * (size_x - agent_size),
-        min_y + agent_radius + random() * (size_y - agent_size)
+        min_x + self._agent_radius + random() * (size_x - agent_size),
+        min_y + self._agent_radius + random() * (size_y - agent_size)
       )
-      agent = Agent(index, agent_color, agent_radius, agent_center)
+      agent = Agent(index, self._agent_color, self._agent_radius, agent_center)
       agents.append(agent)
     return agents
 
