@@ -44,6 +44,12 @@ class Environment:
   def getStoneColorWhite(self):
    return self._stone_color_white
 
+  def getStoneEdgeColorBlack(self):
+   return self._stone_edge_color_black
+
+  def getStoneEdgeColorWhite(self):
+   return self._stone_edge_color_white
+
   def getStones(self):
     return self._stones
 
@@ -124,7 +130,9 @@ class Environment:
   def _init_stones(self, number_of_stones, stone_size):
     self._stone_radius = stone_size / 2
     self._stone_color_white = (224, 224, 224, 255)
+    self._stone_edge_color_white = (192, 192, 192, 255)
     self._stone_color_black = (32, 32, 32, 255)
+    self._stone_edge_color_black = (64, 64, 64, 255)
 
     center_x, center_y = self._center
     size_x, size_y = self._size
@@ -134,11 +142,12 @@ class Environment:
     for index in range(number_of_stones):
       isBlack = index % 2 == 0 
       stone_color = (self._stone_color_black if isBlack else self._stone_color_white)
+      stone_edge_color = (self._stone_edge_color_black if isBlack else self._stone_edge_color_white)
       stone_center = (
         min_x + self._stone_radius + random() * (size_x - stone_size),
         min_y + self._stone_radius + random() * (size_y - stone_size)
       )
-      stone = Stone(index, isBlack, stone_color, self._stone_radius, stone_center)
+      stone = Stone(index, isBlack, stone_color, stone_edge_color, self._stone_radius, stone_center)
       stones.append(stone)
     return stones
 
@@ -156,7 +165,7 @@ class Environment:
         min_x + self._agent_radius + random() * (size_x - agent_size),
         min_y + self._agent_radius + random() * (size_y - agent_size)
       )
-      agent = Agent(index, self._agent_color, self._agent_radius, agent_center)
+      agent = Agent(index, self._agent_color, self._agent_color, self._agent_radius, agent_center)
       agents.append(agent)
     return agents
 

@@ -107,6 +107,8 @@ class Renderer:
     size = (radius * 2, radius * 2)
     blackColor = e.getStoneColorBlack()
     whiteColor = e.getStoneColorWhite()
+    edge_blackColor = e.getStoneEdgeColorBlack()
+    edge_whiteColor = e.getStoneEdgeColorWhite()
     #stoneBlackSurface = pg.Surface(size, pygame.SRCALPHA)
     #stoneWhiteSurface = pg.Surface(size, pygame.SRCALPHA)
     stoneBlackSurface = pg.Surface(size)
@@ -114,8 +116,10 @@ class Renderer:
     # TODO: document the fact we are using (0, 0, 0) as color key
     stoneBlackSurface.set_colorkey((0,0,0), pygame.RLEACCEL)
     stoneWhiteSurface.set_colorkey((0,0,0), pygame.RLEACCEL)
-    pygame.draw.circle(stoneBlackSurface, blackColor, center, radius, 0) # TODO: edge visualization
+    pygame.draw.circle(stoneBlackSurface, blackColor, center, radius, 0)
     pygame.draw.circle(stoneWhiteSurface, whiteColor, center, radius, 0)
+    pygame.draw.circle(stoneBlackSurface, edge_blackColor, center, radius, 5)
+    pygame.draw.circle(stoneWhiteSurface, edge_whiteColor, center, radius, 5)
     #return stoneWhiteSurface.convert_alpha(), stoneBlackSurface.convert_alpha() # seems to hurt performance
     return stoneWhiteSurface, stoneBlackSurface
 
@@ -323,14 +327,14 @@ def runOz(e, cycles=-1, timing=False):
 # Cycles:  1000   Time elasped:  2.808263063430786   Time per cycle:  0.0028082630634307863
 # After optimization --
 # Cycles:  1000   Time elasped:  2.2032926082611084   Time per cycle:  0.0022032926082611085
-# e = env.Environment(1.0, 1.0, 19, 360, 5)
+#e = env.Environment(1.0, 1.0, 19, 360, 5)
 
 # WITHOUT array3d
 # Before optimization --
 # Cycles:  1000   Time elasped:  1.3584859371185303   Time per cycle:  0.0013584859371185303
 # After optimization --
 # Cycles:  1000   Time elasped:  1.215559720993042   Time per cycle:  0.001215559720993042
-e = env.Environment(1.0, 1.0, 4, 10, 5) # five-agent tic-tac-toe
+e = env.Environment(1.0, 1.0, 4, 10, 6) # five-agent tic-tac-toe
 
 # e = env.Environment()
 

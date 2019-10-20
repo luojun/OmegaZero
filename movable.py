@@ -11,6 +11,9 @@ class Movable:
   def getColor(self):
     return self._color
 
+  def getEdgeColor(self):
+    return self._edge_color
+
   def getRadius(self):
     return self._radius
 
@@ -38,16 +41,17 @@ class Movable:
   def moveTo(self, target):
     self._center = target
 
-  def __init__(self, index, color, radius, center):
+  def __init__(self, index, color, edge_color, radius, center):
     self._id = index
     self._color = color
+    self._edge_color = edge_color
     self._radius = radius
     self._center = center
 
 
 class Stone(Movable):
-  def __init__(self, index, isBlack, color, radius, center):
-    super().__init__(index, color, radius, center)
+  def __init__(self, index, isBlack, color, edge_color, radius, center):
+    super().__init__(index, color, edge_color, radius, center)
     self._isBlack = isBlack
 
   def isBlack(self):
@@ -77,8 +81,8 @@ class Agent(Movable): # Note how stones are equivalent to super of agents, evolu
   def decideNextAction(self, observation):
     self._action = Action(None, None, True)
 
-  def __init__(self, index, color, radius, center):
-    super().__init__(index, color, radius, center)
+  def __init__(self, index, color, edge_color, radius, center):
+    super().__init__(index, color, edge_color, radius, center)
     self._observation = Observation()
     self._action = Action(None, None, True)
 
