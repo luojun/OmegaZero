@@ -107,10 +107,16 @@ class Renderer:
     size = (radius * 2, radius * 2)
     blackColor = e.getStoneColorBlack()
     whiteColor = e.getStoneColorWhite()
+    #stoneBlackSurface = pg.Surface(size, pygame.SRCALPHA)
+    #stoneWhiteSurface = pg.Surface(size, pygame.SRCALPHA)
     stoneBlackSurface = pg.Surface(size)
     stoneWhiteSurface = pg.Surface(size)
+    # TODO: document the fact we are using (0, 0, 0) as color key
+    stoneBlackSurface.set_colorkey((0,0,0), pygame.RLEACCEL)
+    stoneWhiteSurface.set_colorkey((0,0,0), pygame.RLEACCEL)
     pygame.draw.circle(stoneBlackSurface, blackColor, center, radius, 0)
     pygame.draw.circle(stoneWhiteSurface, whiteColor, center, radius, 0)
+    #return stoneWhiteSurface.convert_alpha(), stoneBlackSurface.convert_alpha() # seems to hurt performance
     return stoneWhiteSurface, stoneBlackSurface
 
   def _renderAgent(self, e, t, pg):
@@ -118,27 +124,32 @@ class Renderer:
     center = (radius, radius)
     size = (radius * 2, radius * 2)
     color = e.getAgentColor()
+    #agentDownSurface = pg.Surface(size, pygame.SRCALPHA)
+    #agentUpSurface = pg.Surface(size, pygame.SRCALPHA)
     agentDownSurface = pg.Surface(size)
     agentUpSurface = pg.Surface(size)
-    pygame.draw.circle(agentDownSurface, color, center, radius, 0)
-    pygame.draw.circle(agentUpSurface, color, center, radius, 3)
+    agentDownSurface.set_colorkey((0,0,0), pygame.RLEACCEL)
+    agentUpSurface.set_colorkey((0,0,0), pygame.RLEACCEL)
+    pygame.draw.circle(agentDownSurface, color, center, radius, 3)
+    pygame.draw.circle(agentUpSurface, color, center, radius, 0)
+    #return agentDownSurface.convert_alpha(), agentUpSurface.convert_alpha() # seems to hurt performance
     return agentDownSurface, agentUpSurface
 
   def update(self, env):
     pass
     # blt things together
 
-def runOzOpt(e, cycles=0, timing=False):
+def runOzOpt(e, cycles=-1, timing=False):
   trans = Transform(e.getSize(), 1200)
   pygame.init()
+
+  size = trans.scale2gui2d(e.getSize())
+  surface = pygame.display.set_mode(size) # NB: has to set mode before instantiate Renderer
 
   renderer = Renderer(e, trans, pygame)
   baseSurface = renderer.getBaseSurface()
   stoneBlackSurface, stoneWhiteSurface = renderer.getStoneSurfaces()
   agentDownSurface, agentUpSurface = renderer.getAgentSurfaces()
-
-  size = trans.scale2gui2d(e.getSize())
-  surface = pygame.display.set_mode(size)
 
   mouse_down = False
   picked_stone = None
@@ -173,16 +184,17 @@ def runOzOpt(e, cycles=0, timing=False):
 
     x, y = gui_agent.getCenter()
     radius = gui_agent.getRadius()
-    surface.blit(agentDownSurface, trans.env2gui2d((x - radius, y - radius)))
+    if mouse_down:
+      surface.blit(agentDownSurface, trans.env2gui2d((x - radius, y - radius)))
+    else:
+      surface.blit(agentUpSurface, trans.env2gui2d((x - radius, y - radius)))
     for agent in e.getAgents()[1:]: # The 0th agent is a GUI agent
       x, y = agent.getCenter()
       radius = agent.getRadius()
       surface.blit(agentUpSurface, trans.env2gui2d((x - radius, y - radius)))
 
-    a3d = None
-    #a3d = pygame.surfarray.array3d(surface)
-    if cyclesRemain % 10 == 0:
-      pygame.display.flip()
+    a3d = pygame.surfarray.array3d(surface)
+    pygame.display.flip()
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -215,7 +227,7 @@ def runOzOpt(e, cycles=0, timing=False):
     print("Cycles: ", cycles, "  Time elasped: ", timeElapsed, "  Time per cycle: ", timeElapsed / cycles)
 
 
-def runOz(e, cycles=0, timing=False):
+def runOz(e, cycles=-1, timing=False):
   trans = Transform(e.getSize(), 1200)
 
   background_color = e.getBackgroundColor()
@@ -273,10 +285,8 @@ def runOz(e, cycles=0, timing=False):
       # blt
       pygame.draw.circle(surface, agent.getColor(), trans.env2gui2d(agent.getCenter()), trans.scale2gui(agent.getRadius()), 0)
 
-    a3d = None
-    if cyclesRemain % 10 == 0:
-      # a3d = pygame.surfarray.array3d(surface)
-      pygame.display.flip()
+    a3d = pygame.surfarray.array3d(surface)
+    pygame.display.flip()
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -308,20 +318,29 @@ def runOz(e, cycles=0, timing=False):
     timeElapsed = end - start
     print("Cycles: ", cycles, "  Time elasped: ", timeElapsed, "  Time per cycle: ", timeElapsed / cycles)
 
+# WITHOUT array3d
 # Before optimization --
-# Cycles:  100   Time elasped:  2.5802664756774902   Time per cycle:  0.025802664756774903
-e = env.Environment(1.0, 1.0, 19, 360, 5)
+# Cycles:  1000   Time elasped:  2.808263063430786   Time per cycle:  0.0028082630634307863
+# After optimization --
+# Cycles:  1000   Time elasped:  2.2032926082611084   Time per cycle:  0.0022032926082611085
+#e = env.Environment(1.0, 1.0, 19, 360, 5)
 
+# WITHOUT array3d
 # Before optimization --
-# Cycles:  100   Time elasped:  2.445618152618408   Time per cycle:  0.024456181526184083
-# e = env.Environment(1.0, 1.0, 4, 10, 3) # three-agent tic-tac-toe
+# Cycles:  1000   Time elasped:  1.3584859371185303   Time per cycle:  0.0013584859371185303
+# After optimization --
+# Cycles:  1000   Time elasped:  1.215559720993042   Time per cycle:  0.001215559720993042
+e = env.Environment(1.0, 1.0, 4, 10, 3) # three-agent tic-tac-toe
 
 # e = env.Environment()
 
 #import cProfile
 #cProfile.run('runOzOpt(e, cycles=100, timing=True)')
 
-runOz(e, cycles=1000, timing=True)
+#runOz(e, cycles=1000, timing=True)
 
-runOzOpt(e, cycles=1000, timing=True)
+#runOzOpt(e, cycles=1000, timing=True)
+
+#runOz(e)
+runOzOpt(e)
 
