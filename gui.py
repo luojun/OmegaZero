@@ -195,7 +195,10 @@ def runOzOpt(e, cycles=-1, timing=False):
     for agent in e.getAgents()[1:]: # The 0th agent is a GUI agent
       x, y = agent.getCenter()
       radius = agent.getRadius()
-      surface.blit(agentUpSurface, trans.env2gui2d((x - radius, y - radius)))
+      if agent.getCurrentAction().press():
+        surface.blit(agentDownSurface, trans.env2gui2d((x - radius, y - radius)))
+      else:
+        surface.blit(agentUpSurface, trans.env2gui2d((x - radius, y - radius)))
 
     a3d = pygame.surfarray.array3d(surface)
     pygame.display.flip()
