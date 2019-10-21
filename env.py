@@ -5,6 +5,8 @@ from movable import Agent
 from movable import Stone
 from movable import Observation 
 
+import config
+
 def test():
   # env = Environment(1.0, 1.0, 19, 360, 2) # Go
   # env = Environment(1.0, 1.0, 15, 360, 2) # Gomoku
@@ -50,6 +52,15 @@ class Environment:
   def getStoneEdgeColorWhite(self):
    return self._stone_edge_color_white
 
+  def getStoneBlackEdgeWidthRatio(self):
+   return self._stone_black_edge_width_ratio
+
+  def getStoneWhiteEdgeWidthRatio(self):
+   return self._stone_white_edge_width_ratio
+
+  def getAgentEdgeWidthRatio(self):
+   return self._agent_edge_width_ratio
+
   def getStones(self):
     return self._stones
 
@@ -58,6 +69,9 @@ class Environment:
 
   def getAgentColor(self):
    return self._agent_color
+
+  def getAgentEdgeColor(self):
+   return self._agent_edge_color
 
   def getAgents(self):
     return self._agents
@@ -110,8 +124,8 @@ class Environment:
       agent.decideNextAction(agent.getCurrentObservation())
 
 
-  def __init__(self, size_x=0.6, size_y=0.6, board_lines=4, number_of_stones=10, number_of_agents=2): # 4, 10, 2 for tic-tac-toe
-    self._background_color = (8, 80, 8, 255) # RGBA
+  def __init__(self, size_x=config.ENVIRONMENT_SIZE_X, size_y=config.ENVIRONMENT_SIZE_Y, board_lines=4, number_of_stones=10, number_of_agents=2): # 4, 10, 2 for tic-tac-toe
+    self._background_color = config.ENVIRONMENT_BACKGROUND_COLOR
     self._size = (size_x, size_y)
     self._center = center_x, center_y = 0.0, 0.0
     min_x, min_y = center_x - size_x / 2, center_y - size_y / 2
@@ -120,19 +134,21 @@ class Environment:
     self._board = Board(self._size, self._center, board_lines)
 
     board_inset_x, board_inset_y = self._board._inset
-    stone_size = min(board_inset_x, board_inset_y) / 5 * 4
+    stone_size = min(board_inset_x, board_inset_y) * config.STONE_SIZE_RATIO
     self._stones = self._init_stones(number_of_stones, stone_size)
 
-    agent_size = stone_size * 0.8 # TODO: configuration
+    agent_size = stone_size * config.AGENT_SIZE_RATIO
     self._agents = self._init_agents(number_of_agents, agent_size)
     self._holdings = self._init_holdings(number_of_agents) # for now, one agent can hold at most one stone
 
   def _init_stones(self, number_of_stones, stone_size):
     self._stone_radius = stone_size / 2
-    self._stone_color_white = (224, 224, 224, 255)
-    self._stone_edge_color_white = (192, 192, 192, 255)
-    self._stone_color_black = (32, 32, 32, 255)
-    self._stone_edge_color_black = (64, 64, 64, 255)
+    self._stone_color_black = config.STONE_BLACK_COLOR
+    self._stone_edge_color_black = config.STONE_BLACK_EDGE_COLOR
+    self._stone_black_edge_width_ratio = config.STONE_BLACK_EDGE_WIDTH_RATIO
+    self._stone_color_white = config.STONE_WHITE_COLOR
+    self._stone_edge_color_white = config.STONE_WHITE_EDGE_COLOR
+    self._stone_white_edge_width_ratio = config.STONE_WHITE_EDGE_WIDTH_RATIO
 
     center_x, center_y = self._center
     size_x, size_y = self._size
@@ -143,17 +159,20 @@ class Environment:
       isBlack = index % 2 == 0 
       stone_color = (self._stone_color_black if isBlack else self._stone_color_white)
       stone_edge_color = (self._stone_edge_color_black if isBlack else self._stone_edge_color_white)
+      stone_edge_ratio = (self._stone_black_edge_width_ratio if isBlack else self._stone_white_edge_width_ratio)
       stone_center = (
         min_x + self._stone_radius + random() * (size_x - stone_size),
         min_y + self._stone_radius + random() * (size_y - stone_size)
       )
-      stone = Stone(index, isBlack, stone_color, stone_edge_color, self._stone_radius, stone_center)
+      stone = Stone(index, isBlack, stone_color, stone_edge_color, self._stone_radius, stone_edge_ratio, stone_center)
       stones.append(stone)
     return stones
 
   def _init_agents(self, number_of_agents, agent_size):
     self._agent_radius = agent_size / 2
-    self._agent_color = (96, 64, 192, 255)
+    self._agent_color = config.AGENT_COLOR
+    self._agent_edge_color = config.AGENT_EDGE_COLOR
+    self._agent_edge_width_ratio = config.AGENT_EDGE_WIDTH_RATIO
 
     center_x, center_y = self._center
     size_x, size_y = self._size
@@ -165,7 +184,7 @@ class Environment:
         min_x + self._agent_radius + random() * (size_x - agent_size),
         min_y + self._agent_radius + random() * (size_y - agent_size)
       )
-      agent = Agent(index, self._agent_color, self._agent_color, self._agent_radius, agent_center)
+      agent = Agent(index, self._agent_color, self._agent_edge_color, self._agent_radius, self._agent_edge_width_ratio, agent_center)
       agents.append(agent)
     return agents
 
@@ -209,6 +228,9 @@ class Board:
   def getLineColor(self):
     return self._line_color
 
+  def getLineWidth(self):
+    return self._line_width
+
   def getNumberOfLines(self):
     return self._number_of_lines # in one direction
 
@@ -224,11 +246,12 @@ class Board:
     return board_min_x < point_x and point_x < board_max_x and board_min_y < point_y and point_y < board_max_y
 
   def __init__(self, environment_size, environment_center, board_lines):
-    self._color = (224, 128, 32, 255) # RGBA
-    self._line_color = (32, 32, 32, 255) # RGBA
+    self._color = config.BOARD_COLOR
+    self._line_color = config.BOARD_LINE_COLOR
+
     environment_size_x, environment_size_y = environment_size
     environment_center_x, environment_center_y = environment_center
-    self._size = board_size_x, board_size_y = environment_size_x / 3.0 * 2.0, environment_size_y / 3.0 * 2.0 # allow size_x and size_y to be different
+    self._size = board_size_x, board_size_y = environment_size_x * config.BOARD_SIZE_X_RATIO, environment_size_y * config.BOARD_SIZE_Y_RATIO # allow size_x and size_y to be different
     self._center = board_center_x, board_center_y = environment_center_x, environment_center_y # center of board
     self._number_of_lines = board_lines
 
@@ -246,6 +269,7 @@ class Board:
     board_line_inc_y = board_inset_y
 
     self._inset = (board_inset_x, board_inset_y)
+    self._line_width = config.BOARD_LINE_WIDTH_RATIO * board_inset_x # Differentiate x and y in version 5.0 ;-)
 
     x_lines = [((board_line_min_x, board_line_min_y + board_line_inc_y * n), (board_line_max_x, board_line_min_y + board_line_inc_y * n)) for n in range(board_lines)]
     y_lines = [((board_line_min_x + board_line_inc_x * n, board_line_min_y), (board_line_min_x + board_line_inc_x * n, board_line_max_y)) for n in range(board_lines)]

@@ -95,8 +95,9 @@ class Renderer:
     surface.fill(background_color)
     pg.draw.rect(surface, board_color, board_rect, 0)
 
+    line_width = t.scale2gui(b.getLineWidth())
     for (start_pos, end_pos) in lines:
-      pg.draw.line(surface, line_color, t.env2gui2d(start_pos), t.env2gui2d(end_pos), 3)
+      pg.draw.line(surface, line_color, t.env2gui2d(start_pos), t.env2gui2d(end_pos), line_width)
 
     return surface
 
@@ -118,8 +119,12 @@ class Renderer:
     stoneWhiteSurface.set_colorkey((0,0,0), pygame.RLEACCEL)
     pygame.draw.circle(stoneBlackSurface, blackColor, center, radius, 0)
     pygame.draw.circle(stoneWhiteSurface, whiteColor, center, radius, 0)
-    pygame.draw.circle(stoneBlackSurface, edge_blackColor, center, radius, 5)
-    pygame.draw.circle(stoneWhiteSurface, edge_whiteColor, center, radius, 5)
+
+    black_edge_width = t.scale2gui(e.getStoneBlackEdgeWidthRatio() * e.getStoneRadius())
+    white_edge_width = t.scale2gui(e.getStoneWhiteEdgeWidthRatio() * e.getStoneRadius())
+
+    pygame.draw.circle(stoneBlackSurface, edge_blackColor, center, radius, black_edge_width)
+    pygame.draw.circle(stoneWhiteSurface, edge_whiteColor, center, radius, white_edge_width)
     #return stoneWhiteSurface.convert_alpha(), stoneBlackSurface.convert_alpha() # seems to hurt performance
     return stoneWhiteSurface, stoneBlackSurface
 
@@ -134,7 +139,9 @@ class Renderer:
     agentUpSurface = pg.Surface(size)
     agentDownSurface.set_colorkey((0,0,0), pygame.RLEACCEL)
     agentUpSurface.set_colorkey((0,0,0), pygame.RLEACCEL)
-    pygame.draw.circle(agentDownSurface, color, center, radius, 6) # TODO: configuration for 6 in terms of portion of agent size
+
+    edge_width = t.scale2gui(e.getAgentEdgeWidthRatio() * e.getAgentRadius())
+    pygame.draw.circle(agentDownSurface, color, center, radius, edge_width)
     pygame.draw.circle(agentUpSurface, color, center, radius, 0)
     #return agentDownSurface.convert_alpha(), agentUpSurface.convert_alpha() # seems to hurt performance
     return agentDownSurface, agentUpSurface
