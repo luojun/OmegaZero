@@ -150,8 +150,8 @@ class Renderer:
     pass
     # blt things together
 
-def runOzOpt(e, cycles=-1, timing=False):
-  trans = Transform(e.getSize(), 1200)
+def runOzOpt(e, cycles=-1, timing=False, capture_pngs=False):
+  trans = Transform(e.getSize(), 900)
   pygame.init()
 
   size = trans.scale2gui2d(e.getSize())
@@ -169,14 +169,15 @@ def runOzOpt(e, cycles=-1, timing=False):
   gui_agent_x, gui_agent_y = gui_agent.getCenter()
   mouse_x, mouse_y = trans.env2gui2d((gui_agent_x, gui_agent_y))
 
-  cyclesRemain = cycles
+  cycles_remain = cycles
 
   if timing:
     start = time.time()
 
-  while cycles < 0 or cyclesRemain > 0:
-    if cyclesRemain > 0:
-      cyclesRemain -= 1
+  cycles_done = 0
+  while cycles < 0 or cycles_remain > 0:
+    if cycles_remain > 0:
+      cycles_remain -= 1
 
     surface.blit(baseSurface, (0, 0))
 
@@ -228,6 +229,10 @@ def runOzOpt(e, cycles=-1, timing=False):
         mouse_x = event.pos[0]
         mouse_y = event.pos[1]
 
+    cycles_done += 1
+    if cycles_remain % 10 == 0:
+      capture_screen(surface, "screenshot" + "{:05d}".format(cycles_done) + ".png", size)
+
     gui_agent_new_x, gui_agent_new_y = trans.gui2env2d((mouse_x, mouse_y))
     gui_agent_move = gui_agent_new_x - gui_agent_x, gui_agent_new_y - gui_agent_y
 
@@ -267,14 +272,14 @@ def runOz(e, cycles=-1, timing=False):
   gui_agent_x, gui_agent_y = gui_agent.getCenter()
   mouse_x, mouse_y = trans.env2gui2d((gui_agent_x, gui_agent_y))
 
-  cyclesRemain = cycles
+  cycles_remain = cycles
 
   if timing:
     start = time.time()
 
-  while cycles < 0 or cyclesRemain > 0:
-    if cyclesRemain > 0:
-      cyclesRemain -= 1
+  while cycles < 0 or cycles_remain > 0:
+    if cycles_remain > 0:
+      cycles_remain -= 1
 
     surface.fill(background_color)
 
@@ -368,6 +373,7 @@ e = env.Environment(1.0, 1.0, args.lines, args.stones, args.agents) # five-agent
 
 #runOzOpt(e, cycles=1000, timing=True)
 
-#runOz(e)
-runOzOpt(e)
+#runOzOpt(e, cycles=5000, capture_pngs=True) # Use: convert -delay 20 -loop 0 screenshot0*.png demo.gif
+
+runOz(e)
 

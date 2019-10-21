@@ -5,7 +5,7 @@ Omega Zero, Oz for short, is an exploration of the learning of commonsense knowl
 We call our exploration "Omega Zero" because the goal here is not to win a game as it was for AlphaGo, thus "Omega", but rather learning to play the game without being given specific representations about the game, thus "Zero". Our position is that learning to play a game in a physical environment *de novo* is qualitatively different from and significantly harder than learning to win a game after the agent already knows how to play the game.
 
 <p align="center">
-<img src="screenshot-0.png" align="center" height="600" width="600" alt="Tic-Tac-Toe with 3 agents">
+<img src="demo.gif" align="center" height="600" width="600" alt="Tic-Tac-Toe with 3 agents">
 <br/>
 <b>Oz in a Tic-Tac-Toe setup with 3 agents</b>
 </p>
