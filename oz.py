@@ -150,7 +150,7 @@ class Renderer:
     pass
     # blt things together
 
-def runOzOpt(e, cycles=-1, timing=False, capture_pngs=False):
+def runOzOpt(e, cycles=-1, timing=False, capture_pngs=False, display_hz=50):
   trans = Transform(e.getSize(), 900)
   pygame.init()
 
@@ -175,6 +175,11 @@ def runOzOpt(e, cycles=-1, timing=False, capture_pngs=False):
     start = time.time()
 
   cycles_done = 0
+
+  if display_hz > 0: # 0 for headless mode
+    cycle_length = 1.0 / display_hz
+    cycle_start = time.time()
+
   while cycles < 0 or cycles_remain > 0:
     if cycles_remain > 0:
       cycles_remain -= 1
@@ -209,7 +214,12 @@ def runOzOpt(e, cycles=-1, timing=False, capture_pngs=False):
         surface.blit(agentUpSurface, trans.env2gui2d((x - radius, y - radius)))
 
     a3d = pygame.surfarray.array3d(surface)
-    pygame.display.flip()
+
+    if display_hz > 0: # 0 for headless mode
+      cycle_now = time.time()
+      if cycle_now - cycle_start >= cycle_length:
+        pygame.display.flip()
+        cycle_start = cycle_now
 
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -230,7 +240,7 @@ def runOzOpt(e, cycles=-1, timing=False, capture_pngs=False):
         mouse_y = event.pos[1]
 
     cycles_done += 1
-    if cycles_remain % 10 == 0:
+    if capture_pngs and cycles_remain % 10 == 0:
       capture_screen(surface, "screenshot" + "{:05d}".format(cycles_done) + ".png", size)
 
     gui_agent_new_x, gui_agent_new_y = trans.gui2env2d((mouse_x, mouse_y))
@@ -246,106 +256,12 @@ def runOzOpt(e, cycles=-1, timing=False, capture_pngs=False):
     print("Cycles: ", cycles, "  Time elasped: ", timeElapsed, "  Time per cycle: ", timeElapsed / cycles)
 
 
-def runOz(e, cycles=-1, timing=False):
-  trans = Transform(e.getSize(), 1200)
-
-  background_color = e.getBackgroundColor()
-  b = e.getBoard()
-  board_color = b.getColor()
-  board_min_x, board_min_y, board_max_x, board_max_y = trans.env2gui4d(b.getRect())
-  board_rect = (board_min_x, board_min_y, board_max_x - board_min_x, board_max_y - board_min_y)
-
-  line_color = b.getLineColor()
-  lines = b.getLines()
-
-  stones = e.getStones()
-
-  pygame.init()
-
-  size = trans.scale2gui2d(e.getSize())
-  surface = pygame.display.set_mode(size)
-
-  mouse_down = False
-  picked_stone = None
-
-  gui_agent = e.getAgents()[0]  # The 0th agent is a GUI agent
-  gui_agent_x, gui_agent_y = gui_agent.getCenter()
-  mouse_x, mouse_y = trans.env2gui2d((gui_agent_x, gui_agent_y))
-
-  cycles_remain = cycles
-
-  if timing:
-    start = time.time()
-
-  while cycles < 0 or cycles_remain > 0:
-    if cycles_remain > 0:
-      cycles_remain -= 1
-
-    surface.fill(background_color)
-
-    # draw board into a separate surface out side of the loop
-    pygame.draw.rect(surface, board_color, board_rect, 0)
-
-    for (start_pos, end_pos) in lines:
-      pygame.draw.line(surface, line_color, trans.env2gui2d(start_pos), trans.env2gui2d(end_pos), 3)
-
-    # blt the board to surface ...
-
-    # draw stone into two separate surfaces, one for each state of the agent
-
-    # reversed is needed to honor z-order of stones
-    for stone in reversed(e.getStones()):
-      # blt
-      pygame.draw.circle(surface, stone.getColor(), trans.env2gui2d(stone.getCenter()), trans.scale2gui(stone.getRadius()), 0)
-
-    # draw agent into two separate surfaces, one for each state of the agent
-    pygame.draw.circle(surface, gui_agent.getColor(), trans.env2gui2d(gui_agent.getCenter()), trans.scale2gui(gui_agent.getRadius()), (3 if mouse_down else 0))
-    for agent in e.getAgents()[1:]: # The 0th agent is a GUI agent
-      # blt
-      pygame.draw.circle(surface, agent.getColor(), trans.env2gui2d(agent.getCenter()), trans.scale2gui(agent.getRadius()), 0)
-
-    a3d = pygame.surfarray.array3d(surface)
-    pygame.display.flip()
-
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        sys.exit()
-      elif event.type == pygame.KEYDOWN:
-        if event.key == pygame.K_c:
-          capture_screen(surface, "screenshot.png", size)
-      elif event.type == pygame.MOUSEBUTTONDOWN:
-        mouse_down = True
-        mouse_x = event.pos[0]
-        mouse_y = event.pos[1]
-      elif event.type == pygame.MOUSEBUTTONUP:
-        mouse_down = False
-        mouse_x = event.pos[0]
-        mouse_y = event.pos[1]
-      elif event.type == pygame.MOUSEMOTION:
-        mouse_x = event.pos[0]
-        mouse_y = event.pos[1]
-
-    gui_agent_new_x, gui_agent_new_y = trans.gui2env2d((mouse_x, mouse_y))
-    gui_agent_move = gui_agent_new_x - gui_agent_x, gui_agent_new_y - gui_agent_y
-
-    gui_agent_x, gui_agent_y = gui_agent_new_x, gui_agent_new_y
-    gui_agent_action = Action(mouse_down, gui_agent_move)
-    e.tick(gui_agent_action, a3d)
-
-  if timing:
-    end = time.time()
-    timeElapsed = end - start
-    print("Cycles: ", cycles, "  Time elasped: ", timeElapsed, "  Time per cycle: ", timeElapsed / cycles)
-
-
-
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-l', '--lines', nargs='?', default=4, type=int)
 parser.add_argument('-s', '--stones', nargs='?', default=10, type=int)
 parser.add_argument('-a', '--agents', nargs='?', default=2, type=int)
-parser.add_argument('-x', '--width', nargs='?', default=1.0, type=float)
-parser.add_argument('-y', '--height', nargs='?', default=1.0, type=float)
+parser.add_argument('-hz', '--display_hz', nargs='?', default=30, type=float)
 args = parser.parse_args()
 
 e = env.Environment(1.0, 1.0, args.lines, args.stones, args.agents) # five-agent tic-tac-toe
@@ -369,11 +285,9 @@ e = env.Environment(1.0, 1.0, args.lines, args.stones, args.agents) # five-agent
 #import cProfile
 #cProfile.run('runOzOpt(e, cycles=100, timing=True)')
 
-#runOz(e, cycles=1000, timing=True)
-
 #runOzOpt(e, cycles=1000, timing=True)
 
 #runOzOpt(e, cycles=5000, capture_pngs=True) # Use: convert -delay 20 -loop 0 screenshot0*.png demo.gif
 
-runOz(e)
+runOzOpt(e, cycles=1000, timing=True, display_hz=args.display_hz)
 
