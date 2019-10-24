@@ -1,0 +1,6 @@
+[ ] unit tests for oz_world
+[ ] unit tests for oz_renderer
+[ ] unit tests for oz_gui
+[ ] unit tests for oz_runner
+[ ] integration tests for running oz
+

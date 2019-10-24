@@ -1,3 +1,5 @@
+# TODO: consider combining these classes with "env.py" into a "oz_world.py"
+
 from random import random
 
 class Movable:

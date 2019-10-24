@@ -1,3 +1,8 @@
+# TODO: understand namespace
+# TODO: understand how to do constants
+# TODO: understand how to do private utility method
+# TODO: revise accordingly
+
 import yaml
 
 with open("config.yaml") as f:
