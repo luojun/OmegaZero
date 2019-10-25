@@ -6,10 +6,10 @@
 import yaml
 
 with open("config.yaml") as f:
-  configs = yaml.full_load(f)
+    configs = yaml.full_load(f)
 
 def _color_dict2tuple(d):
-  return (d['r'], d['g'], d['b'], d['a'])
+    return (d['r'], d['g'], d['b'], d['a'])
 
 ENVIRONMENT_SIZE_X = configs['environment']['size']['x']
 ENVIRONMENT_SIZE_Y = configs['environment']['size']['y']
