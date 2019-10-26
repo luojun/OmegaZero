@@ -32,25 +32,25 @@ class Movable:
     def center(self):
         return self._center
 
-    def moveBy(self, translation, bounds): # could use insets instead of bounds
+    def move_by(self, translation, bounds): # could use insets instead of bounds
         current_x, current_y = self._center
-        tx, ty = translation
-        x, y = current_x + tx, current_y + ty
+        delta_x, delta_y = translation
+        new_x, new_y = current_x + delta_x, current_y + delta_y
         min_x, min_y, max_x, max_y = bounds
-        if x < min_x:
-            x = min_x
-        if y < min_y:
-            y = min_y
-        if x > max_x:
-            x = max_x
-        if y > max_y:
-            y = max_y
+        if new_x < min_x:
+            new_x = min_x
+        if new_y < min_y:
+            new_y = min_y
+        if new_x > max_x:
+            new_x = max_x
+        if new_y > max_y:
+            new_y = max_y
 
-        kx, ky = x - current_x, y - current_y
-        self._center = x, y
-        return kx, ky # return the actual change
+        actual_delta_x, actual_delta_y = new_x - current_x, new_y - current_y
+        self._center = new_x, new_y
+        return actual_delta_x, actual_delta_y # return the actual change
 
-    def moveTo(self, target):
+    def move_to(self, target):
         self._center = target
 
     def __init__(self, index, color, edge_color, radius, edge_ratio, center):
@@ -72,7 +72,7 @@ class Stone(Movable):
         return self._is_black
 
 
-class Agent(Movable): # Note how stones are equivalent to super of agents, evolutionarily speaking ;-)
+class Agent(Movable):
 
     @property
     def current_observation(self):
@@ -81,7 +81,7 @@ class Agent(Movable): # Note how stones are equivalent to super of agents, evolu
     # TODO: figure what's the appropriate way here
     @property
     def current_feel(self):
-        return self._observation._feel
+        return self._observation.feel
 
     @current_feel.setter
     def current_feel(self, feel):
@@ -103,10 +103,10 @@ class Agent(Movable): # Note how stones are equivalent to super of agents, evolu
     def current_action(self, action):
         self._action = action
 
-    def updateObservation(self, observation):
+    def update_observation(self, observation):
         self._observation = observation
 
-    def decideNextAction(self, observation):
+    def decide_next_action(self, observation):
         self._action = Action(None, None, True)
 
     def __init__(self, index, color, edge_color, radius, edge_ratio, center):
@@ -124,9 +124,12 @@ class Action:
         return self._move
 
     def __init__(self, press, move, act_randomly=False):
+        # TODO: move to defaut agent
         if act_randomly:
-            self._press = random() < 0.2 # 20% of time
-            self._move = 0.01 * (random() - 0.5), 0.01 * (random() - 0.5) # at most 1cm in one direction at a time
+            # 20% of time
+            self._press = random() < 0.2
+            # at most 1cm in one direction at a time
+            self._move = 0.01 * (random() - 0.5), 0.01 * (random() - 0.5)
         else:
             self._press = press
             self._move = move
@@ -156,7 +159,7 @@ class Observation:
         self._kinesthetic = kinesthetic
 
     @property
-    def env_image():
+    def env_image(self):
         return self._env_image
 
     @env_image.setter
@@ -167,4 +170,3 @@ class Observation:
         self._feel = feel
         self._env_image = image
         self._kinesthetic = kinesthetic
-

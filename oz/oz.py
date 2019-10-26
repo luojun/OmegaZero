@@ -3,23 +3,19 @@
 # TODO: structure oz_runner.py such that it could support a web-based remote oz_agent
 # TODO: make oz_gui.py responsible solely for gui interaction and
 # TODO: make oz_renderer.py responsible for rendering
-# TODO: make oz_gui and oz_renderer independent, with shared Pygame dependency a convenient implementation detail
-# TODO: make code compliant with Python style 
+# TODO: make oz_gui & oz_renderer independent: shared Pygame is implementation detail
+# TODO: make code compliant with Python style
 
 import sys
-import pygame
-import numpy
-from random import random
-from pygame.locals import *
-
 import time
 
-from movable import Action
-import env
+import pygame
 
-def capture_screen(surface, filepath, size, pos = (0, 0)):
+from movable import Action
+
+def capture_screen(surface, filepath, size, pos=(0, 0)):
     image = pygame.Surface(size)    # Create image surface
-    image.blit(surface, (0, 0), (pos,size))    # Blit portion of the display to the image
+    image.blit(surface, (0, 0), (pos, size))    # Blit portion of the display to the image
     pygame.image.save(image, filepath)
 
 class Transform:
@@ -33,43 +29,103 @@ class Transform:
     def scale2gui(self, value):
         return round(self._scale * value)
 
-    def scale2gui2d(self, t2):
-        x, y = t2
-        return (self.scale2gui(x), self.scale2gui(y))
+    def scale2gui2d(self, pair):
+        first_value, second_value = pair
+        return (self.scale2gui(first_value), self.scale2gui(second_value))
 
-    def translate2gui2d(self, t2):
-        x, y = t2
-        return (x + self._trans_x, y + self._trans_y)
+    def translate2gui2d(self, pair):
+        current_x, current_y = pair
+        return (current_x + self._trans_x, current_y + self._trans_y)
 
-    def env2gui2d(self, t2):
-        return self.scale2gui2d(self.translate2gui2d(t2))
+    def env2gui2d(self, pair):
+        return self.scale2gui2d(self.translate2gui2d(pair))
 
-    def env2gui4d(self, t4):
-        x1, y1, x2, y2 = t4
-        tx1, ty1 = self.env2gui2d((x1, y1))
-        tx2, ty2 = self.env2gui2d((x2, y2))
-        return (tx1, ty1, tx2, ty2)
+    def env2gui4d(self, quad):
+        current_x1, current_y1, current_x2, current_y2 = quad
+        new_x1, new_y1 = self.env2gui2d((current_x1, current_y1))
+        new_x2, new_y2 = self.env2gui2d((current_x2, current_y2))
+        return (new_x1, new_y1, new_x2, new_y2)
 
     def scale2env(self, value):
         return value / self._scale
 
-    def scale2env2d(self, t2):
-        x, y = t2
-        return (self.scale2env(x), self.scale2env(y))
+    def scale2env2d(self, pair):
+        current_x, current_y = pair
+        return (self.scale2env(current_x), self.scale2env(current_y))
 
-    def translate2env2d(self, t2):
-        x, y = t2
-        return (x - self._trans_x, y - self._trans_y)
+    def translate2env2d(self, pair):
+        current_x, current_y = pair
+        return (current_x - self._trans_x, current_y - self._trans_y)
 
-    def gui2env2d(self, t2):
-        return self.translate2env2d(self.scale2env2d(t2))
+    def gui2env2d(self, pair):
+        return self.translate2env2d(self.scale2env2d(pair))
 
+def _render_base(environment, transform):
+    board = environment.board
+    board_color = board.color
+    board_min_x, board_min_y, board_max_x, board_max_y = transform.env2gui4d(board.rect)
+    board_width = board_max_x - board_min_x
+    board_height = board_max_y - board_min_y
+    board_rect = (board_min_x, board_min_y, board_width, board_height)
+
+    line_color = board.line_color
+    lines = board.lines
+
+    size = transform.scale2gui2d(environment.size)
+    surface = pygame.Surface(size)    # Create image surface
+
+    surface.fill(environment.background_color)
+    pygame.draw.rect(surface, board_color, board_rect, 0)
+
+    line_width = transform.scale2gui(board.line_width)
+    for (start_pos, end_pos) in lines:
+        line_start = transform.env2gui2d(start_pos)
+        line_end = transform.env2gui2d(end_pos)
+        pygame.draw.line(surface, line_color, line_start, line_end, line_width)
+
+    return surface
+
+def _render_stone(environment, transform):
+    radius = transform.scale2gui(environment.stone_radius)
+    center = (radius, radius)
+    size = (radius * 2, radius * 2)
+    stone_color_black, stone_color_white = environment.stone_colors
+    stone_edge_color_black, stone_edge_color_white = environment.stone_edge_colors
+    stone_black_surface = pygame.Surface(size)
+    stone_white_surface = pygame.Surface(size)
+
+    # TODO: document the fact we are using (0, 0, 0) as color key
+    stone_black_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
+    stone_white_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
+    pygame.draw.circle(stone_black_surface, stone_color_black, center, radius, 0)
+    pygame.draw.circle(stone_white_surface, stone_color_white, center, radius, 0)
+
+    edge_width = transform.scale2gui(environment.stone_edge_width)
+
+    pygame.draw.circle(stone_black_surface, stone_edge_color_black, center, radius, edge_width)
+    pygame.draw.circle(stone_white_surface, stone_edge_color_white, center, radius, edge_width)
+    return stone_black_surface, stone_white_surface
+
+def _render_agent(environment, transform):
+    radius = transform.scale2gui(environment.agent_radius)
+    center = (radius, radius)
+    size = (radius * 2, radius * 2)
+    color = environment.agent_color
+    agent_down_surface = pygame.Surface(size)
+    agent_up_surface = pygame.Surface(size)
+    agent_down_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
+    agent_up_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
+
+    edge_width = transform.scale2gui(environment.agent_edge_width)
+    pygame.draw.circle(agent_down_surface, color, center, radius, edge_width)
+    pygame.draw.circle(agent_up_surface, color, center, radius, 0)
+    return agent_down_surface, agent_up_surface
 
 class Renderer:
     def __init__(self, environment, transform):
-        self._base = self._renderBase(environment, transform)
-        self._stone_black, self._stone_white = self._render_stone(environment, transform)
-        self._agent_down, self._agent_up = self._render_agent(environment, transform)
+        self._base = _render_base(environment, transform)
+        self._stone_black, self._stone_white = _render_stone(environment, transform)
+        self._agent_down, self._agent_up = _render_agent(environment, transform)
 
     @property
     def base_surface(self):
@@ -83,69 +139,11 @@ class Renderer:
     def agent_surfaces(self):
         return self._agent_down, self._agent_up
 
-    def _renderBase(self, environment, transform):
-        board = environment.board
-        board_color = board.color
-        board_min_x, board_min_y, board_max_x, board_max_y = transform.env2gui4d(board.rect)
-        board_rect = (board_min_x, board_min_y, board_max_x - board_min_x, board_max_y - board_min_y)
-
-        line_color = board.line_color
-        lines = board.lines
-
-        size = transform.scale2gui2d(environment.size)
-        surface = pygame.Surface(size)    # Create image surface
-
-        surface.fill(environment.background_color)
-        pygame.draw.rect(surface, board_color, board_rect, 0)
-
-        line_width = transform.scale2gui(board.line_width)
-        for (start_pos, end_pos) in lines:
-            pygame.draw.line(surface, line_color, transform.env2gui2d(start_pos), transform.env2gui2d(end_pos), line_width)
-
-        return surface
-
-
-    def _render_stone(self, environment, transform):
-        radius = transform.scale2gui(environment.stone_radius)
-        center = (radius, radius)
-        size = (radius * 2, radius * 2)
-        stone_color_black, stone_color_white = environment.stone_colors
-        stone_edge_color_black, stone_edge_color_white = environment.stone_edge_colors
-        stone_black_surface = pygame.Surface(size)
-        stone_white_surface = pygame.Surface(size)
-
-        # TODO: document the fact we are using (0, 0, 0) as color key
-        stone_black_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
-        stone_white_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
-        pygame.draw.circle(stone_black_surface, stone_color_black, center, radius, 0)
-        pygame.draw.circle(stone_white_surface, stone_color_white, center, radius, 0)
-
-        edge_width = transform.scale2gui(environment.stone_edge_width)
-
-        pygame.draw.circle(stone_black_surface, stone_edge_color_black, center, radius, edge_width)
-        pygame.draw.circle(stone_white_surface, stone_edge_color_white, center, radius, edge_width)
-        return stone_black_surface, stone_white_surface
-
-    def _render_agent(self, environment, transform):
-        radius = transform.scale2gui(environment.agent_radius)
-        center = (radius, radius)
-        size = (radius * 2, radius * 2)
-        color = environment.agent_color
-        agent_down_surface = pygame.Surface(size)
-        agent_up_surface = pygame.Surface(size)
-        agent_down_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
-        agent_up_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
-
-        edge_width = transform.scale2gui(environment.agent_edge_width)
-        pygame.draw.circle(agent_down_surface, color, center, radius, edge_width)
-        pygame.draw.circle(agent_up_surface, color, center, radius, 0)
-        return agent_down_surface, agent_up_surface
-
     def update(self, environment):
         pass
         # blt things together
 
-def runOzOpt(environment, cycles=-1, timing=False, capture_pngs=False, display_hz=50):
+def run_oz(environment, cycles=-1, timing=False, capture_pngs=False, display_hz=50):
     transform = Transform(environment.size, 900)
     pygame.init()
 
@@ -158,7 +156,6 @@ def runOzOpt(environment, cycles=-1, timing=False, capture_pngs=False, display_h
     agent_down_surface, agent_up_surface = renderer.agent_surfaces
 
     mouse_down = False
-    picked_stone = None
 
     gui_agent = environment.agents[0]    # The 0th agent is a GUI agent
     gui_agent_x, gui_agent_y = gui_agent.center
@@ -183,26 +180,29 @@ def runOzOpt(environment, cycles=-1, timing=False, capture_pngs=False, display_h
 
         # reversed is needed to honor z-order of stones
         for stone in reversed(environment.stones):
-            x, y = stone.center
+            center_x, center_y = stone.center
             radius = stone.radius
+            target = transform.env2gui2d((center_x - radius, center_y - radius))
             if stone.is_black:
-                surface.blit(stone_black_surface, transform.env2gui2d((x - radius, y - radius)))
+                surface.blit(stone_black_surface, target)
             else:
-                surface.blit(stone_white_surface, transform.env2gui2d((x - radius, y - radius)))
+                surface.blit(stone_white_surface, target)
 
-        x, y = gui_agent.center
+        gui_agent_x, gui_agent_y = gui_agent.center
         radius = gui_agent.radius
+        target = transform.env2gui2d((gui_agent_x - radius, gui_agent_y - radius))
         if mouse_down:
-            surface.blit(agent_down_surface, transform.env2gui2d((x - radius, y - radius)))
+            surface.blit(agent_down_surface, target)
         else:
-            surface.blit(agent_up_surface, transform.env2gui2d((x - radius, y - radius)))
+            surface.blit(agent_up_surface, target)
         for agent in environment.agents[1:]: # The 0th agent is a GUI agent
-            x, y = agent.center
+            agent_x, agent_y = agent.center
+            target = transform.env2gui2d((agent_x - radius, agent_y - radius))
             radius = agent.radius
             if agent.current_action.press():
-                surface.blit(agent_down_surface, transform.env2gui2d((x - radius, y - radius)))
+                surface.blit(agent_down_surface, target)
             else:
-                surface.blit(agent_up_surface, transform.env2gui2d((x - radius, y - radius)))
+                surface.blit(agent_up_surface, target)
 
         a3d = pygame.surfarray.array3d(surface)
 
@@ -244,5 +244,5 @@ def runOzOpt(environment, cycles=-1, timing=False, capture_pngs=False, display_h
     if timing:
         end = time.time()
         time_elapsed = end - start
-        print("Cycles: ", cycles, "    Time elasped: ", time_elapsed, "    Time per cycle: ", time_elapsed / cycles)
-
+        time_per_cycle = time_elapsed / cycles
+        print("Cycles: ", cycles, "  Time elasped: ", time_elapsed, "  Time per cycle: ", time_per_cycle)

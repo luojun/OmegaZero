@@ -11,7 +11,7 @@ from math import sqrt
 
 from movable import Agent
 from movable import Stone
-from movable import Observation 
+from movable import Observation
 
 import config
 
@@ -22,9 +22,9 @@ def test():
 
     board = env.board
 
-    lines = board.getLines()
+    lines = board.lines
     for (start_pos, end_pos) in lines:
-        print(board.getLineColor(), start_pos, end_pos)
+        print(board.line_color, start_pos, end_pos)
 
     for stone in env.stones:
         print(stone.color, stone.center, stone.radius)
@@ -111,15 +111,15 @@ class Environment:
         # TODO: config for the number of gui_agents
         agents[0].current_action = gui_agent_action
 
-        # apply motion. We move all agents and the stones held first before applying the press action.
+        # Move agents and the stones held then apply press action.
         for agent in agents:
-            kinesthetic = agent.moveBy(agent.current_action.move(), self.bounds)
+            kinesthetic = agent.move_by(agent.current_action.move(), self.bounds)
             stone_held = holdings[agent.index]
             if stone_held is not None:
-                stone_held.moveTo(agent.center)
+                stone_held.move_to(agent.center)
             agent.current_observation.kinesthetic = kinesthetic
 
-        # apply press and update tactile feedback.
+        # Apply press and update tactile feedback.
         for agent in agents:
             pressed = agent.current_action.press()
             stone_held = holdings[agent.index]
@@ -133,14 +133,14 @@ class Environment:
                 agent.feel = Observation.FEELS_NOTHING
             elif stone_held:
                 agent.feel = Observation.FEELS_STONE
-            elif self.board.onBoard(agent.center):
+            elif self.board.is_on_board(agent.center):
                 agent.feel = Observation.FEELS_BOARD
             else:
                 agent.feel = Observation.FEELS_BACKGROUND
 
         # TODO: config for the number of gui_agents
         for agent in agents[1:]:
-            agent.decideNextAction(agent.current_observation)
+            agent.decide_next_action(agent.current_observation)
 
 
     def __init__(self, size_x=config.ENVIRONMENT_SIZE_X, size_y=config.ENVIRONMENT_SIZE_Y, board_lines=4, number_of_stones=10, number_of_agents=2): # 4, 10, 2 for tic-tac-toe
@@ -158,7 +158,7 @@ class Environment:
 
         agent_size = stone_size * config.AGENT_SIZE_RATIO
         self._agents = self._init_agents(number_of_agents, agent_size)
-        self._holdings = self._init_holdings(number_of_agents) # for now, one agent can hold at most one stone
+        self._holdings = [None for n in range(number_of_agents)] # an agent can hold at most 1 stone
 
     def _init_stones(self, number_of_stones, stone_size):
         self._stone_radius = stone_size / 2
@@ -166,7 +166,6 @@ class Environment:
         self._stone_edge_colors = (config.STONE_BLACK_EDGE_COLOR, config.STONE_WHITE_EDGE_COLOR)
         self._stone_edge_width_ratio = config.STONE_WHITE_EDGE_WIDTH_RATIO # TODO: unify in config
 
-        center_x, center_y = self._center
         size_x, size_y = self._size
         min_x, min_y, _, _ = self._bounds
 
@@ -190,7 +189,6 @@ class Environment:
         self._agent_edge_color = config.AGENT_EDGE_COLOR
         self._agent_edge_width_ratio = config.AGENT_EDGE_WIDTH_RATIO
 
-        center_x, center_y = self._center
         size_x, size_y = self._size
         min_x, min_y, _, _ = self._bounds
 
@@ -204,16 +202,15 @@ class Environment:
             agents.append(agent)
         return agents
 
-    def _init_holdings(self, number_of_agents):
-        return [None for n in range(number_of_agents)]
-
     def _pick_up(self, center, radius):
         picked = None
         for stone in self.stones:
-            x, y = center
+            center_x, center_y = center
             stone_x, stone_y = stone.center
-            d = sqrt((stone_x - x) * (stone_x - x) + (stone_y - y) * (stone_y - y))
-            if d < radius:
+            diff_x = stone_x - center_x
+            diff_y = stone_y - center_y
+            distance = sqrt(diff_x * diff_x + diff_y * diff_y)
+            if distance < radius:
                 picked = stone
                 break
 
@@ -227,7 +224,6 @@ class Environment:
             stones[0] = picked
 
         return picked
-            
 
 class Board:
 
@@ -263,10 +259,12 @@ class Board:
     def inset(self):
         return self._inset
 
-    def onBoard(self, point):
+    def is_on_board(self, point):
         point_x, point_y = point
         board_min_x, board_min_y, board_max_x, board_max_y = self.rect
-        return board_min_x < point_x and point_x < board_max_x and board_min_y < point_y and point_y < board_max_y
+        is_on_board_x = board_min_x < point_x and point_x < board_max_x
+        is_on_board_y = board_min_y < point_y and point_y < board_max_y
+        return is_on_board_x and is_on_board_y
 
     def __init__(self, environment_size, environment_center, board_lines):
         self._color = config.BOARD_COLOR
@@ -274,12 +272,17 @@ class Board:
 
         environment_size_x, environment_size_y = environment_size
         environment_center_x, environment_center_y = environment_center
-        self._size = board_size_x, board_size_y = environment_size_x * config.BOARD_SIZE_X_RATIO, environment_size_y * config.BOARD_SIZE_Y_RATIO # allow size_x and size_y to be different
-        self._center = board_center_x, board_center_y = environment_center_x, environment_center_y # center of board
+        board_size_x = environment_size_x * config.BOARD_SIZE_X_RATIO
+        board_size_y = environment_size_y * config.BOARD_SIZE_Y_RATIO
+        self._size = board_size_x, board_size_y
+        board_center_x, board_center_y = environment_center_x, environment_center_y
+        self._center = board_center_x, board_center_y
         self._number_of_lines = board_lines
 
-        board_min_x, board_min_y = board_center_x - board_size_x / 2, board_center_y - board_size_y / 2
-        board_max_x, board_max_y = board_min_x + board_size_x, board_min_y + board_size_y
+        board_min_x = board_center_x - board_size_x / 2
+        board_min_y = board_center_y - board_size_y / 2
+        board_max_x = board_min_x + board_size_x
+        board_max_y = board_min_y + board_size_y
         self._rect = (board_min_x, board_min_y, board_max_x, board_max_y)
 
         board_inset_x = board_size_x / (board_lines + 1)
@@ -292,10 +295,14 @@ class Board:
         board_line_inc_y = board_inset_y
 
         self._inset = (board_inset_x, board_inset_y)
-        self._line_width = config.BOARD_LINE_WIDTH_RATIO * board_inset_x # Differentiate x and y in version 5.0 ;-)
+        # Differentiate x and y in version 5.0 ;-)
+        self._line_width = config.BOARD_LINE_WIDTH_RATIO * board_inset_x
 
-        x_lines = [((board_line_min_x, board_line_min_y + board_line_inc_y * n), (board_line_max_x, board_line_min_y + board_line_inc_y * n)) for n in range(board_lines)]
-        y_lines = [((board_line_min_x + board_line_inc_x * n, board_line_min_y), (board_line_min_x + board_line_inc_x * n, board_line_max_y)) for n in range(board_lines)]
-        self._lines = x_lines + y_lines
-
-
+        self._lines = []
+        for n in range(board_lines):
+            x_line = ((board_line_min_x, board_line_min_y + board_line_inc_y * n),
+                      (board_line_max_x, board_line_min_y + board_line_inc_y * n))
+            y_line = ((board_line_min_x + board_line_inc_x * n, board_line_min_y),
+                      (board_line_min_x + board_line_inc_x * n, board_line_max_y))
+            self._lines.append(x_line)
+            self._lines.append(y_line)
