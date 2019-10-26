@@ -1,45 +1,47 @@
-environment:
+world:
   size:
-    x: 0.6
-    y: 0.6
+    x: 1.0
+    y: 1.0
   background:
     color: { r: 8, g: 80, b: 8, a: 255 }
+  agents: 5
+  stones: 10
 
 board:
+  lines: 4
   size:
     x:
-      ratio: 0.6 # board to environment ratio
+      ratio: 0.6 # board to world ratio
     y:
-      ratio: 0.6 # board to environment ratio
+      ratio: 0.6 # board to world ratio
   color: { r: 224, g: 128, b: 32, a: 255 }
   line:
-    color: { r: 32, g: 32, b: 32, a: 255 }
     width:
       ratio: 0.05 # line width to board inset ratio
+    color: { r: 32, g: 32, b: 32, a: 255 }
 
 stone:
   size:
     ratio: 0.8 # stone to board inset ratio
-  black:
+  color:
     # Do NOT use { r: 0, g: 0, b: 0 }. It is used by set_color for Pygame.
-    color: { r: 32, g: 32, b: 32, a: 255 }
-    edge:
-      color: { r: 64, g: 64, b: 64, a: 255 }
-      width:
-        ratio: 0.1 # width to stone radius ratio
-  white:
-    color: { r: 224, g: 224, b: 224, a: 255 }
-    edge:
-      color: { r: 192, g: 192, b: 192, a: 255 }
-      width:
-        ratio: 0.1 # width to stone radius ratio
+    black: { r: 32, g: 32, b: 32, a: 255 }
+    white: { r: 224, g: 224, b: 224, a: 255 }
+  edge:
+    width:
+      ratio: 0.1 # width to stone radius ratio
+    color:
+      black: { r: 64, g: 64, b: 64, a: 255 }
+      white: { r: 192, g: 192, b: 192, a: 255 }
 
 agent:
-  color: { r: 96, g: 64, b: 192, a: 255 }
   size:
     ratio: 0.8 # agent to stone ratio
+  color: { r: 96, g: 64, b: 192, a: 255 }
   edge:
-    color: { r: 96, g: 64, b: 192, a: 255 }
     width:
       ratio: 0.1 # width to agent radius ratio
+    color: { r: 96, g: 64, b: 192, a: 255 }
 
+display:
+  hz: 30
