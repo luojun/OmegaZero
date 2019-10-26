@@ -20,116 +20,127 @@ def test():
     # env = Environment(1.0, 1.0, 15, 360, 2) # Gomoku
     env = Environment() # Tic-Tac-Toe
 
-    board = env.getBoard()
+    board = env.board
 
     lines = board.getLines()
     for (start_pos, end_pos) in lines:
         print(board.getLineColor(), start_pos, end_pos)
 
-    stones = env.getStones()
-    for stone in stones:
-        print(stone.getColor(), stone.getCenter(), stone.getRadius())
+    for stone in env.stones:
+        print(stone.color, stone.center, stone.radius)
 
 
 class Environment:
 
-    def getBackgroundColor(self):
+    @property
+    def background_color(self):
         return self._background_color
 
-    def getSize(self):
+    @property
+    def size(self):
         return self._size
 
-    def getBounds(self):
+    @property
+    def bounds(self):
         return self._bounds
 
-    def getBoard(self):
+    @property
+    def board(self):
         return self._board
 
-    def getStoneRadius(self):
+    @property
+    def stone_radius(self):
         return self._stone_radius
 
-    def getStoneColorBlack(self):
-        return self._stone_color_black
+    @property
+    def stone_colors(self):
+        return self._stone_colors
 
-    def getStoneColorWhite(self):
-        return self._stone_color_white
+    @property
+    def stone_edge_colors(self):
+        return self._stone_edge_colors
 
-    def getStoneEdgeColorBlack(self):
-        return self._stone_edge_color_black
+    @property
+    def stone_edge_width(self):
+        return self._get_stone_edge_width()
 
-    def getStoneEdgeColorWhite(self):
-        return self._stone_edge_color_white
-
-    def getStoneBlackEdgeWidthRatio(self):
-        return self._stone_black_edge_width_ratio
-
-    def getStoneWhiteEdgeWidthRatio(self):
-        return self._stone_white_edge_width_ratio
-
-    def getAgentEdgeWidthRatio(self):
-        return self._agent_edge_width_ratio
-
-    def getStones(self):
+    @property
+    def stones(self):
         return self._stones
 
-    def getAgentRadius(self):
+    @property
+    def agent_radius(self):
         return self._agent_radius
 
-    def getAgentColor(self):
+    @property
+    def agent_color(self):
         return self._agent_color
 
-    def getAgentEdgeColor(self):
+    @property
+    def agent_edge_color(self):
         return self._agent_edge_color
 
-    def getAgents(self):
+    @property
+    def agent_edge_width(self):
+        return self._get_agent_edge_width()
+
+    @property
+    def agents(self):
         return self._agents
 
-    def getHoldings(self):
+    @property
+    def holdings(self):
         return self._holdings
 
+    def _get_stone_edge_width(self):
+        return self.stone_radius * self._stone_edge_width_ratio
+
+    def _get_agent_edge_width(self):
+        return self.agent_radius * self._agent_edge_width_ratio
+
     def tick(self, gui_agent_action=None, env_image=None):
-        holdings = self.getHoldings()
-        agents = self.getAgents()
+        holdings = self.holdings
+        agents = self.agents
 
         # single thread: agents are all synchronized ...
 
         # receive the rendered env image here because we defer that to the GUI/Pygame
         for agent in agents: # single thread: agents are all synchronized ...
-            agent.getCurrentObservation().setEnvImage(env_image)
+            agent.current_observation.env_image = env_image
 
         # TODO: config for the number of gui_agents
-        agents[0].setCurrentAction(gui_agent_action)
+        agents[0].current_action = gui_agent_action
 
         # apply motion. We move all agents and the stones held first before applying the press action.
         for agent in agents:
-            kinesthetic = agent.moveBy(agent.getCurrentAction().move(), self.getBounds())
-            stoneHeld = holdings[agent.getId()]
-            if stoneHeld is not None:
-                stoneHeld.moveTo(agent.getCenter())
-            agent.getCurrentObservation().setKinesthetic(kinesthetic)
+            kinesthetic = agent.moveBy(agent.current_action.move(), self.bounds)
+            stone_held = holdings[agent.index]
+            if stone_held is not None:
+                stone_held.moveTo(agent.center)
+            agent.current_observation.kinesthetic = kinesthetic
 
         # apply press and update tactile feedback.
         for agent in agents:
-            pressed = agent.getCurrentAction().press()
-            stoneHeld = holdings[agent.getId()]
+            pressed = agent.current_action.press()
+            stone_held = holdings[agent.index]
             if not pressed:
-                stoneHeld = None
-            elif stoneHeld is None:
-                stoneHeld = self._pickUp(agent.getCenter(), agent.getRadius())
-            holdings[agent.getId()] = stoneHeld
+                stone_held = None
+            elif stone_held is None:
+                stone_held = self._pick_up(agent.center, agent.radius)
+            holdings[agent.index] = stone_held
 
             if not pressed:
-                agent.getCurrentObservation().setFeel(Observation.FEELS_NOTHING)
-            elif stoneHeld:
-                agent.getCurrentObservation().setFeel(Observation.FEELS_STONE)
-            elif self.getBoard().onBoard(agent.getCenter()):
-                agent.getCurrentObservation().setFeel(Observation.FEELS_BOARD)
+                agent.feel = Observation.FEELS_NOTHING
+            elif stone_held:
+                agent.feel = Observation.FEELS_STONE
+            elif self.board.onBoard(agent.center):
+                agent.feel = Observation.FEELS_BOARD
             else:
-                agent.getCurrentObservation().setFeel(Observation.FEELS_BACKGROUND)
+                agent.feel = Observation.FEELS_BACKGROUND
 
         # TODO: config for the number of gui_agents
         for agent in agents[1:]:
-            agent.decideNextAction(agent.getCurrentObservation())
+            agent.decideNextAction(agent.current_observation)
 
 
     def __init__(self, size_x=config.ENVIRONMENT_SIZE_X, size_y=config.ENVIRONMENT_SIZE_Y, board_lines=4, number_of_stones=10, number_of_agents=2): # 4, 10, 2 for tic-tac-toe
@@ -151,12 +162,9 @@ class Environment:
 
     def _init_stones(self, number_of_stones, stone_size):
         self._stone_radius = stone_size / 2
-        self._stone_color_black = config.STONE_BLACK_COLOR
-        self._stone_edge_color_black = config.STONE_BLACK_EDGE_COLOR
-        self._stone_black_edge_width_ratio = config.STONE_BLACK_EDGE_WIDTH_RATIO
-        self._stone_color_white = config.STONE_WHITE_COLOR
-        self._stone_edge_color_white = config.STONE_WHITE_EDGE_COLOR
-        self._stone_white_edge_width_ratio = config.STONE_WHITE_EDGE_WIDTH_RATIO
+        self._stone_colors = (config.STONE_BLACK_COLOR, config.STONE_WHITE_COLOR)
+        self._stone_edge_colors = (config.STONE_BLACK_EDGE_COLOR, config.STONE_WHITE_EDGE_COLOR)
+        self._stone_edge_width_ratio = config.STONE_WHITE_EDGE_WIDTH_RATIO # TODO: unify in config
 
         center_x, center_y = self._center
         size_x, size_y = self._size
@@ -164,15 +172,15 @@ class Environment:
 
         stones = []
         for index in range(number_of_stones):
-            isBlack = index % 2 == 0 
-            stone_color = (self._stone_color_black if isBlack else self._stone_color_white)
-            stone_edge_color = (self._stone_edge_color_black if isBlack else self._stone_edge_color_white)
-            stone_edge_ratio = (self._stone_black_edge_width_ratio if isBlack else self._stone_white_edge_width_ratio)
+            color_index = index % 2
+            is_black = (color_index == 0)
+            stone_color = self._stone_colors[color_index]
+            stone_edge_color = self._stone_edge_colors[color_index]
             stone_center = (
                 min_x + self._stone_radius + random() * (size_x - stone_size),
                 min_y + self._stone_radius + random() * (size_y - stone_size)
             )
-            stone = Stone(index, isBlack, stone_color, stone_edge_color, self._stone_radius, stone_edge_ratio, stone_center)
+            stone = Stone(index, is_black, stone_color, stone_edge_color, self._stone_radius, self._stone_edge_width_ratio, stone_center)
             stones.append(stone)
         return stones
 
@@ -199,11 +207,11 @@ class Environment:
     def _init_holdings(self, number_of_agents):
         return [None for n in range(number_of_agents)]
 
-    def _pickUp(self, center, radius):
+    def _pick_up(self, center, radius):
         picked = None
-        for stone in self.getStones():
+        for stone in self.stones:
             x, y = center
-            stone_x, stone_y = stone.getCenter()
+            stone_x, stone_y = stone.center
             d = sqrt((stone_x - x) * (stone_x - x) + (stone_y - y) * (stone_y - y))
             if d < radius:
                 picked = stone
@@ -211,12 +219,11 @@ class Environment:
 
         if picked is not None:
             # bring picked stone to front and push everyone else over by one
-            stones = self.getStones()
-            index = picked.getId()
-            for i in range(index, 0, -1):
-                stones[i] = stones[i-1]
-                stones[i].setId(i)
-            picked.setId(0)
+            stones = self.stones
+            for i in range(picked.index, 0, -1):
+                stones[i] = stones[i - 1]
+                stones[i].index = i
+            picked.index = 0
             stones[0] = picked
 
         return picked
@@ -224,33 +231,41 @@ class Environment:
 
 class Board:
 
-    def getColor(self):
+    @property
+    def color(self):
         return self._color
 
-    def getSize(self):
+    @property
+    def size(self):
         return self._size
 
-    def getRect(self):
+    @property
+    def rect(self):
         return self._rect
 
-    def getLineColor(self):
+    @property
+    def line_color(self):
         return self._line_color
 
-    def getLineWidth(self):
+    @property
+    def line_width(self):
         return self._line_width
 
-    def getNumberOfLines(self):
+    @property
+    def number_of_lines(self):
         return self._number_of_lines # in one direction
 
-    def getLines(self):
+    @property
+    def lines(self):
         return self._lines
 
-    def getInset(self):
+    @property
+    def inset(self):
         return self._inset
 
     def onBoard(self, point):
         point_x, point_y = point
-        board_min_x, board_min_y, board_max_x, board_max_y = self.getRect()
+        board_min_x, board_min_y, board_max_x, board_max_y = self.rect
         return board_min_x < point_x and point_x < board_max_x and board_min_y < point_y and point_y < board_max_y
 
     def __init__(self, environment_size, environment_center, board_lines):

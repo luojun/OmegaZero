@@ -4,25 +4,32 @@ from random import random
 
 class Movable:
 
-    def getId(self):
-        return self._id
+    @property
+    def index(self):
+        return self._index
 
-    def setId(self, new_id):
-        self._id = new_id
+    @index.setter
+    def index(self, new_index):
+        self._index = new_index
 
-    def getColor(self):
+    @property
+    def color(self):
         return self._color
 
-    def getEdgeColor(self):
+    @property
+    def edge_color(self):
         return self._edge_color
 
-    def getRadius(self):
+    @property
+    def radius(self):
         return self._radius
 
-    def getEdgeWidth(self):
+    @property
+    def edge_width(self):
         return self._edge_width
 
-    def getCenter(self):
+    @property
+    def center(self):
         return self._center
 
     def moveBy(self, translation, bounds): # could use insets instead of bounds
@@ -47,7 +54,7 @@ class Movable:
         self._center = target
 
     def __init__(self, index, color, edge_color, radius, edge_ratio, center):
-        self._id = index
+        self._index = index
         self._color = color
         self._edge_color = edge_color
         self._radius = radius
@@ -56,29 +63,44 @@ class Movable:
 
 
 class Stone(Movable):
-    def __init__(self, index, isBlack, color, edge_color, radius, edge_ratio, center):
+    def __init__(self, index, is_black, color, edge_color, radius, edge_ratio, center):
         super().__init__(index, color, edge_color, radius, edge_ratio, center)
-        self._isBlack = isBlack
+        self._is_black = is_black
 
-    def isBlack(self):
-        return self._isBlack
+    @property
+    def is_black(self):
+        return self._is_black
 
 
 class Agent(Movable): # Note how stones are equivalent to super of agents, evolutionarily speaking ;-)
 
-    def getCurrentObservation(self):
+    @property
+    def current_observation(self):
         return self._observation
 
-    def setCurrentFeel(self,feel):
-        self._observation.setFeel(feel)
+    # TODO: figure what's the appropriate way here
+    @property
+    def current_feel(self):
+        return self._observation._feel
 
-    def setCurrentEnvImage(self, env_image):
-        self._observation.setEnvImage(env_image)
+    @current_feel.setter
+    def current_feel(self, feel):
+        self._observation.feel = feel
 
-    def getCurrentAction(self):
+    @property
+    def current_env_image(self):
+        return self._observation.env_image
+
+    @current_env_image.setter
+    def current_env_image(self, env_image):
+        self._observation.env_image = env_image
+
+    @property
+    def current_action(self):
         return self._action
 
-    def setCurrentAction(self, action):
+    @current_action.setter
+    def current_action(self, action):
         self._action = action
 
     def updateObservation(self, observation):
@@ -117,26 +139,32 @@ class Observation:
     FEELS_BOARD = 2
     FEELS_STONE = 3
 
-    def getFeel(self):
+    @property
+    def feel(self):
         return self._feel
 
-    def setFeel(self, feel):
+    @feel.setter
+    def set_feel(self, feel):
         self._feel = feel
 
-    def getKinesthetic(self):
+    @property
+    def kinesthetic(self):
         return self._kinesthetic
 
-    def setKinesthetic(self, kinesthetic):
+    @kinesthetic.setter
+    def kinesthetic(self, kinesthetic):
         self._kinesthetic = kinesthetic
 
-    def getEnvImage():
+    @property
+    def env_image():
         return self._env_image
 
-    def setEnvImage(self, env_image):
-        self._env_image = env_image
+    @env_image.setter
+    def env_image(self, image):
+        self._env_image = image
 
-    def __init__(self, feel=None, env_image=None, kinesthetic=None):
+    def __init__(self, feel=None, image=None, kinesthetic=None):
         self._feel = feel
-        self._env_image = env_image
+        self._env_image = image
         self._kinesthetic = kinesthetic
 
