@@ -40,30 +40,49 @@ DEFAULT_AGENT_EDGE_WIDTH_RATIO = CONFIGS['agent']['edge']['width']['ratio']
 
 DEFAULT_DISPLAY_HZ = CONFIGS['display']['hz']
 
+class WorldConfig:
+    def __init__(self):
+        self.size_x = DEFAULT_WORLD_SIZE_X
+        self.size_y = DEFAULT_WORLD_SIZE_Y
+        self.background_color = DEFAULT_WORLD_BACKGROUND_COLOR
+        self.number_of_agents = DEFAULT_NUMBER_OF_AGENTS
+        self.number_of_stones = DEFAULT_NUMBER_OF_STONES
+
+class BoardConfig:
+    def __init__(self):
+        self.number_of_lines = DEFAULT_BOARD_NUMBER_OF_LINES
+        self.size_x_ratio = DEFAULT_BOARD_SIZE_X_RATIO
+        self.size_y_ratio = DEFAULT_BOARD_SIZE_Y_RATIO
+        self.color = DEFAULT_BOARD_COLOR
+        self.line_color = DEFAULT_BOARD_LINE_COLOR
+        self.line_width_ratio = DEFAULT_BOARD_LINE_WIDTH_RATIO
+
+class StoneConfig:
+    def __init__(self):
+        self.size_ratio = DEFAULT_STONE_SIZE_RATIO
+        self.color_black = DEFAULT_STONE_COLOR_BLACK
+        self.color_white = DEFAULT_STONE_COLOR_WHITE
+        self.edge_width_ratio = DEFAULT_STONE_EDGE_WIDTH_RATIO
+        self.edge_color_black = DEFAULT_STONE_EDGE_COLOR_BLACK
+        self.edge_color_white = DEFAULT_STONE_EDGE_COLOR_WHITE
+
+class AgentConfig:
+    def __init__(self):
+        self.color = DEFAULT_AGENT_COLOR
+        self.size_ratio = DEFAULT_AGENT_SIZE_RATIO
+        self.edge_color = DEFAULT_AGENT_EDGE_COLOR
+        self.edge_width_ratio = DEFAULT_AGENT_EDGE_WIDTH_RATIO
+
+class MovableConfig:
+    def __init__(self, color, edge_color, edge_width_ratio):
+        self.color = color
+        self.edge_color = edge_color
+        self.edge_width_ratio = edge_width_ratio
+
 class Config:
     def __init__(self):
+        self.world = WorldConfig()
+        self.board = BoardConfig()
+        self.stone = StoneConfig()
+        self.agent = AgentConfig()
 
-        # TODO: use properties for the following
-
-        self.world_size_x = DEFAULT_WORLD_SIZE_X
-        self.world_size_y = DEFAULT_WORLD_SIZE_Y
-        self.world_background_color = DEFAULT_WORLD_BACKGROUND_COLOR
-
-        self.board_number_of_lines = DEFAULT_BOARD_NUMBER_OF_LINES
-        self.board_size_x_ratio = DEFAULT_BOARD_SIZE_X_RATIO
-        self.board_size_y_ratio = DEFAULT_BOARD_SIZE_Y_RATIO
-        self.board_color = DEFAULT_BOARD_COLOR
-        self.board_line_color = DEFAULT_BOARD_LINE_COLOR
-        self.board_line_width_ratio = DEFAULT_BOARD_LINE_WIDTH_RATIO
-
-        self.stone_size_ratio = DEFAULT_STONE_SIZE_RATIO
-        self.stone_color_black = DEFAULT_STONE_COLOR_BLACK
-        self.stone_color_white = DEFAULT_STONE_COLOR_WHITE
-        self.stone_edge_width_ratio = DEFAULT_STONE_EDGE_WIDTH_RATIO
-        self.stone_edge_color_black = DEFAULT_STONE_EDGE_COLOR_BLACK
-        self.stone_edge_color_white = DEFAULT_STONE_EDGE_COLOR_WHITE
-
-        self.agent_color = DEFAULT_AGENT_COLOR
-        self.agent_size_ratio = DEFAULT_AGENT_SIZE_RATIO
-        self.agent_edge_color = DEFAULT_AGENT_EDGE_COLOR
-        self.agent_edge_width_ratio = DEFAULT_AGENT_EDGE_WIDTH_RATIO

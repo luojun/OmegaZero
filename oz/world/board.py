@@ -42,18 +42,19 @@ class Board:
         return is_on_board_x and is_on_board_y
 
     # TODO: simplify this
-    def __init__(self, configs, world_size, world_center, board_lines):
-        self._color = configs.board_color
-        self._line_color = configs.board_line_color
+    def __init__(self, board_configs, world_size, world_center):
+        self._color = board_configs.color
+        self._line_color = board_configs.line_color
+        self._number_of_lines = board_configs.number_of_lines
 
         world_size_x, world_size_y = world_size
         world_center_x, world_center_y = world_center
-        board_size_x = world_size_x * configs.board_size_x_ratio
-        board_size_y = world_size_y * configs.board_size_y_ratio
+        board_size_x = world_size_x * board_configs.size_x_ratio
+        board_size_y = world_size_y * board_configs.size_y_ratio
         self._size = board_size_x, board_size_y
+
         board_center_x, board_center_y = world_center_x, world_center_y
         self._center = board_center_x, board_center_y
-        self._number_of_lines = board_lines
 
         board_min_x = board_center_x - board_size_x / 2
         board_min_y = board_center_y - board_size_y / 2
@@ -61,8 +62,9 @@ class Board:
         board_max_y = board_min_y + board_size_y
         self._rect = (board_min_x, board_min_y, board_max_x, board_max_y)
 
-        board_inset_x = board_size_x / (board_lines + 1)
-        board_inset_y = board_size_y / (board_lines + 1)
+        board_inset_x = board_size_x / (self._number_of_lines + 1)
+        board_inset_y = board_size_y / (self._number_of_lines + 1)
+
         board_line_min_x = board_min_x + board_inset_x
         board_line_min_y = board_min_y + board_inset_y
         board_line_max_x = board_max_x - board_inset_x
@@ -72,10 +74,10 @@ class Board:
 
         self._inset = (board_inset_x, board_inset_y)
         # Differentiate x and y in version 5.0 ;-)
-        self._line_width = configs.board_line_width_ratio * board_inset_x
+        self._line_width = board_configs.line_width_ratio * board_inset_x
 
         self._lines = []
-        for index in range(board_lines):
+        for index in range(self._number_of_lines):
             x_line = ((board_line_min_x, board_line_min_y + board_line_inc_y * index),
                       (board_line_max_x, board_line_min_y + board_line_inc_y * index))
             y_line = ((board_line_min_x + board_line_inc_x * index, board_line_min_y),

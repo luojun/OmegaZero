@@ -128,69 +128,67 @@ class World:
 
 
     def __init__(self, configs):
-        size_x = configs.world_size_x
-        size_y = configs.world_size_y
-        board_lines = configs.board_number_of_lines
-        self._background_color = configs.world_background_color
+        size_x = configs.world.size_x
+        size_y = configs.world.size_y
+        self._background_color = configs.world.background_color
+
         self._size = (size_x, size_y)
         self._center = center_x, center_y = 0.0, 0.0
         min_x, min_y = center_x - size_x / 2, center_y - size_y / 2
         max_x, max_y = center_x + size_x / 2, center_y + size_y / 2
         self._bounds = (min_x, min_y, max_x, max_y)
-        self._board = board.Board(configs, self._size, self._center, board_lines)
+
+        self._board = board.Board(configs.board, self._size, self._center)
+
+        self._stone_colors = (configs.stone.color_black, configs.stone.color_white)
+        self._stone_edge_colors = (configs.stone.edge_color_black, configs.stone.edge_color_white)
+        self._stone_edge_width_ratio = configs.stone.edge_width_ratio
 
         board_inset_x, board_inset_y = self._board._inset
-        stone_size = min(board_inset_x, board_inset_y) * configs.stone_size_ratio
-        self._stones = self._init_stones(configs, stone_size)
+        stone_size = min(board_inset_x, board_inset_y) * configs.stone.size_ratio
+        self._stones = self._init_stones(configs.stone, configs.world.number_of_stones,
+                                         stone_size)
 
-        agent_size = stone_size * configs.agent_size_ratio
-        self._agents = self._init_agents(configs, agent_size)
+        agent_size = stone_size * configs.agent.size_ratio
+        self._agent_color = configs.agent.color
+        self._agent_edge_width_ratio = configs.agent.edge_width_ratio
+        self._agents = self._init_agents(configs.agent, configs.world.number_of_agents,
+                                         agent_size)
+
         # an agent can hold at most 1 stone
         self._holdings = [None for n in range(configs.number_of_agents)]
 
-    def _init_stones(self, configs, stone_size):
+    def _init_stones(self, configs, number_of_stones, stone_size):
         self._stone_radius = stone_size / 2
-        self._stone_colors = (configs.stone_color_black, configs.stone_color_white)
-        self._stone_edge_colors = (configs.stone_edge_color_black, configs.stone_edge_color_white)
-        self._stone_edge_width_ratio = configs.stone_edge_width_ratio
 
         size_x, size_y = self._size
         min_x, min_y, _, _ = self._bounds
 
         stones = []
-        for index in range(configs.number_of_stones):
+        for index in range(number_of_stones):
             color_index = index % 2
             is_black = (color_index == 0)
-            stone_color = self._stone_colors[color_index]
-            stone_edge_color = self._stone_edge_colors[color_index]
             stone_center = (
                 min_x + self._stone_radius + random() * (size_x - stone_size),
                 min_y + self._stone_radius + random() * (size_y - stone_size)
             )
-            new_stone = stone.Stone(index, is_black, stone_color, stone_edge_color,
-                                    self._stone_radius, self._stone_edge_width_ratio,
-                                    stone_center)
+            new_stone = stone.Stone(index, is_black, configs, self._stone_radius, stone_center)
             stones.append(new_stone)
         return stones
 
-    def _init_agents(self, configs, agent_size):
+    def _init_agents(self, configs, number_of_agents, agent_size):
         self._agent_radius = agent_size / 2
-        self._agent_color = configs.agent_color
-        self._agent_edge_color = configs.agent_edge_color
-        self._agent_edge_width_ratio = configs.agent_edge_width_ratio
 
         size_x, size_y = self._size
         min_x, min_y, _, _ = self._bounds
 
         agents = []
-        for index in range(configs.number_of_agents):
+        for index in range(number_of_agents):
             agent_center = (
                 min_x + self._agent_radius + random() * (size_x - agent_size),
                 min_y + self._agent_radius + random() * (size_y - agent_size)
             )
-            new_agent = agent.Agent(index, self._agent_color, self._agent_edge_color,
-                                    self._agent_radius, self._agent_edge_width_ratio,
-                                    agent_center)
+            new_agent = agent.Agent(index, configs, self._agent_radius, agent_center)
             agents.append(new_agent)
         return agents
 

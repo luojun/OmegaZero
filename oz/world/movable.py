@@ -51,10 +51,10 @@ class Movable:
         self._center = target
 
     # TODO: do we really need to remember these?
-    def __init__(self, index, color, edge_color, radius, edge_ratio, center):
+    def __init__(self, index, movable_configs, radius, center):
         self._index = index
-        self._color = color
-        self._edge_color = edge_color
         self._radius = radius
-        self._edge_width = radius * edge_ratio
         self._center = center
+        self._color = movable_configs.color
+        self._edge_color = movable_configs.edge_color
+        self._edge_width = radius * movable_configs.edge_width_ratio

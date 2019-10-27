@@ -39,8 +39,7 @@ class Agent(movable.Movable):
     def decide_next_action(self, observation):
         self._action = action.Action(None, None, True)
 
-    # TODO: simplify this through config
-    def __init__(self, index, color, edge_color, radius, edge_ratio, center):
-        super().__init__(index, color, edge_color, radius, edge_ratio, center)
+    def __init__(self, index, agent_configs, radius, center):
+        super().__init__(index, agent_configs, radius, center)
         self._observation = observation.Observation()
         self._action = action.Action(None, None, True)
