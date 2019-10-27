@@ -39,16 +39,16 @@ class Board:
         is_on_board_y = board_min_y < point_y and point_y < board_max_y
         return is_on_board_x and is_on_board_y
 
-    def __init__(self, configs, environment_size, environment_center, board_lines):
+    def __init__(self, configs, world_size, world_center, board_lines):
         self._color = configs.board_color
         self._line_color = configs.board_line_color
 
-        environment_size_x, environment_size_y = environment_size
-        environment_center_x, environment_center_y = environment_center
-        board_size_x = environment_size_x * configs.board_size_x_ratio
-        board_size_y = environment_size_y * configs.board_size_y_ratio
+        world_size_x, world_size_y = world_size
+        world_center_x, world_center_y = world_center
+        board_size_x = world_size_x * configs.board_size_x_ratio
+        board_size_y = world_size_y * configs.board_size_y_ratio
         self._size = board_size_x, board_size_y
-        board_center_x, board_center_y = environment_center_x, environment_center_y
+        board_center_x, board_center_y = world_center_x, world_center_y
         self._center = board_center_x, board_center_y
         self._number_of_lines = board_lines
 

@@ -92,30 +92,30 @@ class World:
 
         # receive the rendered world image here because we defer that to the GUI/Pygame
         for agent in agents: # single thread: agents are all synchronized ...
-            agent.current_observation.world_image = world_image
+            agent.current_world_image = world_image
 
         # TODO: config for the number of gui_agents
         agents[0].current_action = gui_agent_action
 
-        # Move agents and the stones held then apply press action.
+        # Move agents and the stones held then apply touch action.
         for agent in agents:
-            kinesthetic = agent.move_by(agent.current_action.move(), self.bounds)
+            kinesthetic = agent.move_by(agent.current_action.move, self.bounds)
             stone_held = holdings[agent.index]
             if stone_held is not None:
                 stone_held.move_to(agent.center)
             agent.current_observation.kinesthetic = kinesthetic
 
-        # Apply press and update tactile feedback.
+        # Apply touch and update tactile feedback.
         for agent in agents:
-            pressed = agent.current_action.press()
+            touch = agent.current_action.touch
             stone_held = holdings[agent.index]
-            if not pressed:
+            if not touch:
                 stone_held = None
             elif stone_held is None:
                 stone_held = self._pick_up(agent.center, agent.radius)
             holdings[agent.index] = stone_held
 
-            if not pressed:
+            if not touch:
                 agent.feel = observation.FEELS_NOTHING
             elif stone_held:
                 agent.feel = observation.FEELS_STONE

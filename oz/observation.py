@@ -10,8 +10,16 @@ class Observation:
         return self._feel
 
     @feel.setter
-    def set_feel(self, feel):
+    def feel(self, feel):
         self._feel = feel
+
+    @property
+    def world_image(self):
+        return self._world_image
+
+    @world_image.setter
+    def world_image(self, image):
+        self._world_image = image
 
     @property
     def kinesthetic(self):
@@ -21,15 +29,7 @@ class Observation:
     def kinesthetic(self, kinesthetic):
         self._kinesthetic = kinesthetic
 
-    @property
-    def environment_image(self):
-        return self._environment_image
-
-    @environment_image.setter
-    def environment_image(self, image):
-        self._environment_image = image
-
     def __init__(self, feel=None, image=None, kinesthetic=None):
         self._feel = feel
-        self._environment_image = image
+        self._world_image = image
         self._kinesthetic = kinesthetic
