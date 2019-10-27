@@ -89,42 +89,42 @@ class World:
         # single thread: agents are all synchronized ...
 
         # receive the rendered world image here because we defer that to the GUI/Pygame
-        for agent in agents: # single thread: agents are all synchronized ...
-            agent.current_world_image = world_image
+        for a in agents: # single thread: agents are all synchronized ...
+            a.current_world_image = world_image
 
         # TODO: config for the number of gui_agents
         agents[0].current_action = gui_agent_action
 
         # Move agents and the stones held then apply touch action.
-        for agent in agents:
-            kinesthetic = agent.move_by(agent.current_action.move, self.bounds)
-            stone_held = holdings[agent.index]
+        for a in agents:
+            kinesthetic = a.move_by(a.current_action.move, self.bounds)
+            stone_held = holdings[a.index]
             if stone_held is not None:
-                stone_held.move_to(agent.center)
-            agent.current_observation.kinesthetic = kinesthetic
+                stone_held.move_to(a.center)
+            a.current_observation.kinesthetic = kinesthetic
 
         # Apply touch and update tactile feedback.
-        for agent in agents:
-            touch = agent.current_action.touch
-            stone_held = holdings[agent.index]
+        for a in agents:
+            touch = a.current_action.touch
+            stone_held = holdings[a.index]
             if not touch:
                 stone_held = None
             elif stone_held is None:
-                stone_held = self._pick_up(agent.center, agent.radius)
-            holdings[agent.index] = stone_held
+                stone_held = self._pick_up(a.center, a.radius)
+            holdings[a.index] = stone_held
 
             if not touch:
-                agent.feel = observation.FEELS_NOTHING
+                a.feel = observation.FEELS_NOTHING
             elif stone_held:
-                agent.feel = observation.FEELS_STONE
-            elif self.board.is_on_board(agent.center):
-                agent.feel = observation.FEELS_BOARD
+                a.feel = observation.FEELS_STONE
+            elif self.board.is_on_board(a.center):
+                a.feel = observation.FEELS_BOARD
             else:
-                agent.feel = observation.FEELS_BACKGROUND
+                a.feel = observation.FEELS_BACKGROUND
 
         # TODO: config for the number of gui_agents
-        for agent in agents[1:]:
-            agent.decide_next_action(agent.current_observation)
+        for a in agents[1:]:
+            a.decide_next_action(a.current_observation)
 
 
     def __init__(self, configs):
@@ -168,7 +168,8 @@ class World:
                 min_y + self._stone_radius + random() * (size_y - stone_size)
             )
             new_stone = stone.Stone(index, is_black, stone_color, stone_edge_color,
-                          self._stone_radius, self._stone_edge_width_ratio, stone_center)
+                                    self._stone_radius, self._stone_edge_width_ratio,
+                                    stone_center)
             stones.append(new_stone)
         return stones
 
@@ -188,7 +189,8 @@ class World:
                 min_y + self._agent_radius + random() * (size_y - agent_size)
             )
             new_agent = agent.Agent(index, self._agent_color, self._agent_edge_color,
-                          self._agent_radius, self._agent_edge_width_ratio, agent_center)
+                                    self._agent_radius, self._agent_edge_width_ratio,
+                                    agent_center)
             agents.append(new_agent)
         return agents
 

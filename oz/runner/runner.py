@@ -12,22 +12,21 @@ def capture_screen(surface, filepath, size, pos=(0, 0)):
     image.blit(surface, (0, 0), (pos, size))    # Blit portion of the display to the image
     pygame.image.save(image, filepath)
 
+def _initialize_pygame(view_size):
+    pygame.init()
+    surface = pygame.display.set_mode(view_size)
+    return surface
+
 class Runner:
     def __init__(self, world):
         self._world = world
         self._transform = transform.Transform(world.size, 900) # TODO: turn 900 into a config
-        self._surface = self._initialize_pygame()
+        self._view_size = self._transform.scale2view2d(self._world.size)
+        # NB: has to set mode before instantiate Renderer
+        self._surface = _initialize_pygame(self._view_size)
         self._base = renderer.render_base(self._world, self._transform)
         self._stone_black, self._stone_white = renderer.render_stone(self._world, self._transform)
         self._agent_down, self._agent_up = renderer.render_agent(self._world, self._transform)
-
-    def _initialize_pygame(self):
-        # initialize pygame
-        pygame.init()
-        size = self._transform.scale2view2d(self._world.size)
-        # NB: has to set mode before instantiate Renderer
-        surface = pygame.display.set_mode(size)
-        return surface
 
     def _blit_all(self):
         self._surface.blit(self._base, (0, 0))
@@ -95,7 +94,8 @@ class Runner:
             # handle screen recording
             cycles_done += 1
             if capture_pngs and cycles_remain % 10 == 0:
-                capture_screen(surface, "screenshot" + "{:05d}".format(cycles_done) + ".png", size)
+                capture_screen(self.surface, "screenshot" + "{:05d}".format(cycles_done)
+                               + ".png", self._view_size)
 
             # handle interaction
             for event in pygame.event.get():
@@ -103,7 +103,7 @@ class Runner:
                     sys.exit() # TODO: exit appropriately
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_c:
-                        capture_screen(surface, "screenshot.png", size)
+                        capture_screen(self.surface, "screenshot.png", self._view_size)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_down = True
                     mouse_x = event.pos[0]

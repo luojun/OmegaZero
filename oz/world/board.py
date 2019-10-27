@@ -75,10 +75,10 @@ class Board:
         self._line_width = configs.board_line_width_ratio * board_inset_x
 
         self._lines = []
-        for n in range(board_lines):
-            x_line = ((board_line_min_x, board_line_min_y + board_line_inc_y * n),
-                      (board_line_max_x, board_line_min_y + board_line_inc_y * n))
-            y_line = ((board_line_min_x + board_line_inc_x * n, board_line_min_y),
-                      (board_line_min_x + board_line_inc_x * n, board_line_max_y))
+        for index in range(board_lines):
+            x_line = ((board_line_min_x, board_line_min_y + board_line_inc_y * index),
+                      (board_line_max_x, board_line_min_y + board_line_inc_y * index))
+            y_line = ((board_line_min_x + board_line_inc_x * index, board_line_min_y),
+                      (board_line_min_x + board_line_inc_x * index, board_line_max_y))
             self._lines.append(x_line)
             self._lines.append(y_line)
