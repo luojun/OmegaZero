@@ -13,22 +13,6 @@ from board import Board
 from agent import Agent
 from stone import Stone
 import observation
-from action import Action
-
-def test():
-    # world = World(1.0, 1.0, 19, 360, 2) # Go
-    # world = World(1.0, 1.0, 15, 360, 2) # Gomoku
-    world = World() # Tic-Tac-Toe
-
-    board = world.board
-
-    lines = board.lines
-    for (start_pos, end_pos) in lines:
-        print(board.line_color, start_pos, end_pos)
-
-    for stone in world.stones:
-        print(stone.color, stone.center, stone.radius)
-
 
 class World:
 
@@ -149,8 +133,6 @@ class World:
         size_x = configs.world_size_x
         size_y = configs.world_size_y
         board_lines = configs.board_number_of_lines
-        number_of_stones = configs.number_of_stones
-        number_of_agents = configs.number_of_agents
         self._background_color = configs.world_background_color
         self._size = (size_x, size_y)
         self._center = center_x, center_y = 0.0, 0.0
@@ -187,7 +169,8 @@ class World:
                 min_x + self._stone_radius + random() * (size_x - stone_size),
                 min_y + self._stone_radius + random() * (size_y - stone_size)
             )
-            stone = Stone(index, is_black, stone_color, stone_edge_color, self._stone_radius, self._stone_edge_width_ratio, stone_center)
+            stone = Stone(index, is_black, stone_color, stone_edge_color,
+                          self._stone_radius, self._stone_edge_width_ratio, stone_center)
             stones.append(stone)
         return stones
 
@@ -206,7 +189,8 @@ class World:
                 min_x + self._agent_radius + random() * (size_x - agent_size),
                 min_y + self._agent_radius + random() * (size_y - agent_size)
             )
-            agent = Agent(index, self._agent_color, self._agent_edge_color, self._agent_radius, self._agent_edge_width_ratio, agent_center)
+            agent = Agent(index, self._agent_color, self._agent_edge_color,
+                          self._agent_radius, self._agent_edge_width_ratio, agent_center)
             agents.append(agent)
         return agents
 

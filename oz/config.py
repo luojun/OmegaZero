@@ -45,7 +45,7 @@ class Config:
 
         self.world_size_x = DEFAULT_WORLD_SIZE_X
         self.world_size_y = DEFAULT_WORLD_SIZE_Y
-        self.world_background_color= DEFAULT_WORLD_BACKGROUND_COLOR
+        self.world_background_color = DEFAULT_WORLD_BACKGROUND_COLOR
 
         self.board_number_of_lines = DEFAULT_BOARD_NUMBER_OF_LINES
         self.board_size_x_ratio = DEFAULT_BOARD_SIZE_X_RATIO
