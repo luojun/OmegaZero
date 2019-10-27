@@ -8,7 +8,6 @@ class Agent(Movable):
     def current_observation(self):
         return self._observation
 
-    # TODO: figure what's the appropriate way here
     @property
     def current_feel(self):
         return self._observation.feel

@@ -1,4 +1,5 @@
 # TODO: understand conventions for __main__.py
+# TODO: test auxiliary funcationalities: timing, capture, headless
 
 import argparse
 

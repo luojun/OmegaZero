@@ -1,6 +1,8 @@
 # TODO: understand namespace
 # TODO: understand how to do constants
 # TODO: understand how to do private utility method
+# TODO: do all configuration logic / size calculation here and free other code from complication?
+# TODO: separate differet parts of configration: board, world, agent, stone etc.
 # TODO: revise accordingly
 
 import yaml

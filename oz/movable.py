@@ -49,6 +49,7 @@ class Movable:
     def move_to(self, target):
         self._center = target
 
+    # TODO: do we really need to remember these?
     def __init__(self, index, color, edge_color, radius, edge_ratio, center):
         self._index = index
         self._color = color

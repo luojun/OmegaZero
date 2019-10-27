@@ -1,9 +1,7 @@
 # TODO: understand how to do modules
 # TODO: understand how to do from ... import ...
 # TODO: understand the convention for random and sqrt
-# TODO: move test to tests/
 # TODO: understand convention for relationship between Python classes and Python files vs. Java
-# TODO: follow Python style guide
 # TODO: Python's way with setters and getters
 
 from random import random

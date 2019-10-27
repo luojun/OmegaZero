@@ -57,6 +57,7 @@ class Runner:
         gui_agent_move = gui_agent_new_x - gui_agent_x, gui_agent_new_y - gui_agent_y
         return Action(mouse_down, gui_agent_move)
 
+    # TODO: refactor this into its proper parts
     def run(self, cycles=-1, timing=False, capture_pngs=False, display_hz=50):
 
         mouse_down = False
