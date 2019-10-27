@@ -1,5 +1,4 @@
 # TODO: understand how to do modules
-# TODO: understand how to do from ... import ...
 # TODO: understand the convention for random and sqrt
 # TODO: understand convention for relationship between Python classes and Python files vs. Java
 # TODO: Python's way with setters and getters
@@ -7,10 +6,10 @@
 from random import random
 from math import sqrt
 
-from board import Board
-from agent import Agent
-from stone import Stone
-import observation
+from world import board
+from world import stone
+from agent import agent
+from agent import observation
 
 class World:
 
@@ -82,6 +81,7 @@ class World:
     def _get_agent_edge_width(self):
         return self.agent_radius * self._agent_edge_width_ratio
 
+    # TODO: refactor this one
     def tick(self, gui_agent_action=None, world_image=None):
         holdings = self.holdings
         agents = self.agents
@@ -137,7 +137,7 @@ class World:
         min_x, min_y = center_x - size_x / 2, center_y - size_y / 2
         max_x, max_y = center_x + size_x / 2, center_y + size_y / 2
         self._bounds = (min_x, min_y, max_x, max_y)
-        self._board = Board(configs, self._size, self._center, board_lines)
+        self._board = board.Board(configs, self._size, self._center, board_lines)
 
         board_inset_x, board_inset_y = self._board._inset
         stone_size = min(board_inset_x, board_inset_y) * configs.stone_size_ratio
@@ -167,9 +167,9 @@ class World:
                 min_x + self._stone_radius + random() * (size_x - stone_size),
                 min_y + self._stone_radius + random() * (size_y - stone_size)
             )
-            stone = Stone(index, is_black, stone_color, stone_edge_color,
+            new_stone = stone.Stone(index, is_black, stone_color, stone_edge_color,
                           self._stone_radius, self._stone_edge_width_ratio, stone_center)
-            stones.append(stone)
+            stones.append(new_stone)
         return stones
 
     def _init_agents(self, configs, agent_size):
@@ -187,9 +187,9 @@ class World:
                 min_x + self._agent_radius + random() * (size_x - agent_size),
                 min_y + self._agent_radius + random() * (size_y - agent_size)
             )
-            agent = Agent(index, self._agent_color, self._agent_edge_color,
+            new_agent = agent.Agent(index, self._agent_color, self._agent_edge_color,
                           self._agent_radius, self._agent_edge_width_ratio, agent_center)
-            agents.append(agent)
+            agents.append(new_agent)
         return agents
 
     def _pick_up(self, center, radius):

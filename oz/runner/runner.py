@@ -3,9 +3,9 @@ import time
 
 import pygame
 
-import renderer
-from action import Action
-from transform import Transform
+from runner import renderer
+from runner import transform
+from agent import action
 
 def capture_screen(surface, filepath, size, pos=(0, 0)):
     image = pygame.Surface(size)    # Create image surface
@@ -15,7 +15,7 @@ def capture_screen(surface, filepath, size, pos=(0, 0)):
 class Runner:
     def __init__(self, world):
         self._world = world
-        self._transform = Transform(world.size, 900) # TODO: turn 900 into a config
+        self._transform = transform.Transform(world.size, 900) # TODO: turn 900 into a config
         self._surface = self._initialize_pygame()
         self._base = renderer.render_base(self._world, self._transform)
         self._stone_black, self._stone_white = renderer.render_stone(self._world, self._transform)
@@ -55,7 +55,7 @@ class Runner:
         gui_agent_new_x, gui_agent_new_y = self._transform.view2world2d((mouse_x, mouse_y))
         gui_agent_x, gui_agent_y = self._world.agents[0].center # The 0th agent is a GUI agent
         gui_agent_move = gui_agent_new_x - gui_agent_x, gui_agent_new_y - gui_agent_y
-        return Action(mouse_down, gui_agent_move)
+        return action.Action(mouse_down, gui_agent_move)
 
     # TODO: refactor this into its proper parts
     def run(self, cycles=-1, timing=False, capture_pngs=False, display_hz=50):

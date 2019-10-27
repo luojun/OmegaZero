@@ -1,3 +1,5 @@
+# TODO: differentiate class property and instance property
+
 class Board:
 
     @property
@@ -39,6 +41,7 @@ class Board:
         is_on_board_y = board_min_y < point_y and point_y < board_max_y
         return is_on_board_x and is_on_board_y
 
+    # TODO: simplify this
     def __init__(self, configs, world_size, world_center, board_lines):
         self._color = configs.board_color
         self._line_color = configs.board_line_color

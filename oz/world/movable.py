@@ -46,6 +46,7 @@ class Movable:
         self._center = new_x, new_y
         return actual_delta_x, actual_delta_y # return the actual change
 
+    # TODO: also return actual delta
     def move_to(self, target):
         self._center = target
 

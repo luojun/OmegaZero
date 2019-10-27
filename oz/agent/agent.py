@@ -1,12 +1,16 @@
-from movable import Movable
-from observation import Observation
-from action import Action
+from world import movable
+from agent import observation
+from agent import action
 
-class Agent(Movable):
+class Agent(movable.Movable):
 
     @property
     def current_observation(self):
         return self._observation
+
+    @current_observation.setter
+    def current_observation(self, observation):
+        self._observation = observation
 
     @property
     def current_feel(self):
@@ -32,13 +36,11 @@ class Agent(Movable):
     def current_action(self, action):
         self._action = action
 
-    def update_observation(self, observation):
-        self._observation = observation
-
     def decide_next_action(self, observation):
-        self._action = Action(None, None, True)
+        self._action = action.Action(None, None, True)
 
+    # TODO: simplify this through config
     def __init__(self, index, color, edge_color, radius, edge_ratio, center):
         super().__init__(index, color, edge_color, radius, edge_ratio, center)
-        self._observation = Observation()
-        self._action = Action(None, None, True)
+        self._observation = observation.Observation()
+        self._action = action.Action(None, None, True)

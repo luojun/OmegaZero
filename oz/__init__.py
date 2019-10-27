@@ -1,1 +1,2 @@
-# NOP
+# Something
+name = 'oz'

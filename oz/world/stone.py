@@ -1,6 +1,6 @@
-from movable import Movable
+from world import movable
 
-class Stone(Movable):
+class Stone(movable.Movable):
     def __init__(self, index, is_black, color, edge_color, radius, edge_ratio, center):
         super().__init__(index, color, edge_color, radius, edge_ratio, center)
         self._is_black = is_black
