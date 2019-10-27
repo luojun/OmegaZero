@@ -156,7 +156,7 @@ class World:
                                          agent_size)
 
         # an agent can hold at most 1 stone
-        self._holdings = [None for n in range(configs.number_of_agents)]
+        self._holdings = [None for n in range(configs.world.number_of_agents)]
 
     def _init_stones(self, configs, number_of_stones, stone_size):
         self._stone_radius = stone_size / 2

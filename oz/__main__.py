@@ -21,9 +21,9 @@ def main():
     ARGS = PARSER.parse_args()
 
     CONFIGS = config.Config()
-    CONFIGS.board_number_of_lines = ARGS.lines
-    CONFIGS.number_of_stones = ARGS.stones
-    CONFIGS.number_of_agents = ARGS.agents
+    CONFIGS.board.number_of_lines = ARGS.lines
+    CONFIGS.world.number_of_stones = ARGS.stones
+    CONFIGS.world.number_of_agents = ARGS.agents
 
     WORLD = world.World(CONFIGS)
 
