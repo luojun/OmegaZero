@@ -43,8 +43,8 @@ class Runner:
 
         for agent in self._world.agents:
             agent_x, agent_y = agent.center
-            target = self._transform.world2view2d((agent_x - radius, agent_y - radius))
             radius = agent.radius
+            target = self._transform.world2view2d((agent_x - radius, agent_y - radius))
             if agent.current_action.touch:
                 self._surface.blit(self._agent_down, target)
             else:
