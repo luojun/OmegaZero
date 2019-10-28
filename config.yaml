@@ -8,13 +8,13 @@ world:
   stones: 10
 
 board:
-  lines: 4
   size:
     x:
       ratio: 0.6 # board to world ratio
     y:
       ratio: 0.6 # board to world ratio
   color: { r: 224, g: 128, b: 32, a: 255 }
+  lines: 4 # number of lines in one of the two orientations
   line:
     width:
       ratio: 0.05 # line width to board inset ratio

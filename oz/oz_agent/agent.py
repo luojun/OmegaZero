@@ -1,6 +1,6 @@
-from world import movable
-from agent import observation
-from agent import action
+from oz_world import movable
+from oz_agent import observation
+from oz_agent import action
 
 class Agent(movable.Movable):
 
@@ -39,7 +39,7 @@ class Agent(movable.Movable):
     def decide_next_action(self, observation):
         self._action = action.Action(None, None, True)
 
-    def __init__(self, index, agent_configs, radius, center):
-        super().__init__(index, agent_configs, radius, center)
+    def __init__(self, index, center):
+        super().__init__(index, center)
         self._observation = observation.Observation()
         self._action = action.Action(None, None, True)

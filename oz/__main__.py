@@ -3,30 +3,26 @@
 
 import argparse
 
-import config
-from world import world
-from runner import runner
+import oz_config
+from oz_world import world
+from oz_world import settings
+from oz_runner import runner
 
 def main():
 
     PARSER = argparse.ArgumentParser()
     PARSER.add_argument('-l', '--lines', nargs='?',
-                        default=config.DEFAULT_BOARD_NUMBER_OF_LINES, type=int)
+                        default=oz_config.DEFAULT_BOARD_NUMBER_OF_LINES, type=int)
     PARSER.add_argument('-s', '--stones', nargs='?',
-                        default=config.DEFAULT_NUMBER_OF_STONES, type=int)
+                        default=oz_config.DEFAULT_NUMBER_OF_STONES, type=int)
     PARSER.add_argument('-a', '--agents', nargs='?',
-                        default=config.DEFAULT_NUMBER_OF_AGENTS, type=int)
+                        default=oz_config.DEFAULT_NUMBER_OF_AGENTS, type=int)
     PARSER.add_argument('-hz', '--display_hz', nargs='?',
-                        default=config.DEFAULT_DISPLAY_HZ, type=float)
+                        default=oz_config.DEFAULT_DISPLAY_HZ, type=float)
     ARGS = PARSER.parse_args()
 
-    CONFIGS = config.Config()
-    CONFIGS.board.number_of_lines = ARGS.lines
-    CONFIGS.world.number_of_stones = ARGS.stones
-    CONFIGS.world.number_of_agents = ARGS.agents
-
-    WORLD = world.World(CONFIGS)
-
+    world_settings = settings.WorldSettings(ARGS.lines, ARGS.stones, ARGS.agents)
+    WORLD = world.World(world_settings)
     OZ_RUNNER = runner.Runner(WORLD)
 
     #import cProfile

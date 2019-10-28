@@ -3,9 +3,9 @@ import time
 
 import pygame
 
-from runner import renderer
-from runner import transform
-from agent import action
+from oz_runner import renderer
+from oz_runner import transform
+from oz_agent import action
 
 def capture_screen(surface, filepath, size, pos=(0, 0)):
     image = pygame.Surface(size)    # Create image surface
@@ -18,10 +18,15 @@ def _initialize_pygame(view_size):
     return surface
 
 class Runner:
+    @property
+    def world(self):
+        return self._world
+
     def __init__(self, world):
         self._world = world
-        self._transform = transform.Transform(world.size, 900) # TODO: turn 900 into a config
-        self._view_size = self._transform.scale2view2d(self._world.size)
+        world_size = world.settings.size
+        self._transform = transform.Transform(world_size, 900) # TODO: turn 900 into a config
+        self._view_size = self._transform.scale2view2d(world_size)
         # NB: has to set mode before instantiate Renderer
         self._surface = _initialize_pygame(self._view_size)
         self._base = renderer.render_base(self._world, self._transform)
@@ -31,20 +36,20 @@ class Runner:
     def _blit_all(self):
         self._surface.blit(self._base, (0, 0))
 
+        stone_radius = self.world.settings.stone.radius
         # reversed is needed to honor z-order of stones
-        for stone in reversed(self._world.stones):
+        for stone in reversed(self.world.stones):
             center_x, center_y = stone.center
-            radius = stone.radius
-            target = self._transform.world2view2d((center_x - radius, center_y - radius))
+            target = self._transform.world2view2d((center_x - stone_radius, center_y - stone_radius))
             if stone.is_black:
                 self._surface.blit(self._stone_black, target)
             else:
                 self._surface.blit(self._stone_white, target)
 
+        agent_radius = self.world.settings.agent.radius
         for agent in self._world.agents:
             agent_x, agent_y = agent.center
-            radius = agent.radius
-            target = self._transform.world2view2d((agent_x - radius, agent_y - radius))
+            target = self._transform.world2view2d((agent_x - agent_radius, agent_y - agent_radius))
             if agent.current_action.touch:
                 self._surface.blit(self._agent_down, target)
             else:

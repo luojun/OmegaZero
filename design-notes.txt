@@ -1,0 +1,32 @@
+World - composition
+    Background
+    Board
+    List of Stones with z-order
+    List of Agents without z-order?
+
+World - constraints - configs
+    World
+        Shape: rectangular
+        Size: given
+        Background: background.size == world.size
+    Board:
+        Shape: rectangular
+        Size: world-Board: board.size == world.size * board_size_ratio
+        Grid:
+            Rectangular grid: (1) even spacing; (2) parallel to board edges
+            Grid line positioning: (1) number of lines; (2) inset
+    Stone
+        Shape: round
+        Size: size of cell on the board * stone_size_ratio
+    Agent
+        Shape: round
+        Size: size of stone * agent_size_ratio
+
+World - behavior (tick)
+     -- world ticking drives renderring, rather than the other way around
+     -- per tick
+        1. generate observations
+           - render ...
+        2. generate actions
+        3. apply actions
+     -- GUI agent is just another asynchronous participant
