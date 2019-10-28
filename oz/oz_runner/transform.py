@@ -1,10 +1,10 @@
 class Transform:
 
-    def __init__(self, world_size, dpm=600.0): # 600 dpm -- dots per meter
+    def __init__(self, world_size, dot_per_meter=600.0):
         size_x, size_y = world_size
         self._trans_x = size_x / 2.0
         self._trans_y = size_y / 2.0
-        self._scale = dpm
+        self._scale = dot_per_meter
 
     def scale2view(self, value):
         return round(self._scale * value)

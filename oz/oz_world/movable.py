@@ -9,26 +9,10 @@ class Movable:
         self._index = new_index
 
     @property
-    def color(self):
-        return self._color
-
-    @property
-    def edge_color(self):
-        return self._edge_color
-
-    @property
-    def radius(self):
-        return self._radius
-
-    @property
-    def edge_width(self):
-        return self._edge_width
-
-    @property
     def center(self):
         return self._center
 
-    def move_by(self, translation, bounds): # could use insets instead of bounds
+    def move_by(self, translation, bounds):
         current_x, current_y = self._center
         delta_x, delta_y = translation
         new_x, new_y = current_x + delta_x, current_y + delta_y
@@ -46,15 +30,9 @@ class Movable:
         self._center = new_x, new_y
         return actual_delta_x, actual_delta_y # return the actual change
 
-    # TODO: also return actual delta
     def move_to(self, target):
         self._center = target
 
-    # TODO: do we really need to remember these?
-    def __init__(self, index, movable_configs, radius, center):
+    def __init__(self, index, center):
         self._index = index
-        self._radius = radius
         self._center = center
-        self._color = movable_configs.color
-        self._edge_color = movable_configs.edge_color
-        self._edge_width = radius * movable_configs.edge_width_ratio
