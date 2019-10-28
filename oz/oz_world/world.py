@@ -30,20 +30,16 @@ class World:
         return self._holdings
 
     # TODO: refactor this one
-    def tick(self, gui_agent_action=None, world_image=None):
+    def tick(self, gui_agent_action, renderer):
         holdings = self.holdings
         agents = self.agents
 
         # single thread: agents are all synchronized ...
 
-        # receive the rendered world image here because we defer that to the GUI/Pygame
-        for agent in agents: # single thread: agents are all synchronized ...
-            agent.current_world_image = world_image
-
         # TODO: config for the number of gui_agents
         agents[0].current_action = gui_agent_action
 
-        # Move agents and the stones held then apply touch action.
+        # Move agents and the stones held
         for agent in agents:
             kinesthetic = agent.move_by(agent.current_action.move, self.settings.bounds)
             stone_held = holdings[agent.index]
@@ -70,6 +66,11 @@ class World:
                 agent.feel = TactileQuality.board
             else:
                 agent.feel = TactileQuality.background
+
+        world_image = renderer.render()
+
+        for agent in agents: # single thread: agents are all synchronized ...
+            agent.current_world_image = world_image
 
         # TODO: config for the number of gui_agents
         for agent in agents[1:]:

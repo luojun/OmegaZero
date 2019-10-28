@@ -33,7 +33,7 @@ class Observation:
     def kinesthetic(self, kinesthetic):
         self._kinesthetic = kinesthetic
 
-    def __init__(self, feel=None, image=None, kinesthetic=None):
+    def __init__(self, feel=TactileQuality.nothing, image=None, kinesthetic=None):
         self._feel = feel
         self._world_image = image
         self._kinesthetic = kinesthetic

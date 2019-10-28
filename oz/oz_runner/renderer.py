@@ -1,5 +1,12 @@
 import pygame
 
+from oz_runner import transform
+
+def _initialize_pygame(view_size):
+    pygame.init()
+    surface = pygame.display.set_mode(view_size)
+    return surface
+
 def render_base(world, transform):
     board_color = world.settings.board.color
     board_min_x, board_min_y, board_max_x, board_max_y = transform.world2view4d(world.board.rect)
@@ -61,3 +68,48 @@ def render_agent(world, transform):
     pygame.draw.circle(agent_down_surface, color, center, radius, edge_width)
     pygame.draw.circle(agent_up_surface, color, center, radius, 0)
     return agent_down_surface, agent_up_surface
+
+class Renderer:
+    def __init__(self, world, transform):
+        self._world = world
+        world_size = world.settings.size
+        self._transform = transform
+        self._view_size = self._transform.scale2view2d(world_size)
+        # NB: has to set mode before instantiate Renderer
+        self._surface = _initialize_pygame(self._view_size)
+        self._base = render_base(self._world, self._transform)
+        self._stone_black, self._stone_white = render_stone(self._world, self._transform)
+        self._agent_down, self._agent_up = render_agent(self._world, self._transform)
+
+    def _blit_all(self):
+        self._surface.blit(self._base, (0, 0))
+
+        stone_radius = self._world.settings.stone.radius
+        # reversed is needed to honor z-order of stones
+        for stone in reversed(self._world.stones):
+            center_x, center_y = stone.center
+            target = self._transform.world2view2d((center_x - stone_radius, center_y - stone_radius))
+            if stone.is_black:
+                self._surface.blit(self._stone_black, target)
+            else:
+                self._surface.blit(self._stone_white, target)
+
+        agent_radius = self._world.settings.agent.radius
+        for agent in self._world.agents:
+            agent_x, agent_y = agent.center
+            target = self._transform.world2view2d((agent_x - agent_radius, agent_y - agent_radius))
+            if agent.current_action.touch:
+                self._surface.blit(self._agent_down, target)
+            else:
+                self._surface.blit(self._agent_up, target)
+
+    def render(self):
+        self._blit_all()
+        # generate visual feedback
+        a3d = pygame.surfarray.array3d(self._surface)
+        return a3d
+
+    def capture_screen(filepath):
+        image = pygame.Surface(self._view_size)
+        image.blit(self.surface, (0, 0), ((0, 0), self._view_size))
+        pygame.image.save(image, filepath)
