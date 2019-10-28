@@ -1,7 +1,5 @@
 import pygame
 
-# TODO: figure out Python equivalent of class constants ...
-
 def render_base(world, transform):
     board_color = world.settings.board.color
     board_min_x, board_min_y, board_max_x, board_max_y = transform.world2view4d(world.board.rect)

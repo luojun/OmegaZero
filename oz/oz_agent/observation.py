@@ -1,8 +1,10 @@
-# TODO: figure out how to do enum
-FEELS_NOTHING = 0
-FEELS_BACKGROUND = 1
-FEELS_BOARD = 2
-FEELS_STONE = 3
+from enum import Enum, auto
+
+class TactileQuality(Enum):
+    nothing = auto()
+    background = auto()
+    board = auto()
+    stone = auto()
 
 # TODO: should we make instances of this class immutable?
 class Observation:

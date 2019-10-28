@@ -23,10 +23,27 @@ World - constraints - configs
         Size: size of stone * agent_size_ratio
 
 World - behavior (tick)
-     -- world ticking drives renderring, rather than the other way around
-     -- per tick
+    - per tick
         1. generate observations
-           - render ...
+            - render ...
         2. generate actions
         3. apply actions
-     -- GUI agent is just another asynchronous participant
+
+Oz world, renderer, GUI agent
+    - synchronized calls into renderer
+        - (why does "renderering" take so much time? in contrast to the real world.
+           why humans do not need rendering?)
+    - asynch observation queue to each agent
+        - when dequeue and empty, agent throws exception
+        - when enqueue and full, environment throws exception
+    - asynch action queue from each agent
+        - when dequeue and empty, world does nothing for agent (no change but touching continues)
+        - when enqueue and full, agent throws exception
+
+Oz world, GUI and the real world
+    - world ticking drives renderring, rather than the other way around
+    - GUI agent is just another asynchronous participant
+        - when there is a GUI agent the tick rate matches a pre-defined normal rate
+    - time constraints on how an Oz world interfaces with the real world
+        - computing has to be fast enough for GUI interaction (the normal rate)
+        - computing could go arbitrarily super real time

@@ -4,8 +4,8 @@ from math import sqrt
 from oz_world import settings
 from oz_world import board
 from oz_world import stone
-from oz_agent import agent
-from oz_agent import observation
+from oz_agent.observation import TactileQuality
+from oz_agent.agent import Agent
 
 class World:
 
@@ -63,13 +63,13 @@ class World:
             holdings[agent.index] = stone_held
 
             if not touch:
-                agent.feel = observation.FEELS_NOTHING
+                agent.feel = TactileQuality.nothing
             elif stone_held:
-                agent.feel = observation.FEELS_STONE
+                agent.feel = TactileQuality.stone
             elif self.board.is_on_board(agent.center):
-                agent.feel = observation.FEELS_BOARD
+                agent.feel = TactileQuality.board
             else:
-                agent.feel = observation.FEELS_BACKGROUND
+                agent.feel = TactileQuality.background
 
         # TODO: config for the number of gui_agents
         for agent in agents[1:]:
@@ -112,7 +112,7 @@ class World:
                 min_x + agent_radius + random() * (size_x - agent_size),
                 min_y + agent_radius + random() * (size_y - agent_size)
             )
-            new_agent = agent.Agent(index, agent_center)
+            new_agent = Agent(index, agent_center)
             agents.append(new_agent)
         return agents
 
