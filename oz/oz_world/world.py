@@ -25,6 +25,10 @@ class World:
         return self._agents
 
     @property
+    def non_gui_agents(self):
+        return self._agents[1:]
+
+    @property
     def gui_agent(self):
         return self._agents[0]
 
@@ -32,34 +36,40 @@ class World:
     def holdings(self):
         return self._holdings
 
-    # TODO: refactor this one
     def tick(self, gui_agent_action, renderer):
-        holdings = self.holdings
-        agents = self.agents
+        self.gui_agent.current_action = gui_agent_action
 
         # single thread: agents are all synchronized ...
+        self._apply_moves()
+        self._apply_touches()
 
-        # TODO: config for the number of gui_agents
-        agents[0].current_action = gui_agent_action
+        world_image = renderer.render()
+        for agent in self.agents:
+            agent.current_world_image = world_image
 
+        for agent in self.non_gui_agents:
+            agent.decide_next_action(agent.current_observation)
+
+    def _apply_moves(self):
         # Move agents and the stones held
-        for agent in agents:
+        for agent in self.agents:
             kinesthetic = agent.move_by(agent.current_action.move, self.settings.bounds)
-            stone_held = holdings[agent.index]
+            stone_held = self.holdings[agent.index]
             if stone_held is not None:
                 stone_held.move_to(agent.center)
             agent.current_observation.kinesthetic = kinesthetic
 
+    def _apply_touches(self):
         # Apply touch and update tactile feedback.
         agent_radius = self.settings.agent.radius
-        for agent in agents:
+        for agent in self.agents:
             touch = agent.current_action.touch
-            stone_held = holdings[agent.index]
+            stone_held = self.holdings[agent.index]
             if not touch:
                 stone_held = None
             elif stone_held is None:
                 stone_held = self._pick_up(agent.center, agent_radius)
-            holdings[agent.index] = stone_held
+            self.holdings[agent.index] = stone_held
 
             if not touch:
                 agent.feel = TactileQuality.nothing
@@ -69,15 +79,6 @@ class World:
                 agent.feel = TactileQuality.board
             else:
                 agent.feel = TactileQuality.background
-
-        world_image = renderer.render()
-
-        for agent in agents: # single thread: agents are all synchronized ...
-            agent.current_world_image = world_image
-
-        # TODO: config for the number of gui_agents
-        for agent in agents[1:]:
-            agent.decide_next_action(agent.current_observation)
 
     def __init__(self, world_settings):
         self._settings = world_settings
