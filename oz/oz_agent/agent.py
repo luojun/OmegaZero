@@ -9,8 +9,8 @@ class Agent(movable.Movable):
         return self._observation
 
     @current_observation.setter
-    def current_observation(self, observation):
-        self._observation = observation
+    def current_observation(self, new_observation):
+        self._observation = new_observation
 
     @property
     def current_feel(self):
@@ -33,10 +33,10 @@ class Agent(movable.Movable):
         return self._action
 
     @current_action.setter
-    def current_action(self, action):
-        self._action = action
+    def current_action(self, new_action):
+        self._action = new_action
 
-    def decide_next_action(self, observation):
+    def decide_next_action(self, current_observation):
         self._action = action.Action(None, None, True)
 
     def __init__(self, index, center):

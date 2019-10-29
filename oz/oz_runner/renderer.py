@@ -1,30 +1,24 @@
 import pygame
 
-from oz_runner import transform
-
 def _initialize_pygame(view_size):
     pygame.init()
     surface = pygame.display.set_mode(view_size)
     return surface
 
 def render_base(world, transform):
-    board_color = world.settings.board.color
     board_min_x, board_min_y, board_max_x, board_max_y = transform.world2view4d(world.board.rect)
-    board_width = board_max_x - board_min_x
-    board_height = board_max_y - board_min_y
-    board_rect = (board_min_x, board_min_y, board_width, board_height)
-
-    line_color = world.settings.board.line_color
-    lines = world.board.lines
+    board_rect = (board_min_x, board_min_y,
+                  board_max_x - board_min_x, board_max_y - board_min_y)
 
     size = transform.scale2view2d(world.settings.size)
     surface = pygame.Surface(size)
 
     surface.fill(world.settings.background.color)
-    pygame.draw.rect(surface, board_color, board_rect, 0)
+    pygame.draw.rect(surface, world.settings.board.color, board_rect, 0)
 
+    line_color = world.settings.board.line_color
     line_width = transform.scale2view(world.settings.board.line_width)
-    for (start_pos, end_pos) in lines:
+    for (start_pos, end_pos) in world.board.lines:
         line_start = transform.world2view2d(start_pos)
         line_end = transform.world2view2d(end_pos)
         pygame.draw.line(surface, line_color, line_start, line_end, line_width)
@@ -91,7 +85,9 @@ class Renderer:
         # reversed is needed to honor z-order of stones
         for stone in reversed(self._world.stones):
             center_x, center_y = stone.center
-            target = self._transform.world2view2d((center_x - stone_radius, center_y - stone_radius))
+            target = self._transform.world2view2d(
+                (center_x - stone_radius, center_y - stone_radius)
+            )
             if stone.is_black:
                 self._surface.blit(self._stone_black, target)
             else:
@@ -112,7 +108,7 @@ class Renderer:
         a3d = pygame.surfarray.array3d(self._surface)
         return a3d
 
-    def capture_screen(filepath):
+    def capture_screen(self, filepath):
         image = pygame.Surface(self._view_size)
-        image.blit(self.surface, (0, 0), ((0, 0), self._view_size))
+        image.blit(self._surface, (0, 0), ((0, 0), self._view_size))
         pygame.image.save(image, filepath)
