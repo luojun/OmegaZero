@@ -39,3 +39,4 @@ DEFAULT_AGENT_EDGE_COLOR = _color_dict2tuple(CONFIGS['agent']['edge']['color'])
 DEFAULT_AGENT_EDGE_WIDTH_RATIO = CONFIGS['agent']['edge']['width']['ratio']
 
 DEFAULT_DISPLAY_HZ = CONFIGS['display']['hz']
+DEFAULT_DISPLAY_RESOLUTION = CONFIGS['display']['resolution']

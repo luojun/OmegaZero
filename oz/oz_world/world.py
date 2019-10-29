@@ -26,6 +26,10 @@ class World:
         return self._agents
 
     @property
+    def gui_agent(self):
+        return self._agents[0]
+
+    @property
     def holdings(self):
         return self._holdings
 

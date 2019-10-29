@@ -45,3 +45,4 @@ agent:
 
 display:
   hz: 30
+  resolution: 900 # dot per meter

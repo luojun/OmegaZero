@@ -23,7 +23,7 @@ def main():
 
     world_settings = settings.WorldSettings(ARGS.lines, ARGS.stones, ARGS.agents)
     WORLD = world.World(world_settings)
-    OZ_RUNNER = runner.Runner(WORLD)
+    OZ_RUNNER = runner.Runner(WORLD, resolution=oz_config.DEFAULT_DISPLAY_RESOLUTION)
 
     #import cProfile
     #cProfile.run('OZ_RUNNER.run(cycles=100, timing=True)')
