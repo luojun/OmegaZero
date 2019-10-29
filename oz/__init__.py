@@ -1,2 +1,2 @@
 # Something
-name = 'oz'
+NAME = 'oz'

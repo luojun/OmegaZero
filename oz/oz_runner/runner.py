@@ -1,9 +1,7 @@
-import sys
 import time
 
 import pygame
 
-import oz_config
 from oz_runner import renderer
 from oz_runner import transform
 from oz_agent import action
@@ -23,10 +21,10 @@ def _update_mouse(event, mouse_down, mouse_x, mouse_y):
     return mouse_down, mouse_x, mouse_y
 
 class Runner:
-    def __init__(self, world, resolution):
+    def __init__(self, world, resolution, transparent_color_key):
         self._world = world
         self._transform = transform.Transform(world.settings.size, resolution)
-        self._renderer = renderer.Renderer(self._world, self._transform)
+        self._renderer = renderer.Renderer(world, self._transform, transparent_color_key)
 
     def _make_gui_agent_action(self, mouse_down, mouse_x, mouse_y):
         agent_new_x, agent_new_y = self._transform.view2world2d((mouse_x, mouse_y))
@@ -67,7 +65,7 @@ class Runner:
                     terminate_now = True
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_c:
-                        capture_screen(self.surface, "screenshot.png", self._view_size)
+                        self._renderer.capture_screen("screenshot.png")
                 else:
                     mouse_down, mouse_x, mouse_y = _update_mouse(
                         event, mouse_down, mouse_x, mouse_y
@@ -91,7 +89,7 @@ class Runner:
             cycles_done += 1
             if capture_pngs and cycles_remain % 10 == 0:
                 png_path = "screenshot" + "{:05d}".format(cycles_done) + ".png"
-                self.renderer.capture_screen(png_path)
+                self._renderer.capture_screen(png_path)
 
         # finish running
         if timing:

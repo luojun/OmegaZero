@@ -24,7 +24,8 @@ stone:
   size:
     ratio: 0.8 # stone to board inset ratio
   color:
-    # Do NOT use { r: 0, g: 0, b: 0 }. It is used by set_color for Pygame.
+    # Do NOT use { r: 0, g: 0, b: 0 }. See renderer.stone.background.color below.
+    #
     black: { r: 32, g: 32, b: 32, a: 255 }
     white: { r: 224, g: 224, b: 224, a: 255 }
   edge:
@@ -45,4 +46,7 @@ agent:
 
 display:
   hz: 30
+
+renderer:
   resolution: 900 # dot per meter
+  transparent_color_key: { r: 0, g: 0, b: 0 }

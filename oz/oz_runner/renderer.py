@@ -31,7 +31,7 @@ def render_base(world, transform):
 
     return surface
 
-def render_stone(world, transform):
+def render_stone(world, transform, transparent_color_key):
     radius = transform.scale2view(world.settings.stone.radius)
     center = (radius, radius)
     size = (radius * 2, radius * 2)
@@ -42,9 +42,8 @@ def render_stone(world, transform):
     stone_black_surface = pygame.Surface(size)
     stone_white_surface = pygame.Surface(size)
 
-    # TODO: document the fact we are using (0, 0, 0) as color key
-    stone_black_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
-    stone_white_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
+    stone_black_surface.set_colorkey(transparent_color_key, pygame.RLEACCEL)
+    stone_white_surface.set_colorkey(transparent_color_key, pygame.RLEACCEL)
     pygame.draw.circle(stone_black_surface, stone_color_black, center, radius, 0)
     pygame.draw.circle(stone_white_surface, stone_color_white, center, radius, 0)
 
@@ -54,15 +53,15 @@ def render_stone(world, transform):
     pygame.draw.circle(stone_white_surface, stone_edge_color_white, center, radius, edge_width)
     return stone_black_surface, stone_white_surface
 
-def render_agent(world, transform):
+def render_agent(world, transform, transparent_color_key):
     radius = transform.scale2view(world.settings.agent.radius)
     center = (radius, radius)
     size = (radius * 2, radius * 2)
     color = world.settings.agent.color
     agent_down_surface = pygame.Surface(size)
     agent_up_surface = pygame.Surface(size)
-    agent_down_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
-    agent_up_surface.set_colorkey((0, 0, 0), pygame.RLEACCEL)
+    agent_down_surface.set_colorkey(transparent_color_key, pygame.RLEACCEL)
+    agent_up_surface.set_colorkey(transparent_color_key, pygame.RLEACCEL)
 
     edge_width = transform.scale2view(world.settings.agent.edge_width)
     pygame.draw.circle(agent_down_surface, color, center, radius, edge_width)
@@ -70,7 +69,7 @@ def render_agent(world, transform):
     return agent_down_surface, agent_up_surface
 
 class Renderer:
-    def __init__(self, world, transform):
+    def __init__(self, world, transform, transparent_color_key):
         self._world = world
         world_size = world.settings.size
         self._transform = transform
@@ -78,8 +77,12 @@ class Renderer:
         # NB: has to set mode before instantiate Renderer
         self._surface = _initialize_pygame(self._view_size)
         self._base = render_base(self._world, self._transform)
-        self._stone_black, self._stone_white = render_stone(self._world, self._transform)
-        self._agent_down, self._agent_up = render_agent(self._world, self._transform)
+        self._stone_black, self._stone_white = render_stone(
+            self._world, self._transform, transparent_color_key
+        )
+        self._agent_down, self._agent_up = render_agent(
+            self._world, self._transform, transparent_color_key
+        )
 
     def _blit_all(self):
         self._surface.blit(self._base, (0, 0))
