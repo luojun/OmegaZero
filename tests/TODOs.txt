@@ -1,32 +1,10 @@
-
 # Tests:
 #
-# [x] config
-# [ ] world construction
-#     [ ] check existence of surfaces and sizes
-#     [ ] check number of stones, number of lines, and number of agents
-# [ ] sensorimotor loop
-#     [ ] check dimension of rendered image
-#     [ ] single agent world
-#       [ ] move agent to corner of environment, check tactile feedback
-#       [ ] move agent to cneter of board, check tactile feedback
-#     [ ] single agent + single stone world
-#       [ ] create stone black at a corner of the environment, check existence of stone at corner
-#       [ ] move agent to that corner of the environment, check agent is at corner
-#       [ ] pick up stone, check holding and tactile feedback
-#       [ ] move to center of board, check stone location and agent location
-#       [ ] release stone
-#         [ ] check tactile feedback
-#         [ ] check color of center of rendered image -- agent color
-#       [ ] pick up stone again, check tactile feedback
-#         [ ] check color of center of rendered image -- stone black
-# [ ] timing
-#     [ ] check the zero cycle case
-#     [ ] check greater than zero cycles: elapsed time bigger than zero
-#     [ ] check double cycles make time longer
-# [ ] capture
-#     [ ] single screenshot -- test existence and size of PNG
-#     [ ] multiple screenshots -- test existence of a series of PNGs and their size
-# [ ] headless
-#     [ ] check zero cycle case
-#     [ ] check 30 hz case
+# [ ] utilities
+#     [ ] timing
+#         [ ] check zero cycle case: elapsed time biggern than zero
+#         [ ] check one cycle case: elapsed time bigger than zero cycle case
+#         [ ] check 10 times cycles makes time 2 to 50 times longer than one cycle case
+#     [ ] capture
+#         [ ] single screenshot -- test existence and size of PNG
+#         [ ] multiple screenshots -- test existence of a series of PNGs and their size

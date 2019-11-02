@@ -21,6 +21,10 @@ def _update_mouse(event, mouse_down, mouse_x, mouse_y):
     return mouse_down, mouse_x, mouse_y
 
 class Runner:
+    @property
+    def renderer(self):
+        return self._renderer
+
     def __init__(self, world, resolution, transparent_color_key):
         self._world = world
         self._transform = Transform(world.settings.size, resolution)

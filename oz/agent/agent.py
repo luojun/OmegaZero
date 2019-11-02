@@ -13,22 +13,6 @@ class Agent(Movable):
         self._observation = new_observation
 
     @property
-    def current_feel(self):
-        return self._observation.feel
-
-    @current_feel.setter
-    def current_feel(self, feel):
-        self._observation.feel = feel
-
-    @property
-    def current_word_image(self):
-        return self._observation.word_image
-
-    @current_word_image.setter
-    def current_word_image(self, word_image):
-        self._observation.word_image = word_image
-
-    @property
     def current_action(self):
         return self._action
 

@@ -6,7 +6,6 @@ class TactileQuality(Enum):
     board = auto()
     stone = auto()
 
-# TODO: should we make instances of this class immutable?
 class Observation:
 
     @property

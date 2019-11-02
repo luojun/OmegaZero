@@ -45,7 +45,7 @@ class World:
 
         world_image = renderer.render()
         for agent in self.agents:
-            agent.current_world_image = world_image
+            agent.current_observation.world_image = world_image
 
         for agent in self.non_gui_agents:
             agent.decide_next_action(agent.current_observation)
@@ -72,13 +72,13 @@ class World:
             self.holdings[agent.index] = stone_held
 
             if not touch:
-                agent.feel = TactileQuality.nothing
+                agent.current_observation.feel = TactileQuality.nothing
             elif stone_held:
-                agent.feel = TactileQuality.stone
+                agent.current_observation.feel = TactileQuality.stone
             elif self.board.is_on_board(agent.center):
-                agent.feel = TactileQuality.board
+                agent.current_observation.feel = TactileQuality.board
             else:
-                agent.feel = TactileQuality.background
+                agent.current_observation.feel = TactileQuality.background
 
     def __init__(self, settings):
         self._settings = settings
