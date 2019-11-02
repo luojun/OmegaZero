@@ -1,6 +1,5 @@
-from oz_world import movable
-from oz_agent import observation
-from oz_agent import action
+from world import movable
+from agent import observation, action
 
 class Agent(movable.Movable):
 

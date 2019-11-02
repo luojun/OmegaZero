@@ -2,9 +2,9 @@ import time
 
 import pygame
 
-from oz_runner import renderer
-from oz_runner import transform
-from oz_agent import action
+from runner import renderer
+from runner import transform
+from agent import action
 
 def _update_mouse(event, mouse_down, mouse_x, mouse_y):
     if event.type == pygame.MOUSEBUTTONDOWN:
