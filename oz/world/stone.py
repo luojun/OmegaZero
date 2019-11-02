@@ -1,4 +1,4 @@
-from world.movable import Movable
+from .movable import Movable
 
 class Stone(Movable):
     def __init__(self, index, center, is_black):

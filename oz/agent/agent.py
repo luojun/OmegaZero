@@ -1,7 +1,8 @@
-from world import movable
-from agent import observation, action
+from ..world.movable import Movable
+from .observation import Observation
+from .action import Action
 
-class Agent(movable.Movable):
+class Agent(Movable):
 
     @property
     def current_observation(self):
@@ -36,9 +37,9 @@ class Agent(movable.Movable):
         self._action = new_action
 
     def decide_next_action(self, current_observation):
-        self._action = action.Action(None, None, True)
+        self._action = Action(None, None, True)
 
     def __init__(self, index, center):
         super().__init__(index, center)
-        self._observation = observation.Observation()
-        self._action = action.Action(None, None, True)
+        self._observation = Observation()
+        self._action = Action(None, None, True)

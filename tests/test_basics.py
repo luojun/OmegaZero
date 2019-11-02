@@ -28,5 +28,20 @@ class TestBasics(unittest.TestCase):
         self.assertIsNotNone(config.DEFAULT_DISPLAY_RESOLUTION,)
         self.assertIsNotNone(config.DEFAULT_TRANSPARENT_COLOR_KEY)
 
+    def test_world_construction(self):
+        from oz import config
+        from oz.world import settings
+        from oz.world import world
+        _settings = settings.Settings(config)
+        _world = world.World(_settings)
+        self.assertIsNotNone(_world.settings)
+        self.assertIsNotNone(_world.board)
+        self.assertIsNotNone(_world.board.lines)
+        self.assertEqual(len(_world.board.lines), _settings.board.number_of_lines * 2)
+        self.assertIsNotNone(_world.stones)
+        self.assertEqual(len(_world.stones), _settings.number_of_stones)
+        self.assertIsNotNone(_world.agents)
+        self.assertEqual(len(_world.agents), _settings.number_of_agents)
+
 if __name__ == '__main__':
     unittest.main()

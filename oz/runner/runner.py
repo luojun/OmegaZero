@@ -2,9 +2,9 @@ import time
 
 import pygame
 
-from runner import renderer
-from runner import transform
-from agent import action
+from .renderer import Renderer
+from .transform import Transform
+from ..agent.action import Action
 
 def _update_mouse(event, mouse_down, mouse_x, mouse_y):
     if event.type == pygame.MOUSEBUTTONDOWN:
@@ -23,14 +23,14 @@ def _update_mouse(event, mouse_down, mouse_x, mouse_y):
 class Runner:
     def __init__(self, world, resolution, transparent_color_key):
         self._world = world
-        self._transform = transform.Transform(world.settings.size, resolution)
-        self._renderer = renderer.Renderer(world, self._transform, transparent_color_key)
+        self._transform = Transform(world.settings.size, resolution)
+        self._renderer = Renderer(world, self._transform, transparent_color_key)
 
     def _make_gui_agent_action(self, mouse_down, mouse_x, mouse_y):
         agent_new_x, agent_new_y = self._transform.view2world2d((mouse_x, mouse_y))
         agent_x, agent_y = self._world.gui_agent.center
         agent_move = agent_new_x - agent_x, agent_new_y - agent_y
-        return action.Action(mouse_down, agent_move)
+        return Action(mouse_down, agent_move)
 
     def run(self, cycles=-1, timing=False, capture_pngs=False, display_hz=50):
         mouse_down = False

@@ -1,13 +1,8 @@
-import argparse
-
-import config
-from world import world
-from world import settings
-from runner import runner
-
 def main():
-
+    import argparse
     _parser = argparse.ArgumentParser()
+
+    from . import config
     _parser.add_argument('-l', '--lines', nargs='?',
                          default=config.DEFAULT_BOARD_NUMBER_OF_LINES, type=int)
     _parser.add_argument('-s', '--stones', nargs='?',
@@ -18,10 +13,13 @@ def main():
                          default=config.DEFAULT_DISPLAY_HZ, type=float)
     _args = _parser.parse_args()
 
-    _world_settings = settings.WorldSettings(_args.lines, _args.stones, _args.agents)
-    _world = world.World(_world_settings)
-    _runner = runner.Runner(_world, resolution=config.DEFAULT_DISPLAY_RESOLUTION,
-                               transparent_color_key=config.DEFAULT_TRANSPARENT_COLOR_KEY)
+    from .world.world import World
+    from .world.settings import Settings
+    from .runner.runner import Runner
+    _settings = Settings(config, _args.lines, _args.stones, _args.agents)
+    _world = World(_settings)
+    _runner = Runner(_world, resolution=config.DEFAULT_DISPLAY_RESOLUTION,
+                             transparent_color_key=config.DEFAULT_TRANSPARENT_COLOR_KEY)
 
     #import cProfile
     #cProfile.run('_runner.run(cycles=100, timing=True)')

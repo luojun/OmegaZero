@@ -1,10 +1,10 @@
 from random import random
 from math import sqrt
 
-from world.board import Board
-from world.stone import Stone
-from agent.observation import TactileQuality
-from agent.agent import Agent
+from .board import Board
+from .stone import Stone
+from ..agent.observation import TactileQuality
+from ..agent.agent import Agent
 
 class World:
 
@@ -80,12 +80,12 @@ class World:
             else:
                 agent.feel = TactileQuality.background
 
-    def __init__(self, world_settings):
-        self._settings = world_settings
+    def __init__(self, settings):
+        self._settings = settings
         self._board = Board(self.settings)
         self._stones = self._init_stones()
         self._agents = self._init_agents()
-        self._holdings = [None] * world_settings.number_of_agents # an agent holds at most 1 stone
+        self._holdings = [None] * settings.number_of_agents # an agent holds at most 1 stone
 
     def _init_stones(self):
         stone_radius = self.settings.stone.radius

@@ -1,7 +1,14 @@
-import config
+class Settings:
+    def __init__(self, config, number_of_lines=None,
+                               number_of_stones=None,
+                               number_of_agents=None):
+        if number_of_lines is None:
+            number_of_lines=config.DEFAULT_BOARD_NUMBER_OF_LINES
+        if number_of_stones is None:
+            number_of_stones=config.DEFAULT_NUMBER_OF_STONES
+        if number_of_agents is None:
+            number_of_agents=config.DEFAULT_NUMBER_OF_AGENTS
 
-class WorldSettings:
-    def __init__(self, number_of_lines, number_of_stones, number_of_agents):
         size_x = config.DEFAULT_WORLD_SIZE_X
         size_y = config.DEFAULT_WORLD_SIZE_Y
         self._size = (size_x, size_y)
@@ -11,12 +18,12 @@ class WorldSettings:
         self._center = (center_x, center_y)
         self._bounds = (min_x, min_y, max_x, max_y)
 
-        self._background_settings = BackgroundSettings()
-        self._board_settings = BoardSettings(self, number_of_lines)
+        self._background_settings = BackgroundSettings(config)
+        self._board_settings = BoardSettings(self, config, number_of_lines)
 
-        self._stone_settings = StoneSettings(self.board)
+        self._stone_settings = StoneSettings(self.board, config)
         self._number_of_stones = number_of_stones
-        self._agent_settings = AgentSettings(self.stone)
+        self._agent_settings = AgentSettings(self.stone, config)
         self._number_of_agents = number_of_agents
 
     @property
@@ -56,7 +63,7 @@ class WorldSettings:
         return self._number_of_agents
 
 class BackgroundSettings:
-    def __init__(self):
+    def __init__(self, config):
         self._color = config.DEFAULT_WORLD_BACKGROUND_COLOR
 
     @property
@@ -64,7 +71,7 @@ class BackgroundSettings:
         return self._color
 
 class BoardSettings:
-    def __init__(self, world_settings, number_of_lines):
+    def __init__(self, world_settings, config, number_of_lines):
         world_size_x, world_size_y = world_settings.size
         size_x = world_size_x * config.DEFAULT_BOARD_SIZE_X_RATIO
         size_y = world_size_y * config.DEFAULT_BOARD_SIZE_Y_RATIO
@@ -112,7 +119,7 @@ class BoardSettings:
         return self._number_of_lines
 
 class StoneSettings:
-    def __init__(self, board_settings):
+    def __init__(self, board_settings, config):
         stone_size = min(board_settings.insets) * config.DEFAULT_STONE_SIZE_RATIO
         self._radius = stone_size / 2
         self._color_black = config.DEFAULT_STONE_COLOR_BLACK
@@ -146,7 +153,7 @@ class StoneSettings:
         return self._edge_color_white
 
 class AgentSettings:
-    def __init__(self, stone_settings):
+    def __init__(self, stone_settings, config):
         self._radius = stone_settings.radius * config.DEFAULT_AGENT_SIZE_RATIO
         self._color = config.DEFAULT_AGENT_COLOR
         self._edge_width = self.radius * config.DEFAULT_AGENT_EDGE_WIDTH_RATIO
