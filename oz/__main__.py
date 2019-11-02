@@ -25,7 +25,7 @@ def main():
     #cProfile.run('_runner.run(cycles=100, timing=True)')
 
     # Use: convert -delay 20 -loop 0 screenshot0*.png demo.gif
-    #_runner.run(cycles=5000, capture_pngs=True)
+    #_runner.run(cycles=50, capture=True)
 
     #_runner.run(cycles=1000, timing=True, display_hz=args.display_hz)
 

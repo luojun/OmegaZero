@@ -18,5 +18,6 @@ To run tests:
 
 ```
 $ python -m unittest tests.test_basics
+$ python -m unittest tests.test_utils
 ```
 

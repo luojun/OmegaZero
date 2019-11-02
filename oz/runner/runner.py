@@ -1,4 +1,5 @@
 import time
+import os.path
 
 import pygame
 
@@ -36,7 +37,9 @@ class Runner:
         agent_move = agent_new_x - agent_x, agent_new_y - agent_y
         return Action(mouse_down, agent_move)
 
-    def run(self, cycles=-1, timing=False, capture_pngs=False, display_hz=50):
+    def run(self, cycles=-1, timing=False,
+                  capture=False, capture_every=10, capture_dir="",
+                  display_hz=50):
         mouse_down = False
         gui_agent = self._world.gui_agent
         mouse_x, mouse_y = self._transform.world2view2d(gui_agent.center)
@@ -44,19 +47,19 @@ class Runner:
         # manage cycles
         cycles_remain = cycles
 
-        # prepare for timing
-        if timing:
-            start = time.time()
-
         # prepare for screen capture
         cycles_done = 0
+
+        terminate_now = False
 
         # manage display frame rate
         if display_hz > 0: # 0 for headless mode
             cycle_length = 1.0 / display_hz
             cycle_start = time.time()
 
-        terminate_now = False
+        # prepare for timing
+        if timing:
+            start = time.time()
 
         # run cycles
         while cycles < 0 or cycles_remain > 0:
@@ -91,14 +94,13 @@ class Runner:
 
             # screen recording
             cycles_done += 1
-            if capture_pngs and cycles_remain % 10 == 0:
-                png_path = "screenshot" + "{:05d}".format(cycles_done) + ".png"
+            if capture and cycles_remain % capture_every == 0:
+                png_path = os.path.join(capture_dir, "screenshot" + "{:05d}".format(cycles_done) + ".png")
                 self._renderer.capture_screen(png_path)
 
         # finish running
         if timing:
             end = time.time()
-            time_elapsed = end - start
-            time_per_cycle = time_elapsed / cycles
-            print("Cycles: ", cycles, "  Time elasped: ", time_elapsed,
-                  "  Time per cycle: ", time_per_cycle)
+            elapsed = end - start
+            period = elapsed / cycles if cycles > 0 else None
+            return({"cycles": cycles, "elapsed": elapsed, "period": period})
