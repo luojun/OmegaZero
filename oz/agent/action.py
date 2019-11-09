@@ -1,3 +1,5 @@
+import numpy as np
+
 from random import random
 
 # Instances of this class should be immutable
@@ -11,6 +13,12 @@ class Action:
     @property
     def move(self):
         return self._move
+
+    @property
+    def vector(self):
+        _touch = 1 if self.touch else 0 # this seems cheating
+        array = np.asarray(self._move + (_touch,))
+        return array.reshape((array.size, 1))
 
     def __init__(self, touch, move, act_randomly=False):
         if act_randomly:

@@ -80,11 +80,11 @@ class World:
             else:
                 agent.current_observation.feel = TactileQuality.background
 
-    def __init__(self, settings):
+    def __init__(self, settings, agent_classes=[]):
         self._settings = settings
         self._board = Board(self.settings)
         self._stones = self._init_stones()
-        self._agents = self._init_agents()
+        self._agents = self._init_agents(agent_classes)
         self._holdings = [None] * settings.number_of_agents # an agent holds at most 1 stone
 
     def _init_stones(self):
@@ -105,7 +105,7 @@ class World:
             stones.append(new_stone)
         return stones
 
-    def _init_agents(self):
+    def _init_agents(self, agent_classes=[]):
         agent_radius = self.settings.agent.radius
         agent_size = agent_radius * 2
         size_x, size_y = self.settings.size
@@ -117,7 +117,10 @@ class World:
                 min_x + agent_radius + random() * (size_x - agent_size),
                 min_y + agent_radius + random() * (size_y - agent_size)
             )
-            new_agent = Agent(index, agent_center)
+            if index < len(agent_classes):
+                new_agent = agent_classes[index](index, agent_center)
+            else:
+                new_agent = Agent(index, agent_center)
             agents.append(new_agent)
         return agents
 
