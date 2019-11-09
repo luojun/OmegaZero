@@ -1,3 +1,5 @@
+# TODO: separate out affordance0 experiment
+
 def main():
     import argparse
     _parser = argparse.ArgumentParser()
@@ -16,8 +18,10 @@ def main():
     from .world.world import World
     from .world.settings import Settings
     from .runner.runner import Runner
+    from .agent.agent import Agent
+    from .affordances.agent0 import Agent0
     _settings = Settings(config, _args.lines, _args.stones, _args.agents)
-    _world = World(_settings)
+    _world = World(_settings, [Agent, Agent0])
     _runner = Runner(_world, resolution=config.DEFAULT_DISPLAY_RESOLUTION,
                              transparent_color_key=config.DEFAULT_TRANSPARENT_COLOR_KEY)
 
