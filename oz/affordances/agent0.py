@@ -34,7 +34,15 @@ class Agent0(Agent):
             self._learn(self._predictions, self._actuals, self._last_action)
         self._last_action = self.current_action.vector
         self._predictions = self._predict(observation, self._last_action)
-    
+
+    @property
+    def all_predictions(self):
+        return self._all_predictions
+
+    @property
+    def all_actuals(self):
+        return self._all_actuals_
+
     def __init__(self, index, center):
         super().__init__(index, center)
         self._weights = np.zeros((4, 3))
@@ -43,6 +51,8 @@ class Agent0(Agent):
         self._last_feel = None
         self._predictions = None
         self._last_action = None
+        self._all_predictions = []
+        self._all_actuals = []
 
     def _actual_change(self, observation):
         if self._last_image is not None:
@@ -68,6 +78,7 @@ class Agent0(Agent):
         return predictions
 
     def _learn(self, predicted, actuals, action_vector):
+        self._all_predictions.append(predicted)
+        self._all_actuals.append(actuals)
         errors = actuals - predicted
-        print("errors in learn:\n", errors)
         self._weights -= self._learning_rate * np.matmul(errors,  action_vector.transpose())
