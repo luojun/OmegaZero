@@ -153,16 +153,11 @@ class TestBasics(unittest.TestCase):
         #         [x] check holdings
         #         [x] check tactile feedback
         #         [x] check color of center of rendered image -- color of first stone
-        # [ ] utilities
-        #     [ ] timing
-        #         [ ] check zero cycle case: elapsed time biggern than zero
-        #         [ ] check one cycle case: elapsed time bigger than zero cycle case
-        #         [ ] check 10 times cycles makes time 2 to 50 times longer than one cycle case
-        #     [ ] capture
-        #         [ ] single screenshot -- test existence and size of PNG
-        #         [ ] multiple screenshots -- test existence of a series of PNGs and their size
 
         self.assertNotEqual(_world.stones[0].is_black, _world.stones[1].is_black)
+
+        _min_x, _min_y, _, _ = _settings.bounds
+        _world.stones[0].move_to((_min_x, _min_y)) # force move stone 0 to a corner
 
         # move agent to second stone and pick it up
         _agent_x, _agent_y = _agent.center
