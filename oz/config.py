@@ -1,6 +1,10 @@
+import os
 import yaml
 
-with open("config.yaml") as f:
+script_path = os.path.dirname(os.path.realpath( __file__ ))
+config_path = os.path.join(script_path, "config.yaml")
+
+with open(config_path) as f:
     CONFIGS = yaml.full_load(f)
 
 def _dict2rgba(dictionary):
