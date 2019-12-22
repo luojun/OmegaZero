@@ -27,15 +27,19 @@ from ..agent.action import Action
 class Agent0(Agent):
 
     def decide_next_action(self, observation):
-        self.current_action = Action(None, None, True) # random policy
-
         self._actuals = self._actual_change(observation)
+        self._all_actuals.append(self._actuals)
+
         if self._predictions is not None and self._last_action is not None:
             self._learn(self._predictions, self._actuals, self._last_action)
+
+        self.current_action = Action(None, None, True) # random policy
+
         self._last_action = self.current_action.vector
+        self._last_action[0] /= 0.01
+        self._last_action[1] /= 0.01
         self._predictions = self._predict(observation, self._last_action)
         self._all_predictions.append(self._predictions)
-        self._all_actuals.append(self._actuals)
 
     @property
     def all_predictions(self):
@@ -45,10 +49,14 @@ class Agent0(Agent):
     def all_actuals(self):
         return self._all_actuals
 
+    @property
+    def weights(self):
+        return self._weights
+
     def __init__(self, index, center):
         super().__init__(index, center)
         self._weights = np.zeros((4, 3))
-        self._learning_rate = 0.1
+        self._learning_rate = 0.01
         self._last_image = None
         self._last_feel = None
         self._predictions = None
@@ -68,7 +76,8 @@ class Agent0(Agent):
         else:
             tactile_change = 0
 
-        kinesthetic = observation.kinesthetic
+        kx, ky = observation.kinesthetic
+        kinesthetic = (kx / 0.01, ky / 0.01) # normalization ...
 
         self._last_image = observation.world_image
         self._last_feel = observation.feel

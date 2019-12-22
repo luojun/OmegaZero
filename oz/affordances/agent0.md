@@ -1,5 +1,10 @@
 ## Affordance0 -- learn to do cross-modal prediction based on effect of random self action
 
+[ ] collect data first
+    [ ] process image difference first also
+[ ] do predictive learning offline ...
+[ ] consider polar action ... Is this cheating?
+
 - take action randomly
   - action commands are accessible ... is this reasonable ...
   - in the future: rhythmically take action ... faster and slower; may need action pattern generator
